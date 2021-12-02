@@ -1,17 +1,23 @@
 use std::io;
 use std::io::Write;
 
+#[macro_use]
 mod common;
 mod solutions;
 
 fn main() {
-    let sol = [solutions::day_01_a::main(), solutions::day_01_b::main()];
+    let sol = [
+        solutions::day_01_a::main(),
+        solutions::day_01_b::main(),
+        solutions::day_02_a::main(),
+        solutions::day_02_b::main(),
+    ];
 
     for (i, item) in sol.iter().enumerate() {
         println!("[{}] {}", i, item.name);
     }
 
-    print!("\n=> ");
+    print!("\n❯ ");
 
     let mut buff = String::new();
     io::stdout().flush().unwrap();
@@ -36,5 +42,6 @@ fn main() {
     let this_sol = &sol[num];
 
     println!("[*] Running: {}", this_sol.name);
-    (this_sol.run)();
+    let out = (this_sol.run)();
+    println!("[+] OUT: {}", out);
 }
