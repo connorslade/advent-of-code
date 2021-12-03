@@ -3,3 +3,4 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 
 - Day 1: Sonar Sweep [[A](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_01_a.rs), [B](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_01_b.rs)]
 - Day 2: Dive! [[A](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_02_a.rs), [B](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_02_b.rs)]
+- Day 3: Binary Diagnostic [[A](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_03_a.rs), [B](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_03_b.rs)]

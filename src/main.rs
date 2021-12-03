@@ -11,6 +11,8 @@ fn main() {
         solutions::day_01_b::main(),
         solutions::day_02_a::main(),
         solutions::day_02_b::main(),
+        solutions::day_03_a::main(),
+        solutions::day_03_b::main(),
     ];
 
     for (i, item) in sol.iter().enumerate() {
