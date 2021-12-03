@@ -7,12 +7,12 @@ mod solutions;
 
 fn main() {
     let sol = [
-        solutions::day_01_a::main(),
-        solutions::day_01_b::main(),
-        solutions::day_02_a::main(),
-        solutions::day_02_b::main(),
-        solutions::day_03_a::main(),
-        solutions::day_03_b::main(),
+        solutions::day_01::part_a(),
+        solutions::day_01::part_b(),
+        solutions::day_02::part_a(),
+        solutions::day_02::part_b(),
+        solutions::day_03::part_a(),
+        solutions::day_03::part_b(),
     ];
 
     for (i, item) in sol.iter().enumerate() {

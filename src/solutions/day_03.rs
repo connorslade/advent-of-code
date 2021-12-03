@@ -1,7 +1,49 @@
 use crate::common::{self, Solution};
 
-pub fn main() -> Solution {
-    Solution::new("Day 3-Binary Diagnostic-B", || {
+pub fn part_a() -> Solution {
+    Solution::new("03-Binary Diagnostic-A", || {
+        let data = common::load("03");
+        let num_len = data.lines().next().unwrap().len();
+
+        let mut gamma = vec![0; num_len];
+        let mut epsilon = vec![1; num_len];
+
+        for i in 0..num_len {
+            let mut z = 0;
+            let mut o = 0;
+
+            data.lines().for_each(|j| match j.chars().nth(i).unwrap() {
+                '0' => z += 1,
+                '1' => o += 1,
+                _ => {}
+            });
+
+            if o > z {
+                epsilon[i] = 0;
+                gamma[i] = 1;
+            }
+        }
+
+        let gamma = int_from_bin(&gamma).unwrap();
+        let epsilon = int_from_bin(&epsilon).unwrap();
+
+        (epsilon * gamma).to_string()
+    })
+}
+
+fn int_from_bin(inp: &[u32]) -> Option<usize> {
+    usize::from_str_radix(
+        &inp.iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(""),
+        2,
+    )
+    .ok()
+}
+
+pub fn part_b() -> Solution {
+    Solution::new("03-Binary Diagnostic-B", || {
         let data = common::load("03");
         let num_len = data.lines().next().unwrap().len();
 
@@ -21,7 +63,7 @@ pub fn main() -> Solution {
                 .iter()
                 .filter(|x| x.chars().into_iter().nth(i).unwrap() == imax)
                 .copied()
-                .collect::<Vec<&str>>();
+                .collect();
 
             // Filter Co2
             let imax = get_imax(&co2_raw, i);
@@ -30,7 +72,7 @@ pub fn main() -> Solution {
                 .iter()
                 .filter(|x| x.chars().into_iter().nth(i).unwrap() != imax)
                 .copied()
-                .collect::<Vec<&str>>();
+                .collect();
 
             if oxygen_keep.len() == 1 {
                 oxygen_gen = isize::from_str_radix(oxygen_keep.first().unwrap(), 2).unwrap();
@@ -41,14 +83,12 @@ pub fn main() -> Solution {
             }
         }
 
-        let life = oxygen_gen * co2_scrub;
-
-        life.to_string()
+        (oxygen_gen * co2_scrub).to_string()
     })
 }
 
 fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &[&str]) -> Vec<[u32; 2]> {
-    for (i, _item) in old.clone().iter().enumerate().take(num_len) {
+    for i in 0..num_len {
         let mut z = 0;
         let mut o = 0;
         for j in keep {
@@ -58,7 +98,6 @@ fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &[&str]) -> Vec<[u32; 2
                 _ => {}
             }
         }
-
         *old.get_mut(i).unwrap() = [z, o];
     }
 
@@ -66,10 +105,8 @@ fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &[&str]) -> Vec<[u32; 2
 }
 
 fn get_imax(raw: &[[u32; 2]], i: usize) -> char {
-    let this_raw = raw[i];
-    if this_raw[0] > this_raw[1] {
-        '0'
-    } else {
-        '1'
-    }
+    if raw[i][0] > raw[i][1] {
+        return '0';
+    };
+    '1'
 }

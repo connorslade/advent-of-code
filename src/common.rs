@@ -18,13 +18,3 @@ impl Solution {
         }
     }
 }
-
-macro_rules! solution {
-    ($name:expr, $code:expr) => {
-        use crate::common::{self, Solution};
-
-        pub fn main() -> Solution {
-            Solution::new($name, $code)
-        }
-    };
-}
