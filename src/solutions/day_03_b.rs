@@ -5,30 +5,31 @@ pub fn main() -> Solution {
         let data = common::load("03");
         let num_len = data.lines().next().unwrap().len();
 
-        let mut oxygen_gen = 0;
-        let mut co2_scrub = 0;
-
         let mut oxygen_keep = data.lines().collect::<Vec<&str>>();
         let mut oxygen_raw = vec![[0, 0]; num_len];
+        let mut oxygen_gen = 0;
 
         let mut co2_keep = oxygen_keep.clone();
         let mut co2_raw = oxygen_raw.clone();
+        let mut co2_scrub = 0;
 
         for i in 0..num_len {
+            // Filter Oxygen
             let imax = get_imax(&oxygen_raw, i);
             oxygen_raw = gen_raw(oxygen_raw, num_len, &oxygen_keep);
             oxygen_keep = oxygen_keep
                 .iter()
                 .filter(|x| x.chars().into_iter().nth(i).unwrap() == imax)
-                .map(|x| *x)
+                .copied()
                 .collect::<Vec<&str>>();
 
+            // Filter Co2
             let imax = get_imax(&co2_raw, i);
             co2_raw = gen_raw(co2_raw, num_len, &co2_keep);
             co2_keep = co2_keep
                 .iter()
                 .filter(|x| x.chars().into_iter().nth(i).unwrap() != imax)
-                .map(|x| *x)
+                .copied()
                 .collect::<Vec<&str>>();
 
             if oxygen_keep.len() == 1 {
@@ -46,8 +47,8 @@ pub fn main() -> Solution {
     })
 }
 
-fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &Vec<&str>) -> Vec<[u32; 2]> {
-    for i in 0..num_len {
+fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &[&str]) -> Vec<[u32; 2]> {
+    for (i, _item) in old.clone().iter().enumerate().take(num_len) {
         let mut z = 0;
         let mut o = 0;
         for j in keep {
@@ -58,14 +59,17 @@ fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &Vec<&str>) -> Vec<[u32
             }
         }
 
-        old[i] = [z, o];
+        *old.get_mut(i).unwrap() = [z, o];
     }
 
     old
 }
 
-fn get_imax(raw: &Vec<[u32; 2]>, i: usize) -> char {
+fn get_imax(raw: &[[u32; 2]], i: usize) -> char {
     let this_raw = raw[i];
-    let imax = if this_raw[0] > this_raw[1] { '0' } else { '1' };
-    imax
+    if this_raw[0] > this_raw[1] {
+        '0'
+    } else {
+        '1'
+    }
 }

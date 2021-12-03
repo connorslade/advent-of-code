@@ -34,7 +34,7 @@ pub fn main() -> Solution {
     })
 }
 
-fn int_from_bin(inp: &Vec<i32>) -> Option<usize> {
+fn int_from_bin(inp: &[u32]) -> Option<usize> {
     usize::from_str_radix(
         &inp.iter()
             .map(|x| x.to_string())
