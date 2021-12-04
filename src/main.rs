@@ -1,10 +1,18 @@
-// use std::env;
+use std::env;
 
 mod common;
 mod solutions;
 
 fn main() {
-    // if let Some(run_arg) = env::args().nth(1) {};
+    // Use run args for day and part
+    // Run like: cargo run -- <day><a | b>
+    // Ex: cargo run -- 0a
+    if let Some(run_arg) = env::args().nth(1) {
+        let part = run_arg.chars().last().unwrap().to_string();
+        let mut run_arg = run_arg.chars();
+        run_arg.next_back().unwrap();
+        return run(run_arg.as_str().parse().unwrap(), part);
+    };
 
     for (i, item) in solutions::ALL.iter().enumerate() {
         println!("[{}] {}", i, item.name());
