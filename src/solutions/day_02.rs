@@ -3,7 +3,6 @@ use crate::common::{self, Solution};
 pub struct Day02 {}
 
 impl Solution for Day02 {
-    // const NAME: &'static str = "Dive!";
     fn name(&self) -> String {
         "Dive!".to_owned()
     }
