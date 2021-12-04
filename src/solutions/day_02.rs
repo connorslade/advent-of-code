@@ -1,7 +1,14 @@
 use crate::common::{self, Solution};
 
-pub fn part_a() -> Solution {
-    Solution::new("02-Dive!-A", || {
+pub struct Day02 {}
+
+impl Solution for Day02 {
+    // const NAME: &'static str = "Dive!";
+    fn name(&self) -> String {
+        "Dive!".to_owned()
+    }
+
+    fn part_a(&self) -> String {
         let d = common::load("02");
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
@@ -19,11 +26,9 @@ pub fn part_a() -> Solution {
         }
 
         (dep * hor).to_string()
-    })
-}
+    }
 
-pub fn part_b() -> Solution {
-    Solution::new("02-Dive!-B", || {
+    fn part_b(&self) -> String {
         let d = common::load("02");
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
@@ -45,5 +50,5 @@ pub fn part_b() -> Solution {
         }
 
         (dep * hor).to_string()
-    })
+    }
 }

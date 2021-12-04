@@ -1,49 +1,41 @@
-use std::io;
-use std::io::Write;
+// use std::env;
 
-#[macro_use]
 mod common;
 mod solutions;
 
 fn main() {
-    let sol = [
-        solutions::day_01::part_a(),
-        solutions::day_01::part_b(),
-        solutions::day_02::part_a(),
-        solutions::day_02::part_b(),
-        solutions::day_03::part_a(),
-        solutions::day_03::part_b(),
-    ];
+    // if let Some(run_arg) = env::args().nth(1) {};
 
-    for (i, item) in sol.iter().enumerate() {
-        println!("[{}] {}", i, item.name);
+    for (i, item) in solutions::ALL.iter().enumerate() {
+        println!("[{}] {}", i, item.name());
     }
 
-    print!("\n❯ ");
-
-    let mut buff = String::new();
-    io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut buff).unwrap();
-    while buff.ends_with('\n') || buff.ends_with('\r') {
-        buff.pop();
-    }
-
-    let num = match buff.parse::<usize>() {
+    let run_index = common::input("\nIndex ❯ ").unwrap();
+    let run_index = match run_index.parse::<usize>() {
         Ok(i) => i,
-        Err(_) => {
-            println!("Das not a number...");
-            return;
-        }
+        Err(_) => return println!("Das not a number..."),
     };
 
-    if num >= sol.len() {
-        println!("[*] Invaild Id");
-        return;
+    if run_index >= solutions::ALL.len() {
+        return println!("[*] Invaild Id");
     }
 
-    let this_sol = &sol[num];
+    let part = common::input("Part (A / B) ❯ ").unwrap();
+    run(run_index, part);
+}
 
-    println!("[*] Running: {}", this_sol.name);
-    let out = (this_sol.run)();
-    println!("[+] OUT: {}", out);
+fn run(run_index: usize, part: String) {
+    let this_sol = solutions::ALL[run_index];
+
+    println!("[*] Running: {} ({})", this_sol.name(), part.to_uppercase());
+
+    let start = std::time::Instant::now();
+    let out = match part.to_lowercase().as_str() {
+        "a" => this_sol.part_a(),
+        "b" => this_sol.part_b(),
+        _ => return println!("[-] Invalid Part"),
+    };
+    let time = start.elapsed().as_nanos();
+
+    println!("[+] OUT: {} ({})", out, common::time_unit(time));
 }

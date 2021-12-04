@@ -1,7 +1,14 @@
 use crate::common::{self, Solution};
 
-pub fn part_a() -> Solution {
-    Solution::new("03-Binary Diagnostic-A", || {
+pub struct Day03 {}
+
+impl Solution for Day03 {
+    // const NAME: &'static str = "Binary Diagnostic";
+    fn name(&self) -> String {
+        "Binary Diagnostic".to_owned()
+    }
+
+    fn part_a(&self) -> String {
         let data = common::load("03");
         let num_len = data.lines().next().unwrap().len();
 
@@ -28,22 +35,9 @@ pub fn part_a() -> Solution {
         let epsilon = int_from_bin(&epsilon).unwrap();
 
         (epsilon * gamma).to_string()
-    })
-}
+    }
 
-fn int_from_bin(inp: &[u32]) -> Option<usize> {
-    usize::from_str_radix(
-        &inp.iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<String>>()
-            .join(""),
-        2,
-    )
-    .ok()
-}
-
-pub fn part_b() -> Solution {
-    Solution::new("03-Binary Diagnostic-B", || {
+    fn part_b(&self) -> String {
         let data = common::load("03");
         let num_len = data.lines().next().unwrap().len();
 
@@ -84,7 +78,18 @@ pub fn part_b() -> Solution {
         }
 
         (oxygen_gen * co2_scrub).to_string()
-    })
+    }
+}
+
+fn int_from_bin(inp: &[u32]) -> Option<usize> {
+    usize::from_str_radix(
+        &inp.iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(""),
+        2,
+    )
+    .ok()
 }
 
 fn gen_raw(mut old: Vec<[u32; 2]>, num_len: usize, keep: &[&str]) -> Vec<[u32; 2]> {
