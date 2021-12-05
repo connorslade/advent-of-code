@@ -8,16 +8,14 @@ impl Solution for Day04 {
     }
 
     fn part_a(&self) -> String {
-        let data = common::load("04");
-        let bingo = Bingo::parse_input(data);
+        let bingo = Bingo::parse_input(common::load("04"));
         let winning = bingo.solve();
 
         winning.0[winning.1].final_out(winning.2).to_string()
     }
 
     fn part_b(&self) -> String {
-        let data = common::load("04");
-        let bingo = Bingo::parse_input(data);
+        let bingo = Bingo::parse_input(common::load("04"));
         let loseing = bingo.loseing_solve();
 
         loseing.0[loseing.1].final_out(loseing.2).to_string()
