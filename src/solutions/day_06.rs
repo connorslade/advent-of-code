@@ -50,34 +50,23 @@ impl Fish {
         let mut fish = HashMap::new();
 
         for i in fish_vec {
-            inc(&mut fish, i, 1);
+            *fish.entry(i).or_insert(0) += 1;
         }
 
         for _ in 0..days {
             let mut new_fish: HashMap<Fish, usize> = HashMap::new();
             for i in &fish {
-                match i.0.timer {
-                    0 => {
-                        inc(&mut new_fish, Fish::new(6), *i.1);
-                        inc(&mut new_fish, Fish::new(8), *i.1);
-                    }
-                    _ => inc(&mut new_fish, Fish::new(i.0.timer - 1), *i.1),
+                if i.0.timer == 0 {
+                    *new_fish.entry(Fish::new(6)).or_insert(0) += *i.1;
+                    *new_fish.entry(Fish::new(8)).or_insert(0) += *i.1;
+                    continue;
                 }
+
+                *new_fish.entry(Fish::new(i.0.timer - 1)).or_insert(0) += *i.1;
             }
             fish = new_fish;
         }
 
         fish.values().sum()
     }
-}
-
-fn inc<T>(map: &mut HashMap<T, usize>, key: T, inc: usize)
-where
-    T: Eq + Hash,
-{
-    if map.contains_key(&key) {
-        *map.get_mut(&key).unwrap() += inc;
-        return;
-    }
-    map.insert(key, inc);
 }
