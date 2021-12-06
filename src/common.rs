@@ -10,7 +10,6 @@ pub fn load(day: &str) -> String {
 }
 
 pub trait Solution {
-    // const NAME: String;
     fn name(&self) -> String;
     fn part_a(&self) -> String;
     fn part_b(&self) -> String;

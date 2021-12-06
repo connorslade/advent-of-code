@@ -93,7 +93,7 @@ impl Bingo {
                 }
 
                 if ret.len() == tick.len() {
-                    return (tick.clone(), *ret.last().unwrap(), num);
+                    return (tick, *ret.last().unwrap(), num);
                 }
             }
 
@@ -152,8 +152,8 @@ impl Board {
             // Check rows
             for row in board.checked.iter() {
                 let mut row_count = 0;
-                for i in 0..base_row_count {
-                    if row[i] {
+                for i in row.iter().take(base_col_count) {
+                    if *i {
                         row_count += 1;
                     }
                 }

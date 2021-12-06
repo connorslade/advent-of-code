@@ -10,15 +10,16 @@ impl Solution for Day05 {
     }
 
     fn part_a(&self) -> String {
-        run(false)
+        run(false).to_string()
     }
 
     fn part_b(&self) -> String {
-        run(true)
+        run(true).to_string()
     }
 }
 
-fn run(dig: bool) -> String {
+/// dig -> Weather to include Diagonal Lines
+fn run(dig: bool) -> u32 {
     let data = Segment::parse_inp(common::load("05"), dig).unwrap();
     let mut all_loc = HashMap::new();
 
@@ -33,7 +34,7 @@ fn run(dig: bool) -> String {
         }
     }
 
-    all_loc.iter().filter(|x| x.1 >= &2).count().to_string()
+    all_loc.iter().filter(|x| *x.1 >= 2).count() as u32
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -70,28 +71,15 @@ impl Segment {
     }
 
     fn dump(&self) -> Vec<(u32, u32)> {
+        let mut out = vec![(self.x1, self.y1)];
         let mut x = self.x1;
         let mut y = self.y1;
 
-        let mut out = vec![(x, y)];
-
         while x != self.x2 || y != self.y2 {
-            if x > self.x2 {
-                x -= 1;
-            }
-
-            if x < self.x2 {
-                x += 1;
-            }
-
-            if y > self.y2 {
-                y -= 1;
-            }
-
-            if y < self.y2 {
-                y += 1;
-            }
-
+            x -= (x > self.x2) as u32;
+            x += (x < self.x2) as u32;
+            y -= (y > self.y2) as u32;
+            y += (y < self.y2) as u32;
             out.push((x, y));
         }
 
