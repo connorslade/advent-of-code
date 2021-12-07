@@ -4,6 +4,9 @@ mod common;
 mod solutions;
 
 fn main() {
+    println!("Advent of Code 2021 Solutions");
+    println!("        Connor Slade        \n");
+
     // Use run args for day and part
     // Run like: cargo run -- <day><a | b>
     // Ex: cargo run -- 0a

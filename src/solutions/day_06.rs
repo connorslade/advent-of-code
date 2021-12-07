@@ -12,16 +12,16 @@ impl Solution for Day06 {
 
     fn part_a(&self) -> String {
         let data = Fish::parse_inp(common::load("06"));
-        let data = Fish::sim(data, 80);
+        let out = Fish::sim(data, 80);
 
-        data.to_string()
+        out.to_string()
     }
 
     fn part_b(&self) -> String {
         let data = Fish::parse_inp(common::load("06"));
-        let data = Fish::sim(data, 256);
+        let out = Fish::sim(data, 256);
 
-        data.to_string()
+        out.to_string()
     }
 }
 

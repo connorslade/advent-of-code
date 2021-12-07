@@ -4,7 +4,7 @@ pub struct Day04 {}
 
 impl Solution for Day04 {
     fn name(&self) -> String {
-        "Sonar Sweep".to_owned()
+        "Giant Squid".to_owned()
     }
 
     fn part_a(&self) -> String {

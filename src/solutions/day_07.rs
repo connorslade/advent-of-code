@@ -13,15 +13,15 @@ impl Solution for Day07 {
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();
 
-        let mut this_min = (u32::MAX, u32::MAX);
+        let mut this_min = u32::MAX;
         for i in *min..=*max {
             let cost = move_crabs(&data, i);
-            if cost < this_min.0 {
-                this_min = (cost, i);
+            if cost < this_min {
+                this_min = cost;
             }
         }
 
-        this_min.0.to_string()
+        this_min.to_string()
     }
 
     fn part_b(&self) -> String {
@@ -30,15 +30,15 @@ impl Solution for Day07 {
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();
 
-        let mut this_min = (u32::MAX, u32::MAX);
+        let mut this_min = u32::MAX;
         for i in *min..=*max {
             let cost = move_crabs_b(&data, i);
-            if cost < this_min.0 {
-                this_min = (cost, i);
+            if cost < this_min {
+                this_min = cost;
             }
         }
 
-        this_min.0.to_string()
+        this_min.to_string()
     }
 }
 
