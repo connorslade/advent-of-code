@@ -40,9 +40,7 @@ impl Fish {
             .next()
             .unwrap()
             .split(',')
-            .map(|x| Fish {
-                timer: x.parse().unwrap(),
-            })
+            .map(|x| Fish::new(x.parse().unwrap()))
             .collect()
     }
 
