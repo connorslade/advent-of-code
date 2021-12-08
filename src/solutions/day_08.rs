@@ -31,14 +31,14 @@ impl Solution for Day08 {
             let mut wires = HashMap::new();
             let mut nums = HashMap::new();
 
-            for j in i.0 {
-                match j.len() {
-                    2 => {
-                        *wires.entry(j).or_insert(0) = 1;
-                        *nums.entry(1).or_insert("") =j.clone().as_str();
-                    }
-                }
-            }
+            // for j in i.0 {
+            //     match j.len() {
+            //         2 => {
+            //             *wires.entry(j).or_insert(0) = 1;
+            //             *nums.entry(1).or_insert("") = j.clone().as_str();
+            //         }
+            //     }
+            // }
             // ...
             // Work in progress
             // sorry i was tired
