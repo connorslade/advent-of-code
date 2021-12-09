@@ -2,17 +2,10 @@ use crate::common::{self, Solution};
 
 use std::collections::HashMap;
 
-const PATS: &[(&str, u32)] = &[
-    ("acedgfb", 8),
-    ("cdfbe", 5),
-    ("gcdfa", 2),
-    ("fbcad", 3),
-    ("dab", 7),
-    ("cefabd", 9),
-    ("cdfgeb", 6),
-    ("eafb", 4),
-    ("cagedb", 0),
-    ("ab", 1),
+const CHARS: [char; 7] = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+
+const DIGITS: [&str; 10] = [
+    "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
 ];
 
 pub struct Day08 {}
@@ -40,48 +33,65 @@ impl Solution for Day08 {
         let data = parse(common::load("08"));
         let mut inc = 0;
 
+        let perms = permutations(CHARS.to_vec());
+        let mut sort_digits = DIGITS.to_vec();
+        sort_digits.sort();
+
         for i in data {
-            let mut wires = HashMap::new();
-            // let mut five = Vec::new();
-            // let mut nums = HashMap::new();
+            for p in &perms {
+                let mut wires = HashMap::new();
 
-            for j in i.0 {
-                let js = j.to_string();
-                match j.len() {
-                    2 => *wires.entry(j).or_insert(0) = 1,
-                    3 => *wires.entry(j).or_insert(0) = 7,
-                    4 => *wires.entry(j).or_insert(0) = 4,
-                    7 => *wires.entry(j).or_insert(0) = 8,
-                    _ => {
-                        for k in PATS {
-                            if comp_wires(k.0, &j) {
-                                *wires.entry(j.clone()).or_insert(k.1);
-                            }
+                for j in CHARS {
+                    let pos = CHARS.iter().position(|x| *x == j).unwrap();
+                    *wires.entry(j).or_insert(p[pos]) = p[pos];
+                }
+
+                let mut new_clues = Vec::new();
+                for clue in &i.0 {
+                    let mut x = String::new();
+                    for char in clue.chars() {
+                        x.push(*wires.get(&char).unwrap());
+                    }
+                    let mut to_sort = x.chars().collect::<Vec<char>>();
+                    to_sort.sort();
+                    new_clues.push(
+                        to_sort
+                            .iter()
+                            .map(|x| x.to_string())
+                            .collect::<Vec<String>>()
+                            .join(""),
+                    );
+                }
+                new_clues.sort();
+
+                if new_clues == sort_digits {
+                    let mut n = Vec::new();
+                    for d in &i.1 {
+                        let mut x = String::new();
+                        for char in d.chars() {
+                            x.push(*wires.get(&char).unwrap());
                         }
+                        let mut to_sort = x.chars().collect::<Vec<char>>();
+                        to_sort.sort();
+                        x = to_sort
+                            .iter()
+                            .map(|x| x.to_string())
+                            .collect::<Vec<String>>()
+                            .join("");
+
+                        n.push(DIGITS.iter().position(|i| **i == x).unwrap());
                     }
+
+                    inc += n
+                        .iter()
+                        .map(|x| x.to_string())
+                        .collect::<Vec<String>>()
+                        .join("")
+                        .parse::<u32>()
+                        .unwrap();
+                    break;
                 }
             }
-
-            let mut out = String::new();
-
-            for j in &i.1 {
-                for k in &wires {
-                    println!("{:?}", k);
-                    if comp_wires(&j, &k.0) {
-                        out.push_str(k.1.to_string().as_str());
-                        println!("{}", k.1);
-                        continue;
-                    }
-                }
-            }
-
-            // println!("{:?}", wires);
-
-            println!("{:?}", out);
-            // if let Ok(by) = out.parse::<u32>() {
-            //     inc += by;
-            // }
-            inc += out.parse::<u32>().unwrap();
         }
 
         inc.to_string()
@@ -116,18 +126,31 @@ fn parse(inp: String) -> Vec<(Vec<String>, Vec<String>)> {
     out
 }
 
-fn comp_wires(one: &str, two: &str) -> bool {
-    for i in one.chars() {
-        if !two.contains(i) {
-            return false;
-        }
+// Modified from https://stackoverflow.com/a/59939809/12471934
+fn permutations<T: Clone>(items: Vec<T>) -> Vec<Vec<T>>
+where
+    T: Ord,
+{
+    if items.len() == 1 {
+        return vec![items];
     }
 
-    for i in two.chars() {
-        if !one.contains(i) {
-            return false;
+    let mut output: Vec<Vec<T>> = Vec::new();
+    let mut unique_items = items.clone();
+
+    unique_items.sort();
+    unique_items.dedup();
+
+    for first in unique_items {
+        let mut remaining_elements = items.clone();
+
+        let index = remaining_elements.iter().position(|x| *x == first).unwrap();
+        remaining_elements.remove(index);
+
+        for mut permutation in permutations(remaining_elements) {
+            permutation.insert(0, first.clone());
+            output.push(permutation);
         }
     }
-
-    true
+    output
 }
