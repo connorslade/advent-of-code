@@ -9,8 +9,9 @@ pub mod day_06;
 pub mod day_07;
 pub mod day_08;
 pub mod day_09;
+pub mod day_10;
 
-pub const ALL: [&dyn Solution; 9] = [
+pub const ALL: [&dyn Solution; 10] = [
     &day_01::Day01 {},
     &day_02::Day02 {},
     &day_03::Day03 {},
@@ -20,4 +21,5 @@ pub const ALL: [&dyn Solution; 9] = [
     &day_07::Day07 {},
     &day_08::Day08 {},
     &day_09::Day09 {},
+    &day_10::Day10 {},
 ];

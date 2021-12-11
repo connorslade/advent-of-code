@@ -35,7 +35,7 @@ impl Solution for Day08 {
 
         let perms = permutations(CHARS.to_vec());
         let mut sort_digits = DIGITS.to_vec();
-        sort_digits.sort();
+        sort_digits.sort_unstable();
 
         for i in data {
             for p in &perms {
@@ -53,7 +53,7 @@ impl Solution for Day08 {
                         x.push(*wires.get(&char).unwrap());
                     }
                     let mut to_sort = x.chars().collect::<Vec<char>>();
-                    to_sort.sort();
+                    to_sort.sort_unstable();
                     new_clues.push(
                         to_sort
                             .iter()
@@ -72,7 +72,7 @@ impl Solution for Day08 {
                             x.push(*wires.get(&char).unwrap());
                         }
                         let mut to_sort = x.chars().collect::<Vec<char>>();
-                        to_sort.sort();
+                        to_sort.sort_unstable();
                         x = to_sort
                             .iter()
                             .map(|x| x.to_string())
