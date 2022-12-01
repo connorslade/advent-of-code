@@ -1,63 +1,78 @@
-use std::env;
+use std::time::Instant;
+
+use clap::{Parser, Subcommand};
 
 use problem::Solution;
-
 mod common;
 mod problem;
 mod solutions;
 
+#[derive(Parser)]
+#[command(name = "advent_of_code")]
+#[command(author = "Connor Slade <connor@connorcode.com>")]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    #[command(about = "Run a solution to a problem")]
+    Run {
+        day: u32,
+        part: char,
+        year: Option<u32>,
+    },
+    #[command(about = "List all solutions for a given year")]
+    List { year: Option<u32> },
+}
+
 const DEFAULT_YEAR: u32 = 2022;
 
 fn main() {
-    println!("Advent of Code Solutions");
-    println!("      Connor Slade      \n");
+    let args = Cli::parse();
 
-    let solutions = solutions::get_year(DEFAULT_YEAR);
-    if solutions.is_empty() {
-        println!("No solutions for {}", DEFAULT_YEAR);
-        return;
+    match args.command {
+        Commands::Run { year, day, part } => {
+            let year = year.unwrap_or(DEFAULT_YEAR);
+            let solutions = solutions::get_year(year);
+            let solution = match solutions.get(day as usize) {
+                Some(s) => s,
+                None => {
+                    println!("No solution for day {} in year {}", day, year);
+                    return;
+                }
+            };
+
+            println!("[*] Running: {} ({})", solution.name(), part.to_uppercase());
+
+            let start = Instant::now();
+            let out = match part.to_lowercase().to_string().as_str() {
+                "a" => solution.part_a(),
+                "b" => solution.part_b(),
+                _ => return println!("[-] Invalid Part {}", part),
+            };
+
+            let time = start.elapsed().as_nanos();
+            println!("[+] OUT: {} ({})", out, common::time_unit(time));
+        }
+        Commands::List { year } => {
+            let year = year.unwrap_or(DEFAULT_YEAR);
+            let solutions = solutions::get_year(year);
+            println!("[*] Solutions for {year}:");
+
+            for (i, e) in solutions.iter().enumerate() {
+                println!(
+                    " {} Day {}: {}",
+                    if i + 1 == solutions.len() {
+                        "└"
+                    } else {
+                        "├"
+                    },
+                    i,
+                    e.name()
+                );
+            }
+        }
     }
-
-    // Use run args for day and part
-    // Run like: cargo run -- <day><a | b>
-    // Ex: cargo run -- 0a
-    if let Some(run_arg) = env::args().nth(1) {
-        let part = run_arg.chars().last().unwrap().to_string();
-        let mut run_arg = run_arg.chars();
-        run_arg.next_back().unwrap();
-        return run(solutions, run_arg.as_str().parse().unwrap(), part);
-    };
-
-    for (i, item) in solutions.iter().enumerate() {
-        println!("[{}] {}", i, item.name());
-    }
-
-    let run_index = common::input("\nIndex ❯ ").unwrap();
-    let run_index = match run_index.parse::<usize>() {
-        Ok(i) => i,
-        Err(_) => return println!("Das not a number..."),
-    };
-
-    if run_index >= solutions.len() {
-        return println!("[*] Invaild Id");
-    }
-
-    let part = common::input("Part (A / B) ❯ ").unwrap();
-    run(solutions, run_index, part);
-}
-
-fn run(solutions: &[&'static dyn Solution], run_index: usize, part: String) {
-    let this_sol = solutions[run_index];
-
-    println!("[*] Running: {} ({})", this_sol.name(), part.to_uppercase());
-
-    let start = std::time::Instant::now();
-    let out = match part.to_lowercase().as_str() {
-        "a" => this_sol.part_a(),
-        "b" => this_sol.part_b(),
-        _ => return println!("[-] Invalid Part"),
-    };
-    let time = start.elapsed().as_nanos();
-
-    println!("[+] OUT: {} ({})", out, common::time_unit(time));
 }

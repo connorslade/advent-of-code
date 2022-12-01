@@ -1,6 +1,3 @@
-use std::io;
-use std::io::Write;
-
 const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
 
 pub fn time_unit(time: u128) -> String {
@@ -13,17 +10,4 @@ pub fn time_unit(time: u128) -> String {
     }
 
     format!("{}{}", time, TIME_UNITS.last().unwrap())
-}
-
-pub fn input(inp: &str) -> Option<String> {
-    print!("{}", inp);
-
-    let mut buff = String::new();
-    io::stdout().flush().ok()?;
-    io::stdin().read_line(&mut buff).ok()?;
-    while buff.ends_with('\n') || buff.ends_with('\r') {
-        buff.pop();
-    }
-
-    Some(buff)
 }
