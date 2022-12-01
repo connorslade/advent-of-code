@@ -35,6 +35,8 @@ fn main() {
     match args.command {
         Commands::Run { year, day, part } => {
             let year = year.unwrap_or(DEFAULT_YEAR);
+            let day = day.saturating_sub(1);
+
             let solutions = solutions::get_year(year);
             let solution = match solutions.get(day as usize) {
                 Some(s) => s,
@@ -69,7 +71,7 @@ fn main() {
                     } else {
                         "├"
                     },
-                    i,
+                    i + 1,
                     e.name()
                 );
             }
