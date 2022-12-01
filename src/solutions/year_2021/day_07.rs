@@ -1,14 +1,14 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
-pub struct Day07 {}
+pub struct Day07;
 
 impl Solution for Day07 {
-    fn name(&self) -> String {
-        "The Treachery of Whales".to_owned()
+    fn name(&self) -> &'static str {
+        "The Treachery of Whales"
     }
 
     fn part_a(&self) -> String {
-        let data = parse_crabs(common::load("07"));
+        let data = parse_crabs(problem::load(2021, 7));
 
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();
@@ -25,7 +25,7 @@ impl Solution for Day07 {
     }
 
     fn part_b(&self) -> String {
-        let data = parse_crabs(common::load("07"));
+        let data = parse_crabs(problem::load(2021, 7));
 
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();

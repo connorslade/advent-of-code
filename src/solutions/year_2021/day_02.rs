@@ -1,14 +1,14 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
-pub struct Day02 {}
+pub struct Day02;
 
 impl Solution for Day02 {
-    fn name(&self) -> String {
-        "Dive!".to_owned()
+    fn name(&self) -> &'static str {
+        "Dive!"
     }
 
     fn part_a(&self) -> String {
-        let d = common::load("02");
+        let d = problem::load(2021, 2);
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
 
@@ -28,7 +28,7 @@ impl Solution for Day02 {
     }
 
     fn part_b(&self) -> String {
-        let d = common::load("02");
+        let d = problem::load(2021, 2);
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
         let mut aim: u32 = 0;

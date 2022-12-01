@@ -1,24 +1,24 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
 use std::collections::HashMap;
 use std::hash::Hash;
 
-pub struct Day06 {}
+pub struct Day06;
 
 impl Solution for Day06 {
-    fn name(&self) -> String {
-        "Lanternfish".to_owned()
+    fn name(&self) -> &'static str {
+        "Lanternfish"
     }
 
     fn part_a(&self) -> String {
-        let data = Fish::parse_inp(common::load("06"));
+        let data = Fish::parse_inp(problem::load(2021, 6));
         let out = Fish::sim(data, 80);
 
         out.to_string()
     }
 
     fn part_b(&self) -> String {
-        let data = Fish::parse_inp(common::load("06"));
+        let data = Fish::parse_inp(problem::load(2021, 6));
         let out = Fish::sim(data, 256);
 
         out.to_string()

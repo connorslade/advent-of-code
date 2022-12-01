@@ -1,16 +1,16 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
-pub struct Day10 {}
+pub struct Day10;
 
 impl Solution for Day10 {
-    fn name(&self) -> String {
-        "Syntax Scoring".to_owned()
+    fn name(&self) -> &'static str {
+        "Syntax Scoring"
     }
 
     fn part_a(&self) -> String {
-        let data = parse(common::load("10"));
+        let data = parse(problem::load(2021, 10));
 
         let mut total = 0;
         for i in data {
@@ -38,7 +38,7 @@ impl Solution for Day10 {
     }
 
     fn part_b(&self) -> String {
-        let data = parse(common::load("10"));
+        let data = parse(problem::load(2021, 10));
 
         let mut scores = Vec::new();
         for i in data {

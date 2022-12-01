@@ -1,12 +1,12 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
 use std::collections::HashMap;
 
-pub struct Day05 {}
+pub struct Day05;
 
 impl Solution for Day05 {
-    fn name(&self) -> String {
-        "Hydrothermal Venture".to_owned()
+    fn name(&self) -> &'static str {
+        "Hydrothermal Venture"
     }
 
     fn part_a(&self) -> String {
@@ -20,7 +20,7 @@ impl Solution for Day05 {
 
 /// dig -> Weather to include Diagonal Lines
 fn run(dig: bool) -> u32 {
-    let data = Segment::parse_inp(common::load("05"), dig).unwrap();
+    let data = Segment::parse_inp(problem::load(2021, 5), dig).unwrap();
     let mut all_loc = HashMap::new();
 
     for x in data {

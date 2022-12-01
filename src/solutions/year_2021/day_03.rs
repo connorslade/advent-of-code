@@ -1,14 +1,14 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
-pub struct Day03 {}
+pub struct Day03;
 
 impl Solution for Day03 {
-    fn name(&self) -> String {
-        "Binary Diagnostic".to_owned()
+    fn name(&self) -> &'static str {
+        "Binary Diagnostic"
     }
 
     fn part_a(&self) -> String {
-        let data = common::load("03");
+        let data = problem::load(2021, 3);
         let num_len = data.lines().next().unwrap().len();
 
         let mut gamma = vec![0; num_len];
@@ -37,7 +37,7 @@ impl Solution for Day03 {
     }
 
     fn part_b(&self) -> String {
-        let data = common::load("03");
+        let data = problem::load(2021, 3);
         let num_len = data.lines().next().unwrap().len();
 
         let mut oxygen_keep = data.lines().collect::<Vec<&str>>();
@@ -52,20 +52,12 @@ impl Solution for Day03 {
             // Filter Oxygen
             let imax = get_imax(&oxygen_raw, i);
             oxygen_raw = gen_raw(oxygen_raw, num_len, &oxygen_keep);
-            oxygen_keep = oxygen_keep
-                .iter()
-                .filter(|x| x.chars().into_iter().nth(i).unwrap() == imax)
-                .copied()
-                .collect();
+            oxygen_keep.retain(|x| x.chars().into_iter().nth(i).unwrap() == imax);
 
             // Filter Co2
             let imax = get_imax(&co2_raw, i);
             co2_raw = gen_raw(co2_raw, num_len, &co2_keep);
-            co2_keep = co2_keep
-                .iter()
-                .filter(|x| x.chars().into_iter().nth(i).unwrap() != imax)
-                .copied()
-                .collect();
+            co2_keep.retain(|x| x.chars().into_iter().nth(i).unwrap() != imax);
 
             if oxygen_keep.len() == 1 {
                 oxygen_gen = isize::from_str_radix(oxygen_keep.first().unwrap(), 2).unwrap();

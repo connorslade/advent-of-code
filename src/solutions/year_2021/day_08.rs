@@ -1,4 +1,4 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
 use std::collections::HashMap;
 
@@ -8,15 +8,15 @@ const DIGITS: [&str; 10] = [
     "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
 ];
 
-pub struct Day08 {}
+pub struct Day08;
 
 impl Solution for Day08 {
-    fn name(&self) -> String {
-        "Seven Segment Search".to_owned()
+    fn name(&self) -> &'static str {
+        "Seven Segment Search"
     }
 
     fn part_a(&self) -> String {
-        let data = parse(common::load("08"));
+        let data = parse(problem::load(2021, 8));
         let mut inc = 0;
 
         for i in data {
@@ -30,7 +30,7 @@ impl Solution for Day08 {
     }
 
     fn part_b(&self) -> String {
-        let data = parse(common::load("08"));
+        let data = parse(problem::load(2021, 8));
         let mut inc = 0;
 
         let perms = permutations(CHARS.to_vec());

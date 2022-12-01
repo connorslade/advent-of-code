@@ -1,21 +1,21 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
-pub struct Day09 {}
+pub struct Day09;
 
 impl Solution for Day09 {
-    fn name(&self) -> String {
-        "Smoke Basin".to_owned()
+    fn name(&self) -> &'static str {
+        "Smoke Basin"
     }
 
     fn part_a(&self) -> String {
-        let data = parse(common::load("09"));
+        let data = parse(problem::load(2021, 9));
         let low = lowest(data);
 
         low.iter().map(|x| *x + 1).sum::<u32>().to_string()
     }
 
     fn part_b(&self) -> String {
-        let data = parse(common::load("09"));
+        let data = parse(problem::load(2021, 9));
         let basins = basins(data);
 
         basins.iter().rev().take(3).product::<u32>().to_string()

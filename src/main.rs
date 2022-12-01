@@ -1,8 +1,9 @@
 use std::env;
 
-use common::Solution;
+use problem::Solution;
 
 mod common;
+mod problem;
 mod solutions;
 
 const DEFAULT_YEAR: u32 = 2022;

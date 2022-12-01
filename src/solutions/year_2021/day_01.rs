@@ -1,14 +1,14 @@
-use crate::common::{self, Solution};
+use crate::{problem, Solution};
 
-pub struct Day01 {}
+pub struct Day01;
 
 impl Solution for Day01 {
-    fn name(&self) -> String {
-        "Sonar Sweep".to_owned()
+    fn name(&self) -> &'static str {
+        "Sonar Sweep"
     }
 
     fn part_a(&self) -> String {
-        let data = common::load("01")
+        let data = problem::load(2021, 1)
             .lines()
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();
@@ -18,7 +18,7 @@ impl Solution for Day01 {
     }
 
     fn part_b(&self) -> String {
-        let d = common::load("01")
+        let d = problem::load(2021, 1)
             .lines()
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();

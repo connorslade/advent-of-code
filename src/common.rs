@@ -1,19 +1,7 @@
-use std::fs;
 use std::io;
 use std::io::Write;
 
 const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
-
-pub fn load(day: &str) -> String {
-    let file = format!("data/{}.txt", day);
-    fs::read_to_string(&file).unwrap_or_else(|_| panic!("Error reading file {}", file))
-}
-
-pub trait Solution {
-    fn name(&self) -> String;
-    fn part_a(&self) -> String;
-    fn part_b(&self) -> String;
-}
 
 pub fn time_unit(time: u128) -> String {
     let mut time = time;
