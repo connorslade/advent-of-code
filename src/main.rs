@@ -1,11 +1,21 @@
 use std::env;
 
+use common::Solution;
+
 mod common;
 mod solutions;
 
+const DEFAULT_YEAR: u32 = 2022;
+
 fn main() {
-    println!("Advent of Code 2021 Solutions");
-    println!("        Connor Slade        \n");
+    println!("Advent of Code Solutions");
+    println!("      Connor Slade      \n");
+
+    let solutions = solutions::get_year(DEFAULT_YEAR);
+    if solutions.is_empty() {
+        println!("No solutions for {}", DEFAULT_YEAR);
+        return;
+    }
 
     // Use run args for day and part
     // Run like: cargo run -- <day><a | b>
@@ -14,10 +24,10 @@ fn main() {
         let part = run_arg.chars().last().unwrap().to_string();
         let mut run_arg = run_arg.chars();
         run_arg.next_back().unwrap();
-        return run(run_arg.as_str().parse().unwrap(), part);
+        return run(solutions, run_arg.as_str().parse().unwrap(), part);
     };
 
-    for (i, item) in solutions::ALL.iter().enumerate() {
+    for (i, item) in solutions.iter().enumerate() {
         println!("[{}] {}", i, item.name());
     }
 
@@ -27,16 +37,16 @@ fn main() {
         Err(_) => return println!("Das not a number..."),
     };
 
-    if run_index >= solutions::ALL.len() {
+    if run_index >= solutions.len() {
         return println!("[*] Invaild Id");
     }
 
     let part = common::input("Part (A / B) ❯ ").unwrap();
-    run(run_index, part);
+    run(solutions, run_index, part);
 }
 
-fn run(run_index: usize, part: String) {
-    let this_sol = solutions::ALL[run_index];
+fn run(solutions: &[&'static dyn Solution], run_index: usize, part: String) {
+    let this_sol = solutions[run_index];
 
     println!("[*] Running: {} ({})", this_sol.name(), part.to_uppercase());
 
