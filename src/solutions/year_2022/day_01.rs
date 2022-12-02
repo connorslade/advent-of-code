@@ -18,12 +18,7 @@ impl Solution for Day01 {
         let raw = problem::load(2022, 1);
         let elfs = get_elfs(&raw);
 
-        let mut sum = 0;
-        for i in elfs.iter().rev().take(3) {
-            sum += i;
-        }
-
-        sum.to_string()
+        elfs.iter().rev().take(3).sum::<u32>().to_string()
     }
 }
 
