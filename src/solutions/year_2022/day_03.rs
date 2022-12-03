@@ -19,6 +19,7 @@ impl Solution for Day03 {
             bolth.retain(|x| pocket_2.contains(x));
             bolth.dedup();
 
+            debug_assert!(bolth.len() == 1);
             out += score_item(bolth[0]) as usize;
         }
 
@@ -31,14 +32,8 @@ impl Solution for Day03 {
 
         for i in raw.trim().lines().collect::<Vec<_>>().chunks(3) {
             let mut all = HashSet::new();
-
-            for j in i {
-                all.extend(j.chars());
-            }
-
-            for j in i {
-                all.retain(|x| j.contains(*x));
-            }
+            i.iter().for_each(|x| all.extend(x.chars()));
+            i.iter().for_each(|x| all.retain(|y| x.contains(*y)));
 
             debug_assert!(all.len() == 1);
             out += score_item(*all.iter().next().unwrap()) as usize;
@@ -52,6 +47,6 @@ fn score_item(char_: char) -> u8 {
     match char_ as u8 {
         97..=122 => char_ as u8 - 96,
         65..=90 => char_ as u8 - 38,
-        _ => panic!(),
+        _ => unreachable!(),
     }
 }
