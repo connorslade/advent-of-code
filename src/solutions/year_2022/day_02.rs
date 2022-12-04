@@ -14,7 +14,7 @@ impl Solution for Day02 {
         for (other, self_) in raw
             .lines()
             .filter(|x| !x.is_empty())
-            .map(|x| x.split_once(" ").unwrap())
+            .map(|x| x.split_once(' ').unwrap())
         {
             let other_move = Move::from_str(other);
             let self_move = Move::from_str(self_);
@@ -33,7 +33,7 @@ impl Solution for Day02 {
         for (other, self_) in raw
             .lines()
             .filter(|x| !x.is_empty())
-            .map(|x| x.split_once(" ").unwrap())
+            .map(|x| x.split_once(' ').unwrap())
         {
             let other_move = Move::from_str(other);
             let self_move = match self_ {
