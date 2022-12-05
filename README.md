@@ -4,6 +4,8 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 
 ## [2022](https://adventofcode.com/2022)
 
+- Day 01: Calorie Counting [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_01.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_01.rs#L17)]
+
 ## [2021](https://adventofcode.com/2021)
 
 - Day 01: Sonar Sweep [[A](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_01.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/blob/master/src/solutions/day_01.rs#L20)]
