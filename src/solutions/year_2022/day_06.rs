@@ -21,11 +21,11 @@ impl Solution for Day06 {
 }
 
 fn process(input: &str, size: usize) -> usize {
+    let mut chars = HashSet::new();
     'o: for i in input.chars().enumerate().collect::<Vec<_>>().windows(size) {
-        let mut chars = HashSet::new();
-
         for j in i {
             if !chars.insert(j.1) {
+                chars.clear();
                 continue 'o;
             }
         }
