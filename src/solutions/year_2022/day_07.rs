@@ -14,6 +14,7 @@ impl Solution for Day07 {
         process(&raw)
             .get_all_children()
             .iter()
+            .filter(|x| x.is_dir && x.size <= 100000)
             .fold(0, |a, x| a + x.size)
             .to_string()
     }
@@ -43,15 +44,15 @@ fn process(raw: &str) -> File {
         let parts = line.split_whitespace().collect::<Vec<_>>();
 
         if parts[..2] == ["$", "cd"] {
-            if parts[2] == "/" {
-                continue;
+            match parts[2] {
+                "/" => continue,
+                ".." => {
+                    path.pop().unwrap();
+                    continue;
+                }
+                _ => {}
             }
-
-            if parts[2] == ".." {
-                path.pop().unwrap();
-                continue;
-            }
-
+            
             let parent = tree.get_path(&path);
             path.push(parts[2].to_owned());
             if parent.children.iter().any(|x| x.name == parts[2]) {
