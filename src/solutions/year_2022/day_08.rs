@@ -35,29 +35,16 @@ impl Solution for Day08 {
 
         for row in 0..trees.len() {
             for col in 0..trees[row].len() {
-                let height = trees[row][col];
-                let mut local_best = 1;
+                let h = trees[row][col];
+                let mut b = 1;
+                // h -> current height
+                // b -> best score
 
-                for arr in [
-                    trees[..row]
-                        .iter()
-                        .map(|x| x[col])
-                        .rev()
-                        .collect::<Vec<_>>(),
-                    trees[row][..col].iter().rev().copied().collect::<Vec<_>>(),
-                    trees[row + 1..].iter().map(|x| x[col]).collect::<Vec<_>>(),
-                    trees[row][col + 1..].iter().copied().collect::<Vec<_>>(),
-                ] {
-                    let mut dir_score = 0;
-                    for k in arr {
-                        dir_score += 1;
-                        if k >= height {
-                            break;
-                        }
-                    }
-                    local_best *= dir_score;
-                }
-                count = count.max(local_best);
+                process_slice(&mut b, h, trees[..row].iter().map(|x| x[col]).rev());
+                process_slice(&mut b, h, trees[row][..col].iter().rev().copied());
+                process_slice(&mut b, h, trees[row + 1..].iter().map(|x| x[col]));
+                process_slice(&mut b, h, trees[row][col + 1..].iter().copied());
+                count = count.max(b);
             }
         }
 
@@ -77,4 +64,15 @@ fn parse_trees(inp: &str) -> Vec<Vec<usize>> {
     }
 
     out
+}
+
+fn process_slice(local_best: &mut usize, height: usize, iter: impl Iterator<Item = usize>) {
+    let mut score = 0;
+    for i in iter {
+        score += 1;
+        if i >= height {
+            break;
+        }
+    }
+    *local_best *= score;
 }
