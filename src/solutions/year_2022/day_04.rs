@@ -11,10 +11,8 @@ impl Solution for Day04 {
         let raw = problem::load(2022, 4);
         let mut out = 0;
 
-        for i in assignment_loop(raw) {
-            let (p1, p2) = (&i[0], &i[1]);
-            out +=
-                ((p1[0] >= p2[0] && p1[1] <= p2[1]) || (p2[0] >= p1[0] && p2[1] <= p1[1])) as usize;
+        for (p1, p2) in assignment_loop(raw) {
+            out += ((p1.0 >= p2.0 && p1.1 <= p2.1) || (p2.0 >= p1.0 && p2.1 <= p1.1)) as usize;
         }
 
         out.to_string()
@@ -24,28 +22,23 @@ impl Solution for Day04 {
         let raw = problem::load(2022, 4);
         let mut out = 0;
 
-        for i in assignment_loop(raw) {
-            let (p1, p2) = (&i[0], &i[1]);
-            out += ((p1[0] >= p2[0] && p1[1] <= p2[1])
-                || (p2[0] >= p1[0] && p2[0] <= p1[1])
-                || (p1[1] >= p2[0] && p1[1] <= p2[1])
-                || (p2[1] >= p1[0] && p2[1] <= p1[1])) as usize;
+        for (p1, p2) in assignment_loop(raw) {
+            out += (p1.0.max(p2.0) <= p1.1.min(p2.1)) as usize;
         }
 
         out.to_string()
     }
 }
 
-fn assignment_loop(raw: String) -> Vec<Vec<Vec<u32>>> {
+fn assignment_loop(raw: String) -> Vec<((u32, u32), (u32, u32))> {
     raw.trim()
         .lines()
-        .map(|x| x.split(',').map(split_range).collect::<Vec<_>>())
+        .map(|x| x.split_once(',').unwrap())
+        .map(|(a, b)| (split_range(a), split_range(b)))
         .collect()
 }
 
-fn split_range(range: &str) -> Vec<u32> {
-    range
-        .split('-')
-        .map(|x| x.parse::<u32>().unwrap())
-        .collect::<Vec<_>>()
+fn split_range(range: &str) -> (u32, u32) {
+    let mut range = range.split('-').map(|x| x.parse::<u32>().unwrap());
+    (range.next().unwrap(), range.next().unwrap())
 }
