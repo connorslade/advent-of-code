@@ -35,16 +35,12 @@ impl Solution for Day08 {
 
         for row in 0..trees.len() {
             for col in 0..trees[row].len() {
-                let h = trees[row][col];
-                let mut b = 1;
-                // h -> current height
-                // b -> best score
-
-                process_slice(&mut b, h, trees[..row].iter().map(|x| x[col]).rev());
-                process_slice(&mut b, h, trees[row][..col].iter().rev().copied());
-                process_slice(&mut b, h, trees[row + 1..].iter().map(|x| x[col]));
-                process_slice(&mut b, h, trees[row][col + 1..].iter().copied());
-                count = count.max(b);
+                let mut ctx = (1, trees[row][col]);
+                process_slice(&mut ctx, trees[..row].iter().map(|x| x[col]).rev());
+                process_slice(&mut ctx, trees[row][..col].iter().rev().copied());
+                process_slice(&mut ctx, trees[row + 1..].iter().map(|x| x[col]));
+                process_slice(&mut ctx, trees[row][col + 1..].iter().copied());
+                count = count.max(ctx.0);
             }
         }
 
@@ -53,26 +49,26 @@ impl Solution for Day08 {
 }
 
 fn parse_trees(inp: &str) -> Vec<Vec<usize>> {
-    let mut out = Vec::new();
-
-    for i in inp.lines() {
-        let mut tree = Vec::new();
-        for j in i.split("").filter(|x| !x.is_empty()) {
-            tree.push(j.parse().unwrap());
-        }
-        out.push(tree);
-    }
-
-    out
+    inp.lines()
+        .map(|i| {
+            i.chars()
+                .filter(|x| x.is_ascii_digit())
+                .filter_map(|x| x.to_digit(10))
+                .map(|x| x as usize)
+                .collect()
+        })
+        .collect()
 }
 
-fn process_slice(local_best: &mut usize, height: usize, iter: impl Iterator<Item = usize>) {
+fn process_slice((local_best, height): &mut (usize, usize), iter: impl Iterator<Item = usize>) {
     let mut score = 0;
+
     for i in iter {
         score += 1;
-        if i >= height {
+        if i >= *height {
             break;
         }
     }
+
     *local_best *= score;
 }

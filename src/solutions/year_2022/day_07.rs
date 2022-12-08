@@ -52,7 +52,7 @@ fn process(raw: &str) -> File {
                 }
                 _ => {}
             }
-            
+
             let parent = tree.get_path(&path);
             path.push(parts[2].to_owned());
             if parent.children.iter().any(|x| x.name == parts[2]) {
