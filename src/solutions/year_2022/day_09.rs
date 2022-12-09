@@ -1,8 +1,5 @@
-use std::{
-    collections::HashSet,
-    ops::{Add, Mul, Sub},
-    vec,
-};
+use derive_more::{Add, AddAssign, Mul, Sub};
+use std::{collections::HashSet, vec};
 
 use crate::{problem, Solution};
 
@@ -29,10 +26,10 @@ fn process(raw: &str, count: usize) -> usize {
     let mut tail_pios = HashSet::new();
     let mut knots = vec![Point::new(0, 0); count + 1];
 
-    tail_pios.insert(knots.last().unwrap().clone());
+    tail_pios.insert(*knots.last().unwrap());
     for (dir, count) in orders {
         for _ in 0..count {
-            knots[0] = knots[0] + dir; // +=
+            knots[0] += dir;
 
             for i in 1..knots.len() {
                 let diff = knots[i - 1] - knots[i];
@@ -40,16 +37,16 @@ fn process(raw: &str, count: usize) -> usize {
                     continue;
                 }
 
-                knots[i] = knots[i] + diff.normalize();
+                knots[i] += diff.normalize();
             }
-            tail_pios.insert(knots.last().unwrap().clone());
+            tail_pios.insert(*knots.last().unwrap());
         }
     }
 
     tail_pios.len()
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Add, AddAssign, Mul, Sub)]
 struct Point {
     x: i32,
     y: i32,
@@ -80,7 +77,7 @@ impl Point {
 
     // Direction, count
     fn from_line(imp: &str) -> (Self, u32) {
-        let (direction, count) = imp.split_once(" ").unwrap();
+        let (direction, count) = imp.split_once(' ').unwrap();
         let count = count.parse::<i32>().unwrap();
 
         let out = match direction {
@@ -92,38 +89,5 @@ impl Point {
         };
 
         (out, count as u32)
-    }
-}
-
-impl Add for Point {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-impl Sub for Point {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
-    }
-}
-
-impl Mul for Point {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-        }
     }
 }
