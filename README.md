@@ -13,6 +13,7 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 - Day 07: No Space Left On Device [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_07.rs#L12), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_07.rs#L22)]
 - Day 08: Treetop Tree House [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_08.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_08.rs#L31)]
 - Day 09: Rope Bridge [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_09.rs#L13), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_09.rs#L18)]
+- Day 10 Cathode-Ray Tube [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_10.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_10.rs#L23)]
 
 ## [2021](https://adventofcode.com/2021)
 
