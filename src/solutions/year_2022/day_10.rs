@@ -13,7 +13,7 @@ impl Solution for Day10 {
         let cycles = cycle(&instructions);
 
         let mut out = 0;
-        for i in [20, 60, 100, 140, 180, 220] {
+        for i in (0..6).map(|x| 20 + 40 * x) {
             out += cycles[0..i].iter().sum::<i32>() * i as i32;
         }
 
@@ -28,11 +28,7 @@ impl Solution for Day10 {
         let mut cycle = 0;
 
         for i in instructions {
-            let (goto, amm) = match i {
-                Instruction::Noop => (1, 0),
-                Instruction::Addx(x) => (2, x),
-            };
-
+            let (goto, inc) = i.info();
             for i in cycle..goto + cycle {
                 let diff = i % 40_i32 - sprite;
                 if diff.abs() < 2 {
@@ -43,7 +39,7 @@ impl Solution for Day10 {
             }
 
             cycle += goto;
-            sprite += amm;
+            sprite += inc;
         }
 
         make_lines(&out, 40)
@@ -54,6 +50,15 @@ impl Solution for Day10 {
 enum Instruction {
     Noop,
     Addx(i32),
+}
+
+impl Instruction {
+    fn info(&self) -> (i32, i32) {
+        match self {
+            Instruction::Noop => (1, 0),
+            Instruction::Addx(x) => (2, *x),
+        }
+    }
 }
 
 fn make_lines(raw: &str, width: usize) -> String {
