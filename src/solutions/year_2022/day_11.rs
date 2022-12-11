@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::VecDeque};
+use std::collections::VecDeque;
 
 use crate::{problem, Solution};
 
@@ -26,15 +26,16 @@ impl Solution for Day11 {
 }
 
 struct Monkey {
-    items: RefCell<VecDeque<u64>>,
-    inspected: RefCell<usize>,
+    items: VecDeque<u64>,
+    inspected: usize,
     operation: Operation,
     test: Test,
 }
 
 enum Operation {
-    Add(Value),
-    Multiply(Value),
+    Add(u64),
+    Multiply(u64),
+    Square,
 }
 
 struct Test {
@@ -43,30 +44,20 @@ struct Test {
     monkey: [usize; 2],
 }
 
-enum Value {
-    Old,
-    Number(u64),
-}
-
 fn process(mut monkeys: Vec<Monkey>, iter: usize, proc: impl Fn(u64) -> u64) -> usize {
     for _ in 0..iter {
-        for monkey in &monkeys {
-            while let Some(mut item) = monkey.items.borrow_mut().pop_front() {
-                *monkey.inspected.borrow_mut() += 1;
-                item = proc(monkey.operation.process(item));
-                monkeys[monkey.test.process(item)]
-                    .items
-                    .borrow_mut()
-                    .push_back(item);
+        for m in 0..monkeys.len() {
+            while let Some(item) = monkeys[m].items.pop_front() {
+                monkeys[m].inspected += 1;
+                let item = proc(monkeys[m].operation.process(item));
+                let goto = monkeys[m].test.process(item);
+                monkeys[goto].items.push_back(item);
             }
         }
     }
 
-    monkeys.sort_by_key(|x| -(*x.inspected.borrow() as isize));
-    let a = *monkeys[0].inspected.borrow();
-    let b = *monkeys[1].inspected.borrow();
-
-    a * b
+    monkeys.sort_unstable_by_key(|x| x.inspected);
+    monkeys.pop().unwrap().inspected * monkeys.pop().unwrap().inspected
 }
 
 fn parse_monkeys(raw: &str) -> Vec<Monkey> {
@@ -85,8 +76,8 @@ fn parse_monkeys(raw: &str) -> Vec<Monkey> {
         let test = Test::parse(&i[3..6]);
 
         out.push(Monkey {
-            items: RefCell::new(items),
-            inspected: RefCell::new(0),
+            items,
+            inspected: 0,
             operation,
             test,
         });
@@ -98,32 +89,26 @@ fn parse_monkeys(raw: &str) -> Vec<Monkey> {
 impl Operation {
     fn parse(inp: &str) -> Self {
         let mut parts = inp.split_whitespace();
-        debug_assert_eq!(parts.next().unwrap(), "old");
+        assert_eq!(parts.next().unwrap(), "old");
 
-        match parts.next().unwrap() {
-            "*" => Self::Multiply(Value::parse(parts.next().unwrap())),
-            "+" => Self::Add(Value::parse(parts.next().unwrap())),
+        let op = parts.next().unwrap();
+        let value = parts.next().unwrap();
+        match op {
+            "*" => match value {
+                "old" => Self::Square,
+                _ => Self::Multiply(value.parse::<u64>().unwrap()),
+            },
+            "+" => Self::Add(value.parse::<u64>().unwrap()),
             _ => panic!("Unsuppored operation"),
         }
     }
 
     fn process(&self, old: u64) -> u64 {
         match self {
-            Self::Add(Value::Old) => old + old,
-            Self::Add(Value::Number(n)) => old + n,
-            Self::Multiply(Value::Old) => old * old,
-            Self::Multiply(Value::Number(n)) => old * n,
+            Self::Add(x) => old + x,
+            Self::Multiply(x) => old * x,
+            Self::Square => old * old,
         }
-    }
-}
-
-impl Value {
-    fn parse(inp: &str) -> Self {
-        if inp == "old" {
-            return Self::Old;
-        }
-
-        Self::Number(inp.parse::<u64>().unwrap())
     }
 }
 
