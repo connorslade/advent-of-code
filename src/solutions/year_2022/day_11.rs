@@ -13,23 +13,18 @@ impl Solution for Day11 {
         let raw = problem::load(2022, 11);
         let monkeys = parse_monkeys(&raw);
 
-        process(monkeys, 20, None).to_string()
+        process(monkeys, 20, |x| x / 3).to_string()
     }
 
     fn part_b(&self) -> String {
         let raw = problem::load(2022, 11);
         let monkeys = parse_monkeys(&raw);
 
-        let magic = monkeys
-            .iter()
-            .map(|x| x.test.divisor)
-            .fold(1, |a, b| a * b / gcd(a, b));
-
-        process(monkeys, 10000, Some(magic)).to_string()
+        let magic = monkeys.iter().map(|x| x.test.divisor).product::<u64>();
+        process(monkeys, 10000, |x| x % magic).to_string()
     }
 }
 
-#[derive(Debug)]
 struct Monkey {
     items: RefCell<VecDeque<u64>>,
     inspected: RefCell<usize>,
@@ -37,36 +32,28 @@ struct Monkey {
     test: Test,
 }
 
-#[derive(Debug)]
 enum Operation {
     Add(Value),
     Multiply(Value),
 }
 
-#[derive(Debug)]
 struct Test {
     divisor: u64,
     // [true, false]
     monkey: [usize; 2],
 }
 
-#[derive(Debug)]
 enum Value {
     Old,
     Number(u64),
 }
 
-fn process(mut monkeys: Vec<Monkey>, iter: usize, magic: Option<u64>) -> usize {
+fn process(mut monkeys: Vec<Monkey>, iter: usize, proc: impl Fn(u64) -> u64) -> usize {
     for _ in 0..iter {
         for monkey in &monkeys {
             while let Some(mut item) = monkey.items.borrow_mut().pop_front() {
                 *monkey.inspected.borrow_mut() += 1;
-                item = monkey.operation.process(item);
-                match magic {
-                    Some(i) => item %= i,
-                    None => item /= 3,
-                }
-
+                item = proc(monkey.operation.process(item));
                 monkeys[monkey.test.process(item)]
                     .items
                     .borrow_mut()
@@ -75,7 +62,7 @@ fn process(mut monkeys: Vec<Monkey>, iter: usize, magic: Option<u64>) -> usize {
         }
     }
 
-    monkeys.sort_by(|a, b| b.inspected.borrow().cmp(&a.inspected.borrow()));
+    monkeys.sort_by_key(|x| -(*x.inspected.borrow() as isize));
     let a = *monkeys[0].inspected.borrow();
     let b = *monkeys[1].inspected.borrow();
 
@@ -106,13 +93,6 @@ fn parse_monkeys(raw: &str) -> Vec<Monkey> {
     }
 
     out
-}
-
-fn gcd(a: u64, b: u64) -> u64 {
-    if b == 0 {
-        return a;
-    }
-    gcd(b, a % b)
 }
 
 impl Operation {
