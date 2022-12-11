@@ -13,20 +13,7 @@ impl Solution for Day11 {
         let raw = problem::load(2022, 11);
         let monkeys = parse_monkeys(&raw);
 
-        for _ in 0..20 {
-            for monkey in &monkeys {
-                while let Some(mut item) = monkey.items.borrow_mut().pop_front() {
-                    *monkey.inspected.borrow_mut() += 1;
-                    item = monkey.operation.process(item) / 3;
-                    monkeys[monkey.test.process(item)]
-                        .items
-                        .borrow_mut()
-                        .push_back(item);
-                }
-            }
-        }
-
-        monkey_buisness(monkeys).to_string()
+        process(monkeys, 20, None).to_string()
     }
 
     fn part_b(&self) -> String {
@@ -38,20 +25,7 @@ impl Solution for Day11 {
             .map(|x| x.test.divisor)
             .fold(1, |a, b| a * b / gcd(a, b));
 
-        for _ in 0..10000 {
-            for monkey in &monkeys {
-                while let Some(mut item) = monkey.items.borrow_mut().pop_front() {
-                    *monkey.inspected.borrow_mut() += 1;
-                    item = monkey.operation.process(item) % magic;
-                    monkeys[monkey.test.process(item)]
-                        .items
-                        .borrow_mut()
-                        .push_back(item);
-                }
-            }
-        }
-
-        monkey_buisness(monkeys).to_string()
+        process(monkeys, 10000, Some(magic)).to_string()
     }
 }
 
@@ -82,6 +56,32 @@ enum Value {
     Number(u64),
 }
 
+fn process(mut monkeys: Vec<Monkey>, iter: usize, magic: Option<u64>) -> usize {
+    for _ in 0..iter {
+        for monkey in &monkeys {
+            while let Some(mut item) = monkey.items.borrow_mut().pop_front() {
+                *monkey.inspected.borrow_mut() += 1;
+                item = monkey.operation.process(item);
+                match magic {
+                    Some(i) => item %= i,
+                    None => item /= 3,
+                }
+
+                monkeys[monkey.test.process(item)]
+                    .items
+                    .borrow_mut()
+                    .push_back(item);
+            }
+        }
+    }
+
+    monkeys.sort_by(|a, b| b.inspected.borrow().cmp(&a.inspected.borrow()));
+    let a = *monkeys[0].inspected.borrow();
+    let b = *monkeys[1].inspected.borrow();
+
+    a * b
+}
+
 fn parse_monkeys(raw: &str) -> Vec<Monkey> {
     let mut out = Vec::new();
 
@@ -108,24 +108,14 @@ fn parse_monkeys(raw: &str) -> Vec<Monkey> {
     out
 }
 
-fn monkey_buisness(mut monkeys: Vec<Monkey>) -> usize {
-    monkeys.sort_by(|a, b| b.inspected.borrow().cmp(&a.inspected.borrow()));
-    let a = *monkeys[0].inspected.borrow();
-    let b = *monkeys[1].inspected.borrow();
-
-    a * b
-}
-
 fn gcd(a: u64, b: u64) -> u64 {
     if b == 0 {
-        a
-    } else {
-        gcd(b, a % b)
+        return a;
     }
+    gcd(b, a % b)
 }
 
 impl Operation {
-    // old * 19 -> Multiply(19)
     fn parse(inp: &str) -> Self {
         let mut parts = inp.split_whitespace();
         debug_assert_eq!(parts.next().unwrap(), "old");
