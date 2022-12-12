@@ -15,7 +15,7 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 - Day 09: Rope Bridge [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_09.rs#L13), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_09.rs#L18)]
 - Day 10 Cathode-Ray Tube [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_10.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_10.rs#L23)]
 - Day 11 Monkey in the Middle [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_11.rs#L12), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_11.rs#L19)]
-- Day 12 Monkey in the Middle [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_12.rs#L12), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_12.rs#L18)]
+- Day 12 Hill Climbing Algorithm [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_12.rs#L12), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_12.rs#L21)]
 
 ## [2021](https://adventofcode.com/2021)
 

@@ -12,58 +12,47 @@ impl Solution for Day12 {
     fn part_a(&self) -> String {
         let raw = problem::load(2022, 12);
         let map = parse(&raw);
-        run_path(&map, |a, b| a > b + 1).to_string()
+
+        run_path(&map, |a, b| a <= b + 1, |c| c == map.end)
+            .unwrap()
+            .to_string()
     }
 
     fn part_b(&self) -> String {
         let raw = problem::load(2022, 12);
-        let map = parse(&raw);
-        let mut min = usize::MAX;
+        let mut map = parse(&raw);
+        map.start = map.end;
+        map.current = map.start;
 
-        for x in 0..map.data.len() {
-            for y in 0..map.data[x].len() {
-                if map.data[x][y] != 0 {
-                    continue;
-                }
-
-                let mut new_map = map.clone();
-                new_map.start = Point::new(y, x);
-                new_map.current = new_map.start;
-                let distance = run_path(&new_map, |a, b| a > b + 1);
-                min = min.min(distance);
-            }
-        }
-
-        min.to_string()
+        run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y][c.x] == 0)
+            .expect("No path found!?")
+            .to_string()
     }
 }
 
-fn run_path(map: &HeightMap, disallow: fn(u8, u8) -> bool) -> usize {
+fn run_path(
+    map: &HeightMap,
+    allow: fn(u8, u8) -> bool,
+    solve: impl Fn(Point) -> bool,
+) -> Option<usize> {
     let mut visited = vec![vec![false; map.data[0].len()]; map.data.len()];
     let mut queue = VecDeque::new();
     queue.push_back((map.current, Vec::new()));
-    // dbg!(map.current);
 
     while !queue.is_empty() {
         let (current, history) = queue.pop_front().unwrap();
-        // println!("({}, {})", current.x, current.y);
-        if current == map.end {
-            return history.len();
+        // if current == map.end {
+        if solve(current) {
+            return Some(history.len());
         }
 
         let current_height = map.data[current.y][current.x];
-
         let mut check_neighbour = |x: usize, y: usize| {
-            if x >= map.data[0].len() || y >= map.data.len() {
-                return;
-            }
-
-            let height = map.data[y][x];
-            if disallow(height, current_height) {
-                return;
-            }
-
-            if visited[y][x] {
+            if x >= map.data[0].len()
+                || y >= map.data.len()
+                || !allow(map.data[y][x], current_height)
+                || visited[y][x]
+            {
                 return;
             }
 
@@ -73,14 +62,14 @@ fn run_path(map: &HeightMap, disallow: fn(u8, u8) -> bool) -> usize {
             queue.push_back((Point::new(x, y), new_history));
         };
 
+        // todo make work in debug
         check_neighbour(current.x + 1, current.y);
         check_neighbour(current.x, current.y + 1);
-        check_neighbour(current.x - 1, current.y);
-        check_neighbour(current.x, current.y - 1);
+        check_neighbour(current.x.wrapping_sub(1), current.y);
+        check_neighbour(current.x, current.y.wrapping_sub(1));
     }
 
-    // unreachable!()
-    usize::MAX
+    None
 }
 
 #[derive(Debug, Clone)]
