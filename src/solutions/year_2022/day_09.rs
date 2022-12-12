@@ -1,7 +1,10 @@
-use derive_more::{Add, AddAssign, Mul, Sub};
-use std::{collections::HashSet, vec};
+use std::vec;
+
+use hashbrown::HashSet;
 
 use crate::{problem, Solution};
+
+type Point = aoc_lib::Point<i32>;
 
 pub struct Day09;
 
@@ -22,7 +25,7 @@ impl Solution for Day09 {
 }
 
 fn process(raw: &str, count: usize) -> usize {
-    let orders = raw.lines().map(Point::from_line).collect::<Vec<_>>();
+    let orders = raw.lines().map(from_line).collect::<Vec<_>>();
     let mut tail_pios = HashSet::new();
     let mut knots = vec![Point::new(0, 0); count + 1];
 
@@ -46,48 +49,18 @@ fn process(raw: &str, count: usize) -> usize {
     tail_pios.len()
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Add, AddAssign, Mul, Sub)]
-struct Point {
-    x: i32,
-    y: i32,
-}
+// Direction, count
+fn from_line(imp: &str) -> (Point, u32) {
+    let (direction, count) = imp.split_once(' ').unwrap();
+    let count = count.parse::<i32>().unwrap();
 
-impl Point {
-    fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
-    }
+    let out = match direction {
+        "R" => Point::new(1, 0),
+        "L" => Point::new(-1, 0),
+        "U" => Point::new(0, -1),
+        "D" => Point::new(0, 1),
+        _ => panic!("Invalid direction"),
+    };
 
-    fn normalize(&self) -> Self {
-        Self {
-            x: self.x.signum(),
-            y: self.y.signum(),
-        }
-    }
-
-    fn abs(&self) -> Self {
-        Self {
-            x: self.x.abs(),
-            y: self.y.abs(),
-        }
-    }
-
-    fn max(&self) -> i32 {
-        self.x.max(self.y)
-    }
-
-    // Direction, count
-    fn from_line(imp: &str) -> (Self, u32) {
-        let (direction, count) = imp.split_once(' ').unwrap();
-        let count = count.parse::<i32>().unwrap();
-
-        let out = match direction {
-            "R" => Self::new(1, 0),
-            "L" => Self::new(-1, 0),
-            "U" => Self::new(0, -1),
-            "D" => Self::new(0, 1),
-            _ => panic!("Invalid direction"),
-        };
-
-        (out, count as u32)
-    }
+    (out, count as u32)
 }

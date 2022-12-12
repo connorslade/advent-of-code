@@ -2,6 +2,8 @@ use std::collections::VecDeque;
 
 use crate::{problem, Solution};
 
+type Point = aoc_lib::Point<usize>;
+
 pub struct Day12;
 
 impl Solution for Day12 {
@@ -41,7 +43,6 @@ fn run_path(
 
     while !queue.is_empty() {
         let (current, history) = queue.pop_front().unwrap();
-        // if current == map.end {
         if solve(current) {
             return Some(history.len());
         }
@@ -50,8 +51,8 @@ fn run_path(
         let mut check_neighbour = |x: usize, y: usize| {
             if x >= map.data[0].len()
                 || y >= map.data.len()
-                || !allow(map.data[y][x], current_height)
                 || visited[y][x]
+                || !allow(map.data[y][x], current_height)
             {
                 return;
             }
@@ -62,7 +63,6 @@ fn run_path(
             queue.push_back((Point::new(x, y), new_history));
         };
 
-        // todo make work in debug
         check_neighbour(current.x + 1, current.y);
         check_neighbour(current.x, current.y + 1);
         check_neighbour(current.x.wrapping_sub(1), current.y);
@@ -79,12 +79,6 @@ struct HeightMap {
 
     start: Point,
     end: Point,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct Point {
-    x: usize,
-    y: usize,
 }
 
 fn parse(raw: &str) -> HeightMap {
@@ -117,11 +111,5 @@ fn parse(raw: &str) -> HeightMap {
         current: start,
         start,
         end,
-    }
-}
-
-impl Point {
-    fn new(x: usize, y: usize) -> Self {
-        Self { x, y }
     }
 }

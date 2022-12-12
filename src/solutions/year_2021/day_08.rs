@@ -1,6 +1,6 @@
 use crate::{problem, Solution};
 
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 const CHARS: [char; 7] = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 

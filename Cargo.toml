@@ -3,6 +3,16 @@ edition = "2021"
 name = "advent_of_code"
 version = "0.1.0"
 
+[lib]
+name = "aoc_lib"
+path = "src/lib/mod.rs"
+
+[[bin]]
+name = "advent_of_code"
+path = "src/main.rs"
+
 [dependencies]
-clap = { version = "4.0.29", features = ["derive"] }
+clap = {version = "4.0.29", features = ["derive"]}
 derive_more = "0.99.17"
+hashbrown = "0.13.1"
+num-traits = "0.2.15"

@@ -1,6 +1,6 @@
 use crate::{problem, Solution};
 
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 pub struct Day05;
 

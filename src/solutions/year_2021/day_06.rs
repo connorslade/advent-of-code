@@ -1,7 +1,8 @@
 use crate::{problem, Solution};
 
-use std::collections::HashMap;
 use std::hash::Hash;
+
+use hashbrown::HashMap;
 
 pub struct Day06;
 
