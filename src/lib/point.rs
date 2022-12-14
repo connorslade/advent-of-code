@@ -1,14 +1,14 @@
 use derive_more::{Add, AddAssign, Mul, Sub};
 use num_traits::{abs, signum, Num, Signed};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Add, AddAssign, Mul, Sub)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, Add, AddAssign, Mul, Sub)]
 pub struct Point<T: Num = i32> {
     pub x: T,
     pub y: T,
 }
 
 impl<T: Num> Point<T> {
-    pub fn new(x: T, y: T) -> Self {
+    pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
