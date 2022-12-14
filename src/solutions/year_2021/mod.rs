@@ -12,8 +12,9 @@ mod day_09;
 mod day_10;
 mod day_11;
 mod day_13;
+mod day_14;
 
-pub const ALL: [&dyn Solution; 13] = [
+pub const ALL: [&dyn Solution; 14] = [
     &day_01::Day01,
     &day_02::Day02,
     &day_03::Day03,
@@ -25,7 +26,8 @@ pub const ALL: [&dyn Solution; 13] = [
     &day_09::Day09,
     &day_10::Day10,
     &day_11::Day11,
-    &day_13::Day13,
+    &day_11::Day11,
     // ^ PLACEHOLDER
     &day_13::Day13,
+    &day_14::Day14,
 ];
