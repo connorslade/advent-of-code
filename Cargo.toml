@@ -16,3 +16,4 @@ clap = {version = "4.0.29", features = ["derive"]}
 derive_more = "0.99.17"
 hashbrown = "0.13.1"
 num-traits = "0.2.15"
+rayon = "1.6.1"
