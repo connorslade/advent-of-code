@@ -1,3 +1,5 @@
+use hashbrown::{hash_map::Entry, HashMap};
+
 use crate::{problem, Solution};
 
 type Point = aoc_lib::Point<i64>;
@@ -6,21 +8,19 @@ pub struct Day17;
 
 impl Solution for Day17 {
     fn name(&self) -> &'static str {
-        ""
+        "Pyroclastic Flow"
     }
 
     fn part_a(&self) -> String {
         let raw = problem::load(2022, 17);
         let mut world = World::new(&raw);
-        (0..2022).for_each(|_| world.add_rock());
-
-        assert_eq!(world.max_height, 3068);
-        world.max_height.to_string()
+        process(&mut world, 2022).to_string()
     }
 
     fn part_b(&self) -> String {
         let raw = problem::load(2022, 17);
-        todo!()
+        let mut world = World::new(&raw);
+        process(&mut world, 1000000000000).to_string()
     }
 }
 
@@ -60,6 +60,38 @@ const ROCKS: [&[Point]; 5] = [
     ],
 ];
 
+fn process(world: &mut World, rocks: i64) -> i64 {
+    let mut seen = HashMap::new();
+    let mut cycle_height = 0;
+    let mut i = 0;
+
+    while i < rocks {
+        world.add_rock();
+        i += 1;
+
+        if world.max_height < 8 {
+            continue;
+        }
+
+        let state = world.state();
+        match seen.entry(state) {
+            Entry::Vacant(e) => {
+                e.insert((i, world.max_height));
+            }
+            Entry::Occupied(e) => {
+                let (old_i, old_height) = e.get();
+                let num_rocks_in_cycle = i - old_i;
+                let num_cycles = (rocks - i) / num_rocks_in_cycle;
+                i += num_rocks_in_cycle * num_cycles;
+                cycle_height += num_cycles * (world.max_height - old_height);
+                seen.clear();
+            }
+        }
+    }
+
+    world.max_height + cycle_height
+}
+
 #[derive(Debug, Clone, Copy)]
 struct Rock {
     rock_id: usize,
@@ -83,6 +115,26 @@ impl World {
             airflow: raw.chars().collect(),
             flow_index: 0,
         }
+    }
+
+    fn state(&self) -> (Vec<Vec<bool>>, usize, usize) {
+        let mut world = vec![[false; WIDTH]; self.max_height as usize + 1];
+        for rock in &self.rocks {
+            for point in rock.points() {
+                world[point.y as usize][point.x as usize] = true;
+            }
+        }
+
+        let mut rows = Vec::new();
+        for row in world.into_iter().rev().take(8) {
+            rows.push(row.into_iter().collect::<Vec<_>>());
+        }
+
+        (
+            rows,
+            self.flow_index,
+            self.rocks.last().map(|x| x.rock_id).unwrap_or(0),
+        )
     }
 
     fn add_rock(&mut self) {
@@ -152,14 +204,6 @@ impl World {
 }
 
 impl Rock {
-    fn width(id: usize) -> usize {
-        ROCKS[id].iter().map(|point| point.x).max().unwrap_or(0) as usize + 1
-    }
-
-    fn height(id: usize) -> usize {
-        ROCKS[id].iter().map(|point| point.y).max().unwrap_or(0) as usize + 1
-    }
-
     fn points(&self) -> Vec<Point> {
         ROCKS[self.rock_id]
             .iter()
