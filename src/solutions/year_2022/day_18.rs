@@ -1,7 +1,4 @@
-use std::collections::VecDeque;
-
-use aoc_lib::Point;
-use derive_more::Add;
+use aoc_lib::Point3;
 use hashbrown::HashSet;
 
 use crate::{problem, Solution};
@@ -10,7 +7,7 @@ pub struct Day18;
 
 impl Solution for Day18 {
     fn name(&self) -> &'static str {
-        ""
+        "Boiling Boulders"
     }
 
     fn part_a(&self) -> String {
@@ -42,35 +39,6 @@ impl Solution for Day18 {
         }
 
         out.to_string()
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Add)]
-struct Point3 {
-    x: i32,
-    y: i32,
-    z: i32,
-}
-
-impl Point3 {
-    const fn new(x: i32, y: i32, z: i32) -> Self {
-        Self { x, y, z }
-    }
-
-    fn min(&self, other: &Self) -> Self {
-        Self {
-            x: self.x.min(other.x),
-            y: self.y.min(other.y),
-            z: self.z.min(other.z),
-        }
-    }
-
-    fn max(&self, other: &Self) -> Self {
-        Self {
-            x: self.x.max(other.x),
-            y: self.y.max(other.y),
-            z: self.z.max(other.z),
-        }
     }
 }
 

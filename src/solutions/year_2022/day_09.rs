@@ -36,7 +36,7 @@ fn process(raw: &str, count: usize) -> usize {
 
             for i in 1..knots.len() {
                 let diff = knots[i - 1] - knots[i];
-                if diff.abs().max() <= 1 {
+                if diff.abs().max_value() <= 1 {
                     continue;
                 }
 
