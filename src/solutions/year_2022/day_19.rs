@@ -6,7 +6,7 @@ pub struct Day19;
 
 impl Solution for Day19 {
     fn name(&self) -> &'static str {
-        "Not Enough Minerals"
+        ""
     }
 
     fn part_a(&self) -> String {
@@ -14,7 +14,7 @@ impl Solution for Day19 {
         let robots = parse(&raw);
 
         let mut geodes = Vec::new();
-        for i in robots {
+        for i in robots.into_iter().take(1) {
             geodes.push(simulate(i));
         }
 
@@ -28,7 +28,7 @@ impl Solution for Day19 {
     }
 
     fn part_b(&self) -> String {
-        let raw = problem::load(2022, 19);
+        let _raw = problem::load(2022, 19);
         todo!()
     }
 }
@@ -43,7 +43,8 @@ fn simulate(costs: [RobotType; 4]) -> u32 {
         let mut new_robots = robots.clone();
         while let Some(i) = RobotType::best_buildable(&costs, &resources) {
             println!("Shound build robot {:?}", i);
-            i.build(&costs, &mut resources);
+            i.build(&mut resources);
+            println!(" ^ new resource count: {:?}", resources);
             new_robots[i.index()] += 1;
         }
 
@@ -79,13 +80,7 @@ enum RobotType {
 }
 
 fn parse(raw: &str) -> Vec<[RobotType; 4]> {
-    let mut out = Vec::new();
-
-    for i in raw.lines() {
-        out.push(RobotType::parse(i));
-    }
-
-    out
+    raw.lines().map(RobotType::parse).collect()
 }
 
 impl RobotType {
@@ -139,12 +134,12 @@ impl RobotType {
     fn best_buildable(costs: &[Self; 4], resources: &[u32; 4]) -> Option<RobotType> {
         let mut out = None;
 
-        for (i, e) in costs.iter().enumerate() {
+        for e in costs.iter() {
             let can_build = match e {
-                Self::Geode(o, c) => resources[0] >= *o as u32 && resources[2] >= *c as u32,
-                Self::Obsidian(o, c) => resources[0] >= *o as u32 && resources[1] >= *c as u32,
-                Self::Clay(c) => resources[0] >= *c as u32,
                 Self::Ore(c) => resources[0] >= *c as u32,
+                Self::Clay(c) => resources[0] >= *c as u32,
+                Self::Obsidian(o, c) => resources[0] >= *o as u32 && resources[1] >= *c as u32,
+                Self::Geode(o, c) => resources[0] >= *o as u32 && resources[2] >= *c as u32,
             };
 
             if can_build {
@@ -155,7 +150,7 @@ impl RobotType {
         out.copied()
     }
 
-    fn build(&self, costs: &[Self; 4], resources: &mut [u32; 4]) {
+    fn build(&self, resources: &mut [u32; 4]) {
         match self {
             Self::Ore(c) => resources[0] -= *c as u32,
             Self::Clay(c) => resources[0] -= *c as u32,
