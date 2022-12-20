@@ -4,77 +4,81 @@ pub struct Day20;
 
 impl Solution for Day20 {
     fn name(&self) -> &'static str {
-        ""
+        "Grove Positioning System"
     }
 
     fn part_a(&self) -> String {
         let raw = problem::load(2022, 20);
-        let mut list = parse(&raw);
-
-        for i in list.list.clone() {
-            list.move_item(i.1);
-            dbg!(&list);
-        }
-
-        dbg!(&list);
-        todo!()
+        let mut file = File::new(&raw);
+        file.mix();
+        file.coordinates().to_string()
     }
 
     fn part_b(&self) -> String {
         let raw = problem::load(2022, 20);
-        todo!()
+        let mut file = File::new(&raw).multiply(811589153);
+        (0..10).for_each(|_| file.mix());
+        file.coordinates().to_string()
     }
 }
 
 #[derive(Debug)]
-struct WrapingList {
-    // (value, innitial index)
-    list: Vec<(i32, usize)>,
+struct File {
+    // (value, index)
+    list: Vec<(i64, usize)>,
 }
 
-impl WrapingList {
-    fn new(list: Vec<i32>) -> Self {
+impl File {
+    fn new(raw: &str) -> Self {
         Self {
-            list: list.into_iter().enumerate().map(|(i, v)| (v, i)).collect(),
+            list: raw
+                .lines()
+                .map(|x| x.parse().unwrap())
+                .enumerate()
+                .map(|(i, v)| (v, i))
+                .collect(),
         }
     }
 
-    fn get(&self, index: isize) -> Option<&i32> {
-        if index < 0 {
-            return self
+    fn coordinates(&self) -> i64 {
+        let zero = self.list.iter().position(|x| x.0 == 0).unwrap() as isize;
+        self.get(zero + 1000).unwrap()
+            + self.get(zero + 2000).unwrap()
+            + self.get(zero + 3000).unwrap()
+    }
+
+    fn multiply(self, val: i64) -> Self {
+        Self {
+            list: self.list.into_iter().map(|x| (x.0 * val, x.1)).collect(),
+        }
+    }
+
+    fn get(&self, index: isize) -> Option<&i64> {
+        self.list
+            .get(index as usize % self.list.len())
+            .map(|(v, _)| v)
+    }
+
+    fn mix(&mut self) {
+        for i in 0..self.list.len() {
+            let (index, value) = self
                 .list
-                .get(self.list.len() - index.abs() as usize)
-                .map(|(v, _)| v);
+                .iter()
+                .enumerate()
+                .find(|x| x.1 .1 == i)
+                .map(|x| (x.0, *x.1))
+                .unwrap();
+
+            self.list.remove(index);
+            let raw_i = index as i64 + value.0;
+            let new_i = if value.0 > 0 {
+                raw_i % self.list.len() as i64
+            } else if raw_i < 0 {
+                self.list.len() as i64 - (raw_i.abs() % self.list.len() as i64)
+            } else {
+                raw_i
+            };
+            self.list.insert(new_i as usize, value);
         }
-        self.list.get(index as usize).map(|(v, _)| v)
     }
-
-    fn move_item(&mut self, index: usize) {
-        let (index, _) = self
-            .list
-            .iter()
-            .enumerate()
-            .find(|i| i.1 .1 == index)
-            .unwrap();
-        let (value, index) = self.list.remove(index);
-        let new_index = index as i32 + value;
-
-        let new_index = if new_index >= self.list.len() as i32 {
-            new_index - self.list.len() as i32
-        } else {
-            new_index
-        };
-
-        self.list.insert(new_index as usize, (value, index));
-    }
-}
-
-fn parse(raw: &str) -> WrapingList {
-    let mut nums = Vec::new();
-
-    for i in raw.lines() {
-        nums.push(i.parse().unwrap());
-    }
-
-    WrapingList::new(nums)
 }

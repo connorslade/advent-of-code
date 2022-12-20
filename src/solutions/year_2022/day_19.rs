@@ -40,7 +40,7 @@ fn simulate(costs: [RobotType; 4]) -> u32 {
     let mut ticks = 24;
 
     while ticks > 0 {
-        let mut new_robots = robots.clone();
+        let mut new_robots = robots;
         while let Some(i) = RobotType::best_buildable(&costs, &resources) {
             println!("Shound build robot {:?}", i);
             i.build(&mut resources);

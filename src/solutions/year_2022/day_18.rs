@@ -17,7 +17,7 @@ impl Solution for Day18 {
         let mut open_faces = 0;
 
         for i in &world.points {
-            open_faces += 6 - world.neighbors(&i);
+            open_faces += 6 - world.neighbors(i);
         }
 
         open_faces.to_string()

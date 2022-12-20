@@ -21,6 +21,7 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 - Day 15 Beacon Exclusion Zone [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_15.rs#L14), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_15.rs#L28)]
 - Day 17 Pyroclastic Flow [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_17.rs#L14), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_17.rs#L20)]
 - Day 18 Boiling Boulders [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_18.rs#L13), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_18.rs#L36)]
+- Day 20 Grove Positioning System [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_20.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_20.rs#L17)]
 
 ## [2021](https://adventofcode.com/2021)
 
