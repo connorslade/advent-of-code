@@ -17,8 +17,8 @@ impl Solution for Day21 {
 
     fn part_b(&self) -> String {
         let raw = problem::load(2022, 21);
-        let _monkeys = MonkeyBusiness::new(&raw).root_eq();
-        todo!()
+        let monkeys = MonkeyBusiness::new(&raw).root_eq();
+        monkeys.solve("root").to_string()
     }
 }
 
@@ -30,7 +30,6 @@ enum Value {
 
 #[derive(Debug, Clone, PartialEq)]
 enum Operator {
-    Assert,
     Add,
     Subtract,
     Multiply,
@@ -60,6 +59,7 @@ impl MonkeyBusiness {
         Self { data }
     }
 
+    // == Evaluate ==
     fn evaluate(&self, monkey: &str) -> i64 {
         self._evaluate(monkey).unwrap()
     }
@@ -72,10 +72,47 @@ impl MonkeyBusiness {
         }
     }
 
+    // == Solve ==
+    fn solve(&self, monkey: &str) -> i64 {
+        self._solve(monkey, 0)
+    }
+
+    fn _solve(&self, name: &str, v: i64) -> i64 {
+        match self.data.get(name).unwrap() {
+            Value::Number(_) => v,
+            Value::Operation(o) => {
+                let l = &o.operands[0];
+                let r = &o.operands[1];
+
+                let hl = self._to_satisfy(l);
+                match o.operator {
+                    Operator::Add if hl => self._solve(l, v - self.evaluate(r)),
+                    Operator::Subtract if hl => self._solve(l, v + self.evaluate(r)),
+                    Operator::Multiply if hl => self._solve(l, v / self.evaluate(r)),
+                    Operator::Divide if hl => self._solve(l, v * self.evaluate(r)),
+                    Operator::Add => self._solve(r, v - self.evaluate(l)),
+                    Operator::Subtract => self._solve(r, self.evaluate(l) - v),
+                    Operator::Multiply => self._solve(r, v / self.evaluate(l)),
+                    Operator::Divide => self._solve(r, self.evaluate(l) / v),
+                }
+            }
+        }
+    }
+
+    fn _to_satisfy(&self, name: &str) -> bool {
+        name == "humn"
+            || match self.data.get(name).unwrap() {
+                Value::Number(_) => false,
+                Value::Operation(o) => {
+                    self._to_satisfy(&o.operands[0]) || self._to_satisfy(&o.operands[1])
+                }
+            }
+    }
+
     fn root_eq(mut self) -> Self {
         let root = self.data.get_mut("root").unwrap();
         if let Value::Operation(o) = root {
-            o.operator = Operator::Assert;
+            o.operator = Operator::Subtract;
         }
         self
     }
@@ -87,13 +124,6 @@ impl Value {
             return Self::Number(n);
         }
         Self::Operation(Operation::new(raw))
-    }
-
-    fn as_operation(&self) -> &Operation {
-        match self {
-            Self::Operation(o) => o,
-            _ => panic!("Not an operation"),
-        }
     }
 }
 
@@ -119,7 +149,6 @@ impl Operation {
             Operator::Subtract => a - b,
             Operator::Multiply => a * b,
             Operator::Divide => a / b,
-            Operator::Assert => return None,
         })
     }
 }
