@@ -52,3 +52,12 @@ impl<T: Num + Ord + Copy> Point<T> {
         }
     }
 }
+
+impl<T: Num + TryInto<usize> + Copy> Point<T> {
+    pub fn to_usize(&self) -> Point<usize> {
+        Point::new(
+            self.x.try_into().ok().unwrap(),
+            self.y.try_into().ok().unwrap(),
+        )
+    }
+}

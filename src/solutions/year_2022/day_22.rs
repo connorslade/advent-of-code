@@ -1,11 +1,8 @@
+use crate::{problem, Solution};
+use hashbrown::HashSet;
 use std::collections::VecDeque;
 
-use hashbrown::HashSet;
-
-use crate::{problem, Solution};
-
-type Point = aoc_lib::Point<usize>;
-
+type Point = aoc_lib::Point<isize>;
 pub struct Day22;
 
 impl Solution for Day22 {
@@ -13,16 +10,17 @@ impl Solution for Day22 {
         "Monkey Map"
     }
 
+    // 37396 - Too Low
     fn part_a(&self) -> String {
         let raw = problem::load_raw(2022, 22);
         let mut world = World::parse(&raw);
-        world.run();
+        world.run(wrap_1);
 
-        (100 * (world.pos.y + 1) + 4 * (world.pos.x + 1)).to_string()
+        world.password().to_string()
     }
 
     fn part_b(&self) -> String {
-        let raw = problem::load(2022, 22);
+        let _raw = problem::load(2022, 22);
         todo!()
     }
 }
@@ -45,12 +43,12 @@ enum Instruction {
     Turn(Direction),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 enum Direction {
-    Left,
     Right,
-    Up,
     Down,
+    Left,
+    Up,
 }
 
 impl World {
@@ -63,10 +61,11 @@ impl World {
 
         for (y, line) in map.lines().enumerate() {
             for (x, c) in line.chars().enumerate() {
+                let (x, y) = (x as isize, y as isize);
                 match c {
                     '#' => walls.insert(Point::new(x, y)),
                     '.' => open.insert(Point::new(x, y)),
-                    ' ' | '\n' => continue,
+                    ' ' => continue,
                     _ => panic!("Invalid character: {}", c),
                 };
             }
@@ -87,13 +86,17 @@ impl World {
         }
     }
 
-    fn run(&mut self) {
+    fn password(&self) -> usize {
+        (1000 * (self.pos.y + 1) + 4 * (self.pos.x + 1) + self.dir as isize) as usize
+    }
+
+    fn run(&mut self, wrap: fn(&Self, Point) -> Option<(Point, Direction)>) {
         while let Some(i) = self.instructions.pop_front() {
             match i {
                 Instruction::Turn(d) => self.dir = d.turn(&self.dir),
                 Instruction::Move(n) => {
                     for _ in 0..n {
-                        let mut new_pos = self.dir.apply(self.pos);
+                        let new_pos = self.dir.apply(self.pos);
                         if self.walls.contains(&new_pos) {
                             break;
                         }
@@ -103,17 +106,9 @@ impl World {
                             continue;
                         }
 
-                        // Wrap around the row
-                        // If we get to this point, the new_pos is not a point in the map and tharefore should be wrapped around
-                        // The map is not rectangular, so we can't just use the width of the map.
-                        // First check which direction we're going in, then see if its up/down or left/right
-                        // Then step in the opposite direction until we hit a wall, then step back one.
-                        loop {
-                            new_pos = self.dir.reverse().apply(new_pos);
-                            if !self.walls.contains(&new_pos) && self.open.contains(&new_pos) {
-                                self.pos = self.dir.apply(new_pos);
-                                break;
-                            }
+                        if let Some((new_pos, new_dir)) = wrap(self, new_pos) {
+                            self.pos = new_pos;
+                            self.dir = new_dir;
                         }
                     }
                 }
@@ -157,6 +152,16 @@ impl Instruction {
 }
 
 impl Direction {
+    fn from_index(i: usize) -> Self {
+        match i {
+            0 => Direction::Right,
+            1 => Direction::Down,
+            2 => Direction::Left,
+            3 => Direction::Up,
+            _ => panic!("Invalid direction index: {}", i),
+        }
+    }
+
     fn apply(&self, pos: Point) -> Point {
         match self {
             Direction::Left => pos - Point::new(1, 0),
@@ -167,17 +172,11 @@ impl Direction {
     }
 
     fn turn(&self, dir: &Direction) -> Self {
-        match (self, dir) {
-            (Direction::Right, Direction::Left) => Direction::Up,
-            (Direction::Right, Direction::Right) => Direction::Down,
-            (Direction::Right, Direction::Up) => Direction::Right,
-            (Direction::Right, Direction::Down) => Direction::Left,
-            (Direction::Left, Direction::Left) => Direction::Down,
-            (Direction::Left, Direction::Right) => Direction::Up,
-            (Direction::Left, Direction::Up) => Direction::Left,
-            (Direction::Left, Direction::Down) => Direction::Right,
-            _ => unreachable!(),
-        }
+        Self::from_index(match self {
+            Direction::Right => (*dir as usize + 1) % 4,
+            Direction::Left => (*dir as usize + 3) % 4,
+            _ => panic!("Invalid turn direction: {:?}", self),
+        })
     }
 
     fn reverse(&self) -> Self {
@@ -189,3 +188,33 @@ impl Direction {
         }
     }
 }
+
+fn wrap_1(world: &World, mut pos: Point) -> Option<(Point, Direction)> {
+    loop {
+        pos = world.dir.reverse().apply(pos);
+        if !world.walls.contains(&pos) && !world.open.contains(&pos) {
+            let pos = world.dir.apply(pos);
+            if world.walls.contains(&pos) {
+                break None;
+            }
+
+            break Some((pos, world.dir));
+        }
+    }
+}
+
+/*
+                1 1 1 1
+                1 1 1 1
+                1 1 1 1
+                1 1 1 1
+2 2 2 2 3 3 3 3 4 4 4 4
+2 2 2 2 3 3 3 3 4 4 4 4
+2 2 2 2 3 3 3 3 4 4 4 4
+2 2 2 2 3 3 3 3 4 4 4 4
+                5 5 5 5 6 6 6 6
+                5 5 5 5 6 6 6 6
+                5 5 5 5 6 6 6 6
+                5 5 5 5 6 6 6 6
+
+*/
