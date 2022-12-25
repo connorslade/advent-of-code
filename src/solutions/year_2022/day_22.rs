@@ -10,7 +10,6 @@ impl Solution for Day22 {
         "Monkey Map"
     }
 
-    // 37396 - Too Low
     fn part_a(&self) -> String {
         let raw = problem::load_raw(2022, 22);
         let mut world = World::parse(&raw);
