@@ -1,7 +1,9 @@
 name: bin
 on:
+  workflow_dispatch:
   push:
     paths:
+      - "common/**"
       - "src/**"
       - "Cargo.toml"
 
@@ -19,6 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: cargo build -p ${{ env.CRATE }}}
+        run: cargo build -p ${{ env.CRATE }}
       - name: Test
-        run: cargo test -p ${{ env.CRATE }}}
+        run: cargo test -p ${{ env.CRATE }}
