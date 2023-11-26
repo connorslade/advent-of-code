@@ -1,4 +1,4 @@
-name: bin
+name: scaffold
 on:
   workflow_dispatch:
   push:

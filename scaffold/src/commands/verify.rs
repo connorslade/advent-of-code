@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+use colored::Colorize;
 use url::Url;
 
 use crate::session::{Session, SessionVerification};
@@ -7,8 +8,8 @@ pub fn verify(session: &Session, address: &Url) -> Result<()> {
     println!("[*] Verifying session token...");
     let verification = verify_inner(session, address)?;
 
-    println!("[*] Hello, {}!", verification.name);
-    println!("[*] Session token is valid.");
+    println!("[*] Hello, {}!", verification.name.underline());
+    println!("{}", "[*] Session token is valid.".green());
     Ok(())
 }
 

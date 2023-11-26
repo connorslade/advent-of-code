@@ -20,7 +20,7 @@ fn main() -> Result<()> {
         SubCommand::Token { token } => {
             commands::token::token(&session(args.token).ok(), token, &args.address)?
         }
-        SubCommand::Init { day, year } => commands::init::init(&session(args.token)?, day, year)?,
+        _ => todo!(),
     }
 
     Ok(())
