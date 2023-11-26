@@ -6,9 +6,11 @@ version = 3
 name = "advent_of_code"
 version = "0.1.0"
 dependencies = [
+ "aoc_lib",
  "clap",
  "derive_more",
  "hashbrown 0.13.1",
+ "nd_vec",
  "num-traits",
  "petgraph",
  "rayon",
@@ -23,6 +25,15 @@ dependencies = [
  "cfg-if",
  "once_cell",
  "version_check",
+]
+
+[[package]]
+name = "aoc_lib"
+version = "0.1.0"
+dependencies = [
+ "derive_more",
+ "nd_vec",
+ "num-traits",
 ]
 
 [[package]]
@@ -274,10 +285,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "nd_vec"
+version = "0.2.0"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "num-traits"
-version = "0.2.15"
+version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "578ede34cf02f8924ab9447f50c28075b4d3e5b269972345e7e0372b38c6cdcd"
+checksum = "39e3200413f237f41ab11ad6d161bc7239c84dcb631773ccd7de3dfe4b5c267c"
 dependencies = [
  "autocfg",
 ]

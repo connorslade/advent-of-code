@@ -2,7 +2,7 @@
 
 My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tree/master/src/solutions) to [Advent Of Code 2022](https://adventofcode.com)
 
-## [2022](https://adventofcode.com/2022)
+## [2022](https://adventofcode.com/2022) (84%)
 
 - Day 01: Calorie Counting [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_01.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_01.rs#L17)]
 - Day 02: Rock Paper Scissors [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_02.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_02.rs#L29)]
@@ -26,7 +26,7 @@ My Rusty [Solutions](https://github.com/Basicprogrammer10/Advent-Of-Code-2021/tr
 - Day 22 Monkey Math [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_22.rs#L13), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_22.rs#L21)]
 - Day 25 Monkey Math [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_25.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2022/day_25.rs#L15)]
 
-## [2021](https://adventofcode.com/2021)
+## [2021](https://adventofcode.com/2021) (48%)
 
 - Day 01: Sonar Sweep [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2021/day_01.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2021/day_01.rs#L20)]
 - Day 02: Dive! [[A](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2021/day_02.rs#L10), [B](https://github.com/Basicprogrammer10/Advent-Of-Code/blob/master/src/solutions/year_2021/day_02.rs#L30)]

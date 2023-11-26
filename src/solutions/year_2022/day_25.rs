@@ -37,11 +37,11 @@ mod snafu {
     pub fn encode(real: i64) -> String {
         let mut out = String::new();
         let mut num = real;
+
         while num > 0 {
             let index = (num % 5) as usize;
-            let d = [0, 1, 2, -2, -1][index];
             out.push("012=-".as_bytes()[index] as char);
-            num -= d;
+            num -= [0, 1, 2, -2, -1][index];
             num /= 5;
         }
 
