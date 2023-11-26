@@ -18,6 +18,11 @@ pub struct Args {
 pub enum SubCommand {
     /// Verify that the session token provided is still valid
     Verify,
+    /// Update the token stored in `AOC_TOKEN`.
+    Token {
+        /// The session token you grabbed from the website.
+        token: String,
+    },
     /// Fetch the puzzle input for a given day and write to a file.
     /// Also creates a base solution file for the given day.
     Init { day: u8, year: Option<u16> },

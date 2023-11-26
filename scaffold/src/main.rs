@@ -19,9 +19,8 @@ fn main() -> Result<()> {
 
     match args.subcommand {
         SubCommand::Verify => commands::verify::verify(&session, &args.address)?,
-        SubCommand::Init { day, year } => {
-            todo!()
-        }
+        SubCommand::Token { token } => commands::token::token(&session, token)?,
+        SubCommand::Init { day, year } => commands::init::init(&session, day, year)?,
     }
 
     Ok(())
