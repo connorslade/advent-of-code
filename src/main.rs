@@ -41,7 +41,7 @@ fn main() {
             let solutions = get_year(year);
             println!("[*] Solutions for {year}:");
 
-            for (i, e) in solutions.iter().enumerate() {
+            for (i, e) in solutions.iter().enumerate().filter(|(_, e)| !e.is_dummy()) {
                 println!(
                     " {} Day {}: {}",
                     if i + 1 == solutions.len() {
