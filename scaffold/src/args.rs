@@ -25,12 +25,26 @@ pub enum SubCommand {
         /// The session token you grabbed from the website.
         token: String,
     },
+    /// Waits for the next midnight (EST) from December first to the twenty-fifth then returns.
+    /// Chaining this command with another command, like init, will ensure that the input is fetched as soon as it is available.
+    Timer(TimerArgs),
     /// Fetch the puzzle input for a given day and write to a file.
     /// Also creates a base solution file for the given day.
     Init(InitArgs),
-    /// Waits for midnight in EST (UTC-5) then returns.
-    /// Chaining this command with another command, like init, will ensure that the input is fetched as soon as it is available.
-    Timer,
+}
+
+#[derive(Parser, Debug)]
+pub struct TimerArgs {
+    /// Time in seconds to offset the timer by.
+    /// A positive value will make the timer start later.
+    #[arg(short, long)]
+    pub offset: Option<f32>,
+    /// The frequency in seconds to print the timer to stdout.
+    #[arg(short, long, default_value_t = 1.0)]
+    pub frequency: f32,
+    /// Don't print the timer to stdout.
+    #[arg(short, long)]
+    pub quiet: bool,
 }
 
 #[derive(Parser, Debug)]

@@ -15,20 +15,17 @@ const TOKEN_VAR: &str = "AOC_TOKEN";
 fn main() -> Result<()> {
     let args = Args::parse();
 
+    let session = match args.token {
+        Some(token) => Ok(Session::new(token)),
+        None => Session::from_env(),
+    };
+
     match args.subcommand {
-        SubCommand::Verify => commands::verify::verify(&session(args.token)?, &args.address)?,
-        SubCommand::Token { token } => {
-            commands::token::token(&session(args.token).ok(), token, &args.address)?
-        }
+        SubCommand::Verify => commands::verify::verify(&session?, &args.address)?,
+        SubCommand::Token { token } => commands::token::token(&session.ok(), token, &args.address)?,
+        SubCommand::Timer(args) => commands::timer::timer(args)?,
         _ => todo!(),
     }
 
     Ok(())
-}
-
-fn session(token: Option<String>) -> Result<Session> {
-    match token {
-        Some(token) => Ok(Session::new(token)),
-        None => Session::from_env(),
-    }
 }
