@@ -1,32 +1,14 @@
 use std::time::Instant;
 
-use ::common::Solution;
-use clap::{Parser, Subcommand};
-
-#[derive(Parser)]
-#[command(name = "advent_of_code")]
-#[command(author = "Connor Slade <connor@connorcode.com>")]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    #[command(about = "Run a solution to a problem")]
-    Run {
-        day: u32,
-        part: char,
-        year: Option<u32>,
-    },
-    #[command(about = "List all solutions for a given year")]
-    List { year: Option<u32> },
-}
+use args::{Args, Commands};
+use clap::Parser;
+use common::Solution;
+mod args;
 
 const DEFAULT_YEAR: u32 = 2022;
 
 fn main() {
-    let args = Cli::parse();
+    let args = Args::parse();
 
     match args.command {
         Commands::Run { year, day, part } => {
@@ -52,7 +34,7 @@ fn main() {
             };
 
             let time = start.elapsed().as_nanos();
-            println!("[+] OUT: {} ({})", out, time_unit(time));
+            println!("[+] OUT: {} ({})", out, human_time(time));
         }
         Commands::List { year } => {
             let year = year.unwrap_or(DEFAULT_YEAR);
@@ -83,9 +65,9 @@ fn get_year(year: u32) -> &'static [&'static dyn Solution] {
     }
 }
 
-const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
+pub fn human_time(time: u128) -> String {
+    const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
 
-pub fn time_unit(time: u128) -> String {
     let mut time = time;
     for i in TIME_UNITS {
         if time < 1000 {
