@@ -1,0 +1,68 @@
+use clap::Parser;
+use url::Url;
+
+use crate::misc::current_year;
+
+#[derive(Parser, Debug)]
+pub struct Args {
+    /// The session token to use for the request.
+    /// If not provided, the token will be read from the environment variable `AOC_TOKEN`.
+    #[arg(short, long)]
+    pub token: Option<String>,
+    /// The address of the Advent of Code server to use.
+    #[arg(short, long, default_value = "https://adventofcode.com")]
+    pub address: Url,
+    #[command(subcommand)]
+    pub subcommand: SubCommand,
+}
+
+#[derive(Parser, Debug)]
+pub enum SubCommand {
+    /// Verify that the session token provided is still valid
+    Verify,
+    /// Update the token stored in `AOC_TOKEN`.
+    Token {
+        /// The session token you grabbed from the website.
+        token: String,
+    },
+    /// Fetch the puzzle input for a given day and write to a file.
+    /// Also creates a base solution file for the given day.
+    Init(InitArgs),
+    /// Waits for midnight in EST (UTC-5) then returns.
+    /// Chaining this command with another command, like init, will ensure that the input is fetched as soon as it is available.
+    Timer,
+}
+
+#[derive(Parser, Debug)]
+pub struct InitArgs {
+    /// A formatter that will be used to get the path for the input file.
+    #[arg(short, long, default_value = "{year}/{day:pad}.txt")]
+    input_location: String,
+    /// A formatter that will be used to get the path for the solution file.
+    #[arg(short, long, default_value = "aoc_{year}/src/day_{day:pad}.rs")]
+    solution_location: String,
+    /// Location formatter of the file importing each solution module.
+    #[arg(long, default_value = "aoc_{year}/src/lib.rs")]
+    module_location: String,
+    /// A formatter for a new line that will be added to the module file before the marker.
+    #[arg(long, default_values_t = ["mod day_{day:pad};".to_owned(), "&day_{day:pad}::Day{day:pad},".to_owned()])]
+    module_templates: Vec<String>,
+    /// A marker is a string that will be found in the module file and is used to determine where to insert the new line.
+    /// If not provided, the default markers will be used.
+    #[arg(long, default_values_t = ["// [import_marker]".to_owned(), "// [list_marker]".to_owned()])]
+    module_markers: Vec<String>,
+    /// Path to a template file that will be used to create the solution file.
+    /// If not provided, a default template will be used.
+    #[arg(short = 't', long)]
+    solution_template: Option<String>,
+    /// Don't create a solution file.
+    /// Useful if you want to use this command with a different language or organization.
+    #[arg(short, long)]
+    no_scaffold: bool,
+
+    /// The day to fetch the input for.
+    day: u8,
+    /// The year to fetch the input for.
+    #[arg(default_value_t = current_year())]
+    year: u16,
+}

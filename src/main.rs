@@ -1,43 +1,22 @@
 use std::time::Instant;
 
-use clap::{Parser, Subcommand};
+use clap::Parser;
+use common::Solution;
 
-use problem::Solution;
-mod common;
-mod problem;
-mod solutions;
+use args::{Args, Commands};
+mod args;
 
-#[derive(Parser)]
-#[command(name = "advent_of_code")]
-#[command(author = "Connor Slade <connor@connorcode.com>")]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    #[command(about = "Run a solution to a problem")]
-    Run {
-        day: u32,
-        part: char,
-        year: Option<u32>,
-    },
-    #[command(about = "List all solutions for a given year")]
-    List { year: Option<u32> },
-}
-
-const DEFAULT_YEAR: u32 = 2022;
+const DEFAULT_YEAR: u32 = 2023;
 
 fn main() {
-    let args = Cli::parse();
+    let args = Args::parse();
 
     match args.command {
         Commands::Run { year, day, part } => {
             let year = year.unwrap_or(DEFAULT_YEAR);
             let day = day.saturating_sub(1);
 
-            let solutions = solutions::get_year(year);
+            let solutions = get_year(year);
             let solution = match solutions.get(day as usize) {
                 Some(s) => s,
                 None => {
@@ -47,23 +26,24 @@ fn main() {
             };
 
             println!("[*] Running: {} ({})", solution.name(), part.to_uppercase());
+            let input = common::load(year, day + 1).unwrap();
 
             let start = Instant::now();
             let out = match part.to_lowercase().to_string().as_str() {
-                "a" => solution.part_a(),
-                "b" => solution.part_b(),
+                "a" => solution.part_a(&input),
+                "b" => solution.part_b(&input),
                 _ => return println!("[-] Invalid Part {}", part),
             };
 
             let time = start.elapsed().as_nanos();
-            println!("[+] OUT: {} ({})", out, common::time_unit(time));
+            println!("[+] OUT: {} ({})", out, human_time(time));
         }
         Commands::List { year } => {
             let year = year.unwrap_or(DEFAULT_YEAR);
-            let solutions = solutions::get_year(year);
+            let solutions = get_year(year);
             println!("[*] Solutions for {year}:");
 
-            for (i, e) in solutions.iter().enumerate() {
+            for (i, e) in solutions.iter().enumerate().filter(|(_, e)| !e.is_dummy()) {
                 println!(
                     " {} Day {}: {}",
                     if i + 1 == solutions.len() {
@@ -77,4 +57,27 @@ fn main() {
             }
         }
     }
+}
+
+fn get_year(year: u32) -> &'static [&'static dyn Solution] {
+    match year {
+        2021 => &aoc_2021::ALL,
+        2022 => &aoc_2022::ALL,
+        2023 => &aoc_2023::ALL,
+        _ => &[],
+    }
+}
+
+pub fn human_time(time: u128) -> String {
+    const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
+
+    let mut time = time;
+    for i in TIME_UNITS {
+        if time < 1000 {
+            return format!("{}{}", time, i);
+        }
+        time /= 1000;
+    }
+
+    format!("{}{}", time, TIME_UNITS.last().unwrap())
 }

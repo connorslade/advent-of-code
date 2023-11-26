@@ -3,18 +3,13 @@ edition = "2021"
 name = "advent_of_code"
 version = "0.1.0"
 
-[lib]
-name = "aoc_lib"
-path = "src/lib/mod.rs"
-
-[[bin]]
-name = "advent_of_code"
-path = "src/main.rs"
+[workspace]
+members = ["scaffold", "common", "aoc_2021", "aoc_2022", "aoc_2023"]
 
 [dependencies]
-clap = {version = "4.0.29", features = ["derive"]}
-derive_more = "0.99.17"
-hashbrown = "0.13.1"
-num-traits = "0.2.15"
-petgraph = "0.6.2"
-rayon = "1.6.1"
+common = { path = "common" }
+aoc_2021 = { path = "aoc_2021" }
+aoc_2022 = { path = "aoc_2022" }
+aoc_2023 = { path = "aoc_2023" }
+
+clap = { version = "4.0.29", features = ["derive"] }

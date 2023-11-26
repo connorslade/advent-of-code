@@ -1,0 +1,17 @@
+use common::{Answer, Solution};
+
+pub struct Day{day:pad};
+
+impl Solution for Day{day:pad} {
+    fn name(&self) -> &'static str {
+        "{problem_name}"
+    }
+
+    fn part_a(&self, input: &str) -> Answer {
+        Answer::Unimplemented
+    }
+
+    fn part_b(&self, input: &str) -> Answer {
+        Answer::Unimplemented
+    }
+}
