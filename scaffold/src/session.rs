@@ -2,6 +2,7 @@ use std::env;
 
 use anyhow::{Context, Result};
 use scraper::Html;
+use ureq::Request;
 use url::Url;
 
 use crate::TOKEN_VAR;
@@ -12,9 +13,9 @@ pub struct Session {
 }
 
 impl Session {
-    pub fn new(token: String) -> Self {
+    pub fn new(token: &str) -> Self {
         Self {
-            token,
+            token: token.to_owned(),
             from_env: false,
         }
     }
@@ -59,4 +60,14 @@ impl Session {
 
 pub struct SessionVerification {
     pub name: String,
+}
+
+pub trait Authenticated {
+    fn authenticated(self, session: &Session) -> Request;
+}
+
+impl Authenticated for Request {
+    fn authenticated(self, session: &Session) -> Request {
+        self.set("Cookie", &format!("session={}", session.token))
+    }
 }

@@ -12,24 +12,24 @@ use crate::args::TimerArgs;
 /// The timezone of the Advent of Code release.
 const AOC_TIMEZONE: u32 = 5;
 
-pub fn timer(timer: TimerArgs) -> Result<()> {
+pub fn timer(cmd: &TimerArgs) -> Result<()> {
     let mut stop_time = next_release()?;
 
-    if let Some(offset) = timer.offset {
+    if let Some(offset) = cmd.offset {
         stop_time = stop_time + chrono::Duration::seconds(offset as i64);
     }
 
     if Utc::now() >= stop_time {
         println!("[*] The next puzzle has already been released.");
 
-        if timer.offset.is_some() {
+        if cmd.offset.is_some() {
             println!("[*] Note: This may be because of the offset you set");
         }
 
         return Ok(());
     }
 
-    if timer.quiet {
+    if cmd.quiet {
         println!("[*] Waiting...");
     } else {
         println!("[*] The next puzzle will be released in:");
@@ -41,14 +41,14 @@ pub fn timer(timer: TimerArgs) -> Result<()> {
             break;
         }
 
-        if !timer.quiet {
+        if !cmd.quiet {
             let time_left = (stop_time - now).to_std()?;
             let time_left = Duration::new(time_left.as_secs(), 0);
             print!("\r\x1b[0K[*]  {}", humantime::format_duration(time_left));
             io::stdout().flush()?;
         }
 
-        thread::sleep(Duration::from_secs_f32(timer.frequency));
+        thread::sleep(Duration::from_secs_f32(cmd.frequency));
     }
 
     Ok(())
