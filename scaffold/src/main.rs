@@ -19,7 +19,7 @@ fn main() -> Result<()> {
 
     match args.subcommand {
         SubCommand::Verify => commands::verify::verify(&session, &args.address)?,
-        SubCommand::Token { token } => commands::token::token(&session, token)?,
+        SubCommand::Token { token } => commands::token::token(&session, token, &args.address)?,
         SubCommand::Init { day, year } => commands::init::init(&session, day, year)?,
     }
 

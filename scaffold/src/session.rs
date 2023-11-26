@@ -6,20 +6,31 @@ use url::Url;
 
 pub struct Session {
     token: String,
+    from_env: bool,
 }
 
 impl Session {
     pub fn new(token: String) -> Self {
-        Self { token }
+        Self {
+            token,
+            from_env: false,
+        }
     }
 
     pub fn from_env() -> Result<Self> {
         let token = env::var("AOC_TOKEN")?;
-        Ok(Self::new(token))
+        Ok(Self {
+            token,
+            from_env: true,
+        })
     }
 
     pub fn token(&self) -> &str {
         &self.token
+    }
+
+    pub fn is_from_env(&self) -> bool {
+        self.from_env
     }
 
     pub fn verify(&self, address: &Url) -> Result<Option<SessionVerification>> {
