@@ -5,5 +5,5 @@ edition = "2021"
 
 [dependencies]
 derive_more = "0.99.17"
-nd_vec = { path = "../../nd-vec" }
+nd_vec = { git = "https://github.com/Basicprogrammer10/nd-vec" }
 num-traits = "0.2.17"

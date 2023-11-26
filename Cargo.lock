@@ -295,6 +295,7 @@ dependencies = [
 [[package]]
 name = "nd_vec"
 version = "0.2.0"
+source = "git+https://github.com/Basicprogrammer10/nd-vec#c3b7522f7a1a73215e809598bf8a474da4371525"
 dependencies = [
  "num-traits",
 ]
