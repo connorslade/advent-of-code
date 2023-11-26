@@ -7,7 +7,7 @@ edition = "2021"
 common = { path = "../common" }
 derive_more = "0.99.17"
 hashbrown = "0.13.1"
-nd_vec = { git = "https://github.com/Basicprogrammer10/nd-vec" }
+nd_vec = "0.3.0"
 num-traits = "0.2.15"
 petgraph = "0.6.2"
 rayon = "1.6.1"

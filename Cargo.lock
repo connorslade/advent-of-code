@@ -293,8 +293,9 @@ dependencies = [
 
 [[package]]
 name = "nd_vec"
-version = "0.2.0"
-source = "git+https://github.com/Basicprogrammer10/nd-vec#c3b7522f7a1a73215e809598bf8a474da4371525"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9fad57178bf2ab82c47346ce0bdf93b371a02c5664669c649ce7c946a18625f9"
 dependencies = [
  "num-traits",
 ]
