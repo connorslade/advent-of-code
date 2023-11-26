@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use crate::{problem, Solution, aoc_lib};
 use hashbrown::HashSet;
 use std::collections::VecDeque;
 

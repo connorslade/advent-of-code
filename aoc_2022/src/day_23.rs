@@ -1,6 +1,6 @@
 use hashbrown::{hash_map::Entry, HashMap, HashSet};
 
-use crate::{problem, Solution};
+use crate::{aoc_lib, problem, Solution};
 
 type Point = aoc_lib::Point<isize>;
 

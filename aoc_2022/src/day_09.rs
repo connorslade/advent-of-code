@@ -2,7 +2,7 @@ use std::vec;
 
 use hashbrown::HashSet;
 
-use crate::{problem, Solution};
+use crate::{aoc_lib, problem, Solution};
 
 type Point = aoc_lib::Point<i32>;
 

@@ -1,0 +1,13 @@
+[package]
+name = "aoc_2022"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common = { path = "../common" }
+derive_more = "0.99.17"
+hashbrown = "0.13.1"
+nd_vec = { path = "../../nd-vec" }
+num-traits = "0.2.15"
+petgraph = "0.6.2"
+rayon = "1.6.1"

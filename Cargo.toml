@@ -4,13 +4,11 @@ name = "advent_of_code"
 version = "0.1.0"
 
 [workspace]
-members = ["aoc_lib", "aoc_2021", "common"]
+members = ["aoc_lib", "aoc_2021", "aoc_2022", "common"]
 
 [dependencies]
+common = { path = "common" }
+aoc_2021 = { path = "aoc_2021" }
+aoc_2022 = { path = "aoc_2022" }
+
 clap = { version = "4.0.29", features = ["derive"] }
-derive_more = "0.99.17"
-hashbrown = "0.13.1"
-nd_vec = { path = "../nd-vec" }
-num-traits = "0.2.15"
-petgraph = "0.6.2"
-rayon = "1.6.1"

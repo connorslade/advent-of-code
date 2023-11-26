@@ -1,11 +1,7 @@
 use std::time::Instant;
 
+use ::common::Solution;
 use clap::{Parser, Subcommand};
-
-use problem::Solution;
-mod common;
-mod problem;
-mod solutions;
 
 #[derive(Parser)]
 #[command(name = "advent_of_code")]
@@ -37,7 +33,7 @@ fn main() {
             let year = year.unwrap_or(DEFAULT_YEAR);
             let day = day.saturating_sub(1);
 
-            let solutions = solutions::get_year(year);
+            let solutions = get_year(year);
             let solution = match solutions.get(day as usize) {
                 Some(s) => s,
                 None => {
@@ -56,11 +52,11 @@ fn main() {
             };
 
             let time = start.elapsed().as_nanos();
-            println!("[+] OUT: {} ({})", out, common::time_unit(time));
+            println!("[+] OUT: {} ({})", out, time_unit(time));
         }
         Commands::List { year } => {
             let year = year.unwrap_or(DEFAULT_YEAR);
-            let solutions = solutions::get_year(year);
+            let solutions = get_year(year);
             println!("[*] Solutions for {year}:");
 
             for (i, e) in solutions.iter().enumerate() {
@@ -77,4 +73,26 @@ fn main() {
             }
         }
     }
+}
+
+fn get_year(year: u32) -> &'static [&'static dyn Solution] {
+    match year {
+        2021 => &aoc_2021::ALL,
+        2022 => &aoc_2022::ALL,
+        _ => &[],
+    }
+}
+
+const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
+
+pub fn time_unit(time: u128) -> String {
+    let mut time = time;
+    for i in TIME_UNITS {
+        if time < 1000 {
+            return format!("{}{}", time, i);
+        }
+        time /= 1000;
+    }
+
+    format!("{}{}", time, TIME_UNITS.last().unwrap())
 }

@@ -1,7 +1,7 @@
 use aoc_lib::Point3;
 use hashbrown::HashSet;
 
-use crate::{problem, Solution};
+use crate::{problem, Solution, aoc_lib};
 
 pub struct Day18;
 

@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{problem, Solution};
+use crate::{problem, Solution, aoc_lib};
 
 type Point = aoc_lib::Point<usize>;
 
