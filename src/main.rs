@@ -5,7 +5,7 @@ use clap::Parser;
 use common::Solution;
 mod args;
 
-const DEFAULT_YEAR: u32 = 2022;
+const DEFAULT_YEAR: u32 = 2023;
 
 fn main() {
     let args = Args::parse();
@@ -61,6 +61,7 @@ fn get_year(year: u32) -> &'static [&'static dyn Solution] {
     match year {
         2021 => &aoc_2021::ALL,
         2022 => &aoc_2022::ALL,
+        2023 => &aoc_2023::ALL,
         _ => &[],
     }
 }

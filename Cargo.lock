@@ -8,6 +8,7 @@ version = "0.1.0"
 dependencies = [
  "aoc_2021",
  "aoc_2022",
+ "aoc_2023",
  "clap",
  "common",
 ]
@@ -45,12 +46,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "aoc_lib"
+name = "aoc_2023"
 version = "0.1.0"
 dependencies = [
- "derive_more",
- "nd_vec",
- "num-traits",
+ "common",
 ]
 
 [[package]]
