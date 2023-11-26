@@ -4,7 +4,7 @@ name = "advent_of_code"
 version = "0.1.0"
 
 [workspace]
-members = ["common", "aoc_2021", "aoc_2022", "aoc_2023"]
+members = ["scaffold", "common", "aoc_2021", "aoc_2022", "aoc_2023"]
 
 [dependencies]
 common = { path = "common" }
