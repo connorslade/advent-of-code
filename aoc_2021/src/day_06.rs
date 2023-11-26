@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 use std::hash::Hash;
 
@@ -11,15 +11,15 @@ impl Solution for Day06 {
         "Lanternfish"
     }
 
-    fn part_a(&self) -> String {
-        let data = Fish::parse_inp(problem::load(2021, 6));
+    fn part_a(&self, input: &str) -> String {
+        let data = Fish::parse_inp(input);
         let out = Fish::sim(data, 80);
 
         out.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = Fish::parse_inp(problem::load(2021, 6));
+    fn part_b(&self, input: &str) -> String {
+        let data = Fish::parse_inp(input);
         let out = Fish::sim(data, 256);
 
         out.to_string()
@@ -36,7 +36,7 @@ impl Fish {
         Fish { timer }
     }
 
-    fn parse_inp(inp: String) -> Vec<Fish> {
+    fn parse_inp(inp: &str) -> Vec<Fish> {
         inp.lines()
             .next()
             .unwrap()

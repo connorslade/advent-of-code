@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day05;
 
@@ -7,14 +7,12 @@ impl Solution for Day05 {
         "Supply Stacks"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 5);
-        process(&raw, true)
+    fn part_a(&self, input: &str) -> String {
+        process(&input, true)
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 5);
-        process(&raw, false)
+    fn part_b(&self, input: &str) -> String {
+        process(&input, false)
     }
 }
 

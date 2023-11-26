@@ -1,7 +1,7 @@
-use aoc_lib::Point3;
 use hashbrown::HashSet;
 
-use crate::{problem, Solution, aoc_lib};
+use crate::aoc_lib::Point3;
+use common::Solution;
 
 pub struct Day18;
 
@@ -10,9 +10,8 @@ impl Solution for Day18 {
         "Boiling Boulders"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 18);
-        let world = World::parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let world = World::parse(input);
 
         let mut open_faces = 0;
 
@@ -23,14 +22,13 @@ impl Solution for Day18 {
         open_faces.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 18);
-        let world = World::parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let world = World::parse(input);
 
         let outside = world.flood_fill(Point3::new(0, 0, 0));
         let mut out = 0;
         for i in &world.points {
-            for j in NEIHBORS {
+            for j in NEIGHBORS {
                 let n = *i + j;
                 if !world.points.contains(&n) && outside.contains(&n) {
                     out += 1;
@@ -46,7 +44,7 @@ struct World {
     points: HashSet<Point3>,
 }
 
-const NEIHBORS: [Point3; 6] = [
+const NEIGHBORS: [Point3; 6] = [
     Point3::new(1, 0, 0),
     Point3::new(-1, 0, 0),
     Point3::new(0, 1, 0),
@@ -65,7 +63,7 @@ impl World {
     fn neighbors(&self, point: &Point3) -> usize {
         let mut out = 0;
 
-        for i in NEIHBORS {
+        for i in NEIGHBORS {
             out += self.points.contains(&(*point + i)) as usize;
         }
 
@@ -91,7 +89,7 @@ impl World {
 
         while let Some(s) = new.pop() {
             steam.insert(s);
-            for n in NEIHBORS {
+            for n in NEIGHBORS {
                 let n = s + n;
                 if n.x > bounds.1.x + 1 || n.x < bounds.0.x - 1 {
                     continue;

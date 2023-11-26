@@ -1,6 +1,6 @@
 use hashbrown::HashSet;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day03;
 
@@ -9,11 +9,10 @@ impl Solution for Day03 {
         "Rucksack Reorganization"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 3);
+    fn part_a(&self, input: &str) -> String {
         let mut out = 0;
 
-        for i in raw.trim().lines() {
+        for i in input.trim().lines() {
             let mut bolth = i[0..i.len() / 2].chars().collect::<Vec<_>>();
             let pocket_2 = i[i.len() / 2..].chars().collect::<Vec<_>>();
             bolth.retain(|x| pocket_2.contains(x));
@@ -26,11 +25,10 @@ impl Solution for Day03 {
         out.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 3);
+    fn part_b(&self, input: &str) -> String {
         let mut out = 0;
 
-        for i in raw.trim().lines().collect::<Vec<_>>().chunks(3) {
+        for i in input.trim().lines().collect::<Vec<_>>().chunks(3) {
             let mut all = HashSet::new();
             i.iter().for_each(|x| all.extend(x.chars()));
             i.iter().for_each(|x| all.retain(|y| x.contains(*y)));

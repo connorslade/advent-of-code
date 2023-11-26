@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day25;
 
@@ -7,12 +7,11 @@ impl Solution for Day25 {
         "Full of Hot Air"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 25);
-        snafu::encode(raw.lines().map(snafu::decode).sum::<i64>()).to_string()
+    fn part_a(&self, input: &str) -> String {
+        snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).to_string()
     }
 
-    fn part_b(&self) -> String {
+    fn part_b(&self, _input: &str) -> String {
         String::new()
     }
 }

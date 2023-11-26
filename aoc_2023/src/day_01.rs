@@ -1,4 +1,4 @@
-use common::{load, Solution};
+use common::Solution;
 
 pub struct Day01;
 
@@ -7,13 +7,11 @@ impl Solution for Day01 {
         ""
     }
 
-    fn part_a(&self) -> String {
-        let raw = load(2023, 1);
+    fn part_a(&self, input: &str) -> String {
         todo!()
     }
 
-    fn part_b(&self) -> String {
-        let raw = load(2023, 1);
+    fn part_b(&self, input: &str) -> String {
         todo!()
     }
 }

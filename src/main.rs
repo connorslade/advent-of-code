@@ -1,8 +1,9 @@
 use std::time::Instant;
 
-use args::{Args, Commands};
 use clap::Parser;
 use common::Solution;
+
+use args::{Args, Commands};
 mod args;
 
 const DEFAULT_YEAR: u32 = 2023;
@@ -25,11 +26,12 @@ fn main() {
             };
 
             println!("[*] Running: {} ({})", solution.name(), part.to_uppercase());
+            let input = common::load(year, day + 1);
 
             let start = Instant::now();
             let out = match part.to_lowercase().to_string().as_str() {
-                "a" => solution.part_a(),
-                "b" => solution.part_b(),
+                "a" => solution.part_a(&input),
+                "b" => solution.part_b(&input),
                 _ => return println!("[-] Invalid Part {}", part),
             };
 

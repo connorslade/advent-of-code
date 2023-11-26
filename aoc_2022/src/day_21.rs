@@ -1,6 +1,6 @@
 use hashbrown::HashMap;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day21;
 
@@ -9,15 +9,13 @@ impl Solution for Day21 {
         "Monkey Math"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 21);
-        let monkeys = MonkeyBusiness::new(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let monkeys = MonkeyBusiness::new(input);
         monkeys.evaluate("root").to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 21);
-        let monkeys = MonkeyBusiness::new(&raw).root_eq();
+    fn part_b(&self, input: &str) -> String {
+        let monkeys = MonkeyBusiness::new(input).root_eq();
         monkeys.solve("root").to_string()
     }
 }

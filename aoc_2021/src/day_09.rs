@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day09;
 
@@ -7,22 +7,22 @@ impl Solution for Day09 {
         "Smoke Basin"
     }
 
-    fn part_a(&self) -> String {
-        let data = parse(problem::load(2021, 9));
+    fn part_a(&self, input: &str) -> String {
+        let data = parse(input);
         let low = lowest(data);
 
         low.iter().map(|x| *x + 1).sum::<u32>().to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = parse(problem::load(2021, 9));
+    fn part_b(&self, input: &str) -> String {
+        let data = parse(input);
         let basins = basins(data);
 
         basins.iter().rev().take(3).product::<u32>().to_string()
     }
 }
 
-fn parse(inp: String) -> Vec<Vec<u32>> {
+fn parse(inp: &str) -> Vec<Vec<u32>> {
     inp.lines()
         .map(|x| x.chars().map(|f| f.to_digit(10).unwrap()).collect())
         .collect()

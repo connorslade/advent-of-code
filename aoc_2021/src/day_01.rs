@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day01;
 
@@ -7,8 +7,8 @@ impl Solution for Day01 {
         "Sonar Sweep"
     }
 
-    fn part_a(&self) -> String {
-        let data = problem::load(2021, 1)
+    fn part_a(&self, input: &str) -> String {
+        let data = input
             .lines()
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();
@@ -17,8 +17,8 @@ impl Solution for Day01 {
         inc.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let d = problem::load(2021, 1)
+    fn part_b(&self, input: &str) -> String {
+        let d = input
             .lines()
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();

@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 use std::mem;
 
@@ -9,9 +9,8 @@ impl Solution for Day19 {
         ""
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 19);
-        let robots = parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let robots = parse(input);
 
         let mut geodes = Vec::new();
         for i in robots.into_iter().take(1) {
@@ -27,8 +26,7 @@ impl Solution for Day19 {
             .to_string()
     }
 
-    fn part_b(&self) -> String {
-        let _raw = problem::load(2022, 19);
+    fn part_b(&self, _input: &str) -> String {
         todo!()
     }
 }

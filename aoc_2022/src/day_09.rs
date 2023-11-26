@@ -2,7 +2,8 @@ use std::vec;
 
 use hashbrown::HashSet;
 
-use crate::{aoc_lib, problem, Solution};
+use crate::aoc_lib;
+use common::Solution;
 
 type Point = aoc_lib::Point<i32>;
 
@@ -13,14 +14,12 @@ impl Solution for Day09 {
         "Rope Bridge"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 9);
-        process(&raw, 1).to_string()
+    fn part_a(&self, input: &str) -> String {
+        process(input, 1).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 9);
-        process(&raw, 9).to_string()
+    fn part_b(&self, input: &str) -> String {
+        process(input, 9).to_string()
     }
 }
 

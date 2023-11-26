@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
@@ -9,8 +9,8 @@ impl Solution for Day10 {
         "Syntax Scoring"
     }
 
-    fn part_a(&self) -> String {
-        let data = parse(problem::load(2021, 10));
+    fn part_a(&self, input: &str) -> String {
+        let data = parse(input);
 
         let mut total = 0;
         for i in data {
@@ -37,8 +37,8 @@ impl Solution for Day10 {
         total.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = parse(problem::load(2021, 10));
+    fn part_b(&self, input: &str) -> String {
+        let data = parse(input);
 
         let mut scores = Vec::new();
         for i in data {
@@ -79,7 +79,7 @@ impl Solution for Day10 {
     }
 }
 
-fn parse(lines: String) -> Vec<String> {
+fn parse(lines: &str) -> Vec<String> {
     lines
         .lines()
         .map(|x| x.to_string())

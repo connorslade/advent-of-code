@@ -1,4 +1,5 @@
-use crate::{problem, Solution, aoc_lib};
+use crate::aoc_lib;
+use common::Solution;
 
 use rayon::prelude::*;
 
@@ -11,9 +12,8 @@ impl Solution for Day15 {
         "Beacon Exclusion Zone"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 15);
-        let world = World::parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let world = World::parse(input);
         let y_level = 2000000; // 10 for example
 
         let blocked = (world.bounds.0.x..=world.bounds.1.x)
@@ -25,9 +25,8 @@ impl Solution for Day15 {
         (blocked - 1).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 15);
-        let world = World::parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let world = World::parse(input);
         let bounds = 4000000;
 
         let distress = world.search(bounds).expect("No distress beacon found");

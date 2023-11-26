@@ -2,12 +2,18 @@ use std::fs;
 
 pub trait Solution {
     fn name(&self) -> &'static str;
-    fn part_a(&self) -> String;
-    fn part_b(&self) -> String;
+    fn part_a(&self, input: &str) -> String;
+    fn part_b(&self, input: &str) -> String;
 
     fn is_dummy(&self) -> bool {
         false
     }
+}
+
+pub enum Answer {
+    String(String),
+    Number(u64),
+    Float(f64),
 }
 
 /// Load the input for the given year and day.
@@ -29,11 +35,11 @@ impl Solution for DummySolution {
         unreachable!()
     }
 
-    fn part_a(&self) -> String {
+    fn part_a(&self, _input: &str) -> String {
         unreachable!()
     }
 
-    fn part_b(&self) -> String {
+    fn part_b(&self, _input: &str) -> String {
         unreachable!()
     }
 

@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day04;
 
@@ -7,22 +7,20 @@ impl Solution for Day04 {
         "Camp Cleanup"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 4);
+    fn part_a(&self, input: &str) -> String {
         let mut out = 0;
 
-        for (p1, p2) in assignment_loop(raw) {
+        for (p1, p2) in assignment_loop(input) {
             out += ((p1.0 >= p2.0 && p1.1 <= p2.1) || (p2.0 >= p1.0 && p2.1 <= p1.1)) as usize;
         }
 
         out.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 4);
+    fn part_b(&self, input: &str) -> String {
         let mut out = 0;
 
-        for (p1, p2) in assignment_loop(raw) {
+        for (p1, p2) in assignment_loop(input) {
             out += (p1.0.max(p2.0) <= p1.1.min(p2.1)) as usize;
         }
 
@@ -30,7 +28,7 @@ impl Solution for Day04 {
     }
 }
 
-fn assignment_loop(raw: String) -> Vec<((u32, u32), (u32, u32))> {
+fn assignment_loop(raw: &str) -> Vec<((u32, u32), (u32, u32))> {
     raw.trim()
         .lines()
         .map(|x| x.split_once(',').unwrap())

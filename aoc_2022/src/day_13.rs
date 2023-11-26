@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day13;
 
@@ -9,9 +9,8 @@ impl Solution for Day13 {
         "Distress Signal"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 13);
-        let signals = parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let signals = parse(input);
 
         signals
             .chunks(2)
@@ -22,9 +21,8 @@ impl Solution for Day13 {
             .to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 13);
-        let mut signals = parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let mut signals = parse(input);
         let div = [Token::Number(6), Token::Number(2)];
         signals.extend(div.clone());
         signals.sort();

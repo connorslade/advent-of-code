@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day02;
 
@@ -7,12 +7,11 @@ impl Solution for Day02 {
         "Dive!"
     }
 
-    fn part_a(&self) -> String {
-        let d = problem::load(2021, 2);
+    fn part_a(&self, input: &str) -> String {
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
 
-        for i in d.lines() {
+        for i in input.lines() {
             let seg = i.split(' ').collect::<Vec<&str>>();
             let x = seg[1].parse::<u32>().unwrap();
 
@@ -27,13 +26,12 @@ impl Solution for Day02 {
         (dep * hor).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let d = problem::load(2021, 2);
+    fn part_b(&self, input: &str) -> String {
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
         let mut aim: u32 = 0;
 
-        for i in d.lines() {
+        for i in input.lines() {
             let seg = i.split(' ').collect::<Vec<&str>>();
             let x = seg[1].parse::<u32>().unwrap();
 

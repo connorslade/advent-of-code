@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day02;
 
@@ -7,11 +7,10 @@ impl Solution for Day02 {
         "Rock Paper Scissors"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 2);
+    fn part_a(&self, input: &str) -> String {
         let mut score = 0;
 
-        for (other, self_) in raw
+        for (other, self_) in input
             .lines()
             .filter(|x| !x.is_empty())
             .map(|x| x.split_once(' ').unwrap())
@@ -26,11 +25,10 @@ impl Solution for Day02 {
         score.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 2);
+    fn part_b(&self, input: &str) -> String {
         let mut score = 0;
 
-        for (other, self_) in raw
+        for (other, self_) in input
             .lines()
             .filter(|x| !x.is_empty())
             .map(|x| x.split_once(' ').unwrap())

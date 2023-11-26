@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day20;
 
@@ -7,16 +7,14 @@ impl Solution for Day20 {
         "Grove Positioning System"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 20);
-        let mut file = File::new(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let mut file = File::new(input);
         file.mix();
         file.coordinates().to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 20);
-        let mut file = File::new(&raw).multiply(811589153);
+    fn part_b(&self, input: &str) -> String {
+        let mut file = File::new(input).multiply(811589153);
         (0..10).for_each(|_| file.mix());
         file.coordinates().to_string()
     }

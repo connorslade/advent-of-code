@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day03;
 
@@ -7,9 +7,8 @@ impl Solution for Day03 {
         "Binary Diagnostic"
     }
 
-    fn part_a(&self) -> String {
-        let data = problem::load(2021, 3);
-        let num_len = data.lines().next().unwrap().len();
+    fn part_a(&self, input: &str) -> String {
+        let num_len = input.lines().next().unwrap().len();
 
         let mut gamma = vec![0; num_len];
         let mut epsilon = vec![1; num_len];
@@ -18,7 +17,7 @@ impl Solution for Day03 {
             let mut z = 0;
             let mut o = 0;
 
-            data.lines().for_each(|j| match j.chars().nth(i).unwrap() {
+            input.lines().for_each(|j| match j.chars().nth(i).unwrap() {
                 '0' => z += 1,
                 '1' => o += 1,
                 _ => {}
@@ -36,11 +35,10 @@ impl Solution for Day03 {
         (epsilon * gamma).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = problem::load(2021, 3);
-        let num_len = data.lines().next().unwrap().len();
+    fn part_b(&self, input: &str) -> String {
+        let num_len = input.lines().next().unwrap().len();
 
-        let mut oxygen_keep = data.lines().collect::<Vec<&str>>();
+        let mut oxygen_keep = input.lines().collect::<Vec<&str>>();
         let mut oxygen_raw = vec![[0, 0]; num_len];
         let mut oxygen_gen = 0;
 

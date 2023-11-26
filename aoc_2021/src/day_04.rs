@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day04;
 
@@ -7,15 +7,15 @@ impl Solution for Day04 {
         "Giant Squid"
     }
 
-    fn part_a(&self) -> String {
-        let bingo = Bingo::parse_input(problem::load(2021, 4));
+    fn part_a(&self, input: &str) -> String {
+        let bingo = Bingo::parse_input(input);
         let winning = bingo.solve();
 
         winning.0[winning.1].final_out(winning.2).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let bingo = Bingo::parse_input(problem::load(2021, 4));
+    fn part_b(&self, input: &str) -> String {
+        let bingo = Bingo::parse_input(input);
         let loseing = bingo.loseing_solve();
 
         loseing.0[loseing.1].final_out(loseing.2).to_string()
@@ -36,7 +36,7 @@ struct Board {
 }
 
 impl Bingo {
-    fn parse_input(inp: String) -> Self {
+    fn parse_input(inp: &str) -> Self {
         let mut lines = inp.lines();
         let numbers = lines
             .next()
@@ -103,7 +103,7 @@ impl Bingo {
 }
 
 impl Board {
-    fn parse(inp: String) -> Vec<Self> {
+    fn parse(inp: &str) -> Vec<Self> {
         let mut boards = Vec::new();
         let inp = inp.replace('\r', "");
         let raw_boards = inp.split("\n\n").skip(1);

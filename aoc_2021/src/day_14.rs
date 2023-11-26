@@ -1,6 +1,6 @@
 use hashbrown::HashMap;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day14;
 
@@ -9,15 +9,13 @@ impl Solution for Day14 {
         "Extended Polymerization"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2021, 14);
-        process(&raw, 10).to_string()
+    fn part_a(&self, input: &str) -> String {
+        process(input, 10).to_string()
     }
 
     // TODO: work with counts of units instead of the units themselves
-    fn part_b(&self) -> String {
-        let raw = problem::load(2021, 14);
-        let mut _polymer = Polymer::parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let mut _polymer = Polymer::parse(input);
         todo!()
     }
 }

@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 use hashbrown::HashMap;
 
@@ -15,8 +15,8 @@ impl Solution for Day08 {
         "Seven Segment Search"
     }
 
-    fn part_a(&self) -> String {
-        let data = parse(problem::load(2021, 8));
+    fn part_a(&self, input: &str) -> String {
+        let data = parse(input);
         let mut inc = 0;
 
         for i in data {
@@ -29,8 +29,8 @@ impl Solution for Day08 {
         inc.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = parse(problem::load(2021, 8));
+    fn part_b(&self, input: &str) -> String {
+        let data = parse(input);
         let mut inc = 0;
 
         let perms = permutations(CHARS.to_vec());
@@ -98,7 +98,7 @@ impl Solution for Day08 {
     }
 }
 
-fn parse(inp: String) -> Vec<(Vec<String>, Vec<String>)> {
+fn parse(inp: &str) -> Vec<(Vec<String>, Vec<String>)> {
     let mut out = Vec::new();
 
     for i in inp.lines() {

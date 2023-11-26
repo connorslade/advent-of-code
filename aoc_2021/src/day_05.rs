@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 use hashbrown::HashMap;
 
@@ -9,18 +9,18 @@ impl Solution for Day05 {
         "Hydrothermal Venture"
     }
 
-    fn part_a(&self) -> String {
-        run(false).to_string()
+    fn part_a(&self, input: &str) -> String {
+        run(input, false).to_string()
     }
 
-    fn part_b(&self) -> String {
-        run(true).to_string()
+    fn part_b(&self, input: &str) -> String {
+        run(input, true).to_string()
     }
 }
 
 /// dig -> Weather to include Diagonal Lines
-fn run(dig: bool) -> u32 {
-    let data = Segment::parse_inp(problem::load(2021, 5), dig).unwrap();
+fn run(input: &str, dig: bool) -> u32 {
+    let data = Segment::parse_inp(input, dig).unwrap();
     let mut all_loc = HashMap::new();
 
     for x in data {
@@ -47,7 +47,7 @@ struct Segment {
 }
 
 impl Segment {
-    fn parse_inp(inp: String, dig: bool) -> Option<Vec<Segment>> {
+    fn parse_inp(inp: &str, dig: bool) -> Option<Vec<Segment>> {
         let mut out = Vec::new();
 
         for line in inp.lines() {

@@ -1,6 +1,6 @@
 use hashbrown::HashSet;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day06;
 
@@ -9,14 +9,12 @@ impl Solution for Day06 {
         "Tuning Trouble"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 6);
-        process(&raw, 4).to_string()
+    fn part_a(&self, input: &str) -> String {
+        process(input, 4).to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 6);
-        process(&raw, 14).to_string()
+    fn part_b(&self, input: &str) -> String {
+        process(input, 14).to_string()
     }
 }
 

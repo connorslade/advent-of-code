@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day24;
 
@@ -7,13 +7,11 @@ impl Solution for Day24 {
         ""
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 24);
+    fn part_a(&self, _input: &str) -> String {
         todo!()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 24);
+    fn part_b(&self, _input: &str) -> String {
         todo!()
     }
 }

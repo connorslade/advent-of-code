@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day11;
 
@@ -7,9 +7,8 @@ impl Solution for Day11 {
         "Dumbo Octopus"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2021, 11);
-        let mut octopi = parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let mut octopi = parse(input);
 
         (0..100)
             .map(|_| step_octopi(&mut octopi))
@@ -17,9 +16,8 @@ impl Solution for Day11 {
             .to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2021, 11);
-        let mut octopi = parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let mut octopi = parse(input);
         let octopi_count = octopi.len() * octopi[0].len();
         let mut i = 0;
 

@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day10;
 
@@ -7,9 +7,8 @@ impl Solution for Day10 {
         "Cathode-Ray Tube"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 10);
-        let instructions = parse(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let instructions = parse(input);
         let cycles = cycle(&instructions);
 
         let mut out = 0;
@@ -20,9 +19,8 @@ impl Solution for Day10 {
         out.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 10);
-        let instructions = parse(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let instructions = parse(input);
         let mut out = "\n".to_owned();
         let mut sprite = 1;
         let mut cycle = 0;

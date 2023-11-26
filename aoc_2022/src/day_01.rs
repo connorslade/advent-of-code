@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day01;
 
@@ -7,16 +7,14 @@ impl Solution for Day01 {
         "Calorie Counting"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 1);
-        let elfs = get_elfs(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let elfs = get_elfs(input);
 
         elfs.last().unwrap().to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 1);
-        let elfs = get_elfs(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let elfs = get_elfs(input);
 
         elfs.iter().rev().take(3).sum::<u32>().to_string()
     }

@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 // use hashbrown::HashMap;
 // use petgraph::Graph;
@@ -10,8 +10,7 @@ impl Solution for Day16 {
         "Proboscidea Volcanium"
     }
 
-    fn part_a(&self) -> String {
-        let _raw = problem::load(2022, 16);
+    fn part_a(&self, _input: &str) -> String {
         // let mut _graph = parse(&raw);
 
         // let out = dfs(&mut HashMap::new(), &graph, 0, 0, 0, 30);
@@ -19,8 +18,7 @@ impl Solution for Day16 {
         todo!()
     }
 
-    fn part_b(&self) -> String {
-        let _raw = problem::load(2022, 16);
+    fn part_b(&self, _input: &str) -> String {
         todo!()
     }
 }

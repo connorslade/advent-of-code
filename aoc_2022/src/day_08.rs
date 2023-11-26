@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day08;
 
@@ -7,9 +7,8 @@ impl Solution for Day08 {
         "Treetop Tree House"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 8);
-        let trees = parse_trees(&raw);
+    fn part_a(&self, input: &str) -> String {
+        let trees = parse_trees(input);
         let mut count = 0;
 
         for row in 0..trees.len() {
@@ -28,9 +27,8 @@ impl Solution for Day08 {
         count.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 8);
-        let trees = parse_trees(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let trees = parse_trees(input);
         let mut count = 0;
 
         for row in 0..trees.len() {

@@ -1,6 +1,6 @@
 use hashbrown::HashSet;
 
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day07;
 
@@ -9,9 +9,8 @@ impl Solution for Day07 {
         "No Space Left On Device"
     }
 
-    fn part_a(&self) -> String {
-        let raw = problem::load(2022, 7);
-        process(&raw)
+    fn part_a(&self, input: &str) -> String {
+        process(input)
             .get_all_children()
             .iter()
             .filter(|x| x.is_dir && x.size <= 100000)
@@ -19,9 +18,8 @@ impl Solution for Day07 {
             .to_string()
     }
 
-    fn part_b(&self) -> String {
-        let raw = problem::load(2022, 7);
-        let folders = process(&raw);
+    fn part_b(&self, input: &str) -> String {
+        let folders = process(input);
         let needed_space = 30000000 - (70000000 - folders.size);
 
         let folder_vec = folders.get_all_children();

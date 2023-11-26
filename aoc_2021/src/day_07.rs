@@ -1,4 +1,4 @@
-use crate::{problem, Solution};
+use common::Solution;
 
 pub struct Day07;
 
@@ -7,8 +7,8 @@ impl Solution for Day07 {
         "The Treachery of Whales"
     }
 
-    fn part_a(&self) -> String {
-        let data = parse_crabs(problem::load(2021, 7));
+    fn part_a(&self, input: &str) -> String {
+        let data = parse_crabs(input);
 
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();
@@ -24,8 +24,8 @@ impl Solution for Day07 {
         this_min.to_string()
     }
 
-    fn part_b(&self) -> String {
-        let data = parse_crabs(problem::load(2021, 7));
+    fn part_b(&self, input: &str) -> String {
+        let data = parse_crabs(input);
 
         let min = data.iter().min().unwrap();
         let max = data.iter().max().unwrap();
@@ -42,7 +42,7 @@ impl Solution for Day07 {
     }
 }
 
-fn parse_crabs(inp: String) -> Vec<u32> {
+fn parse_crabs(inp: &str) -> Vec<u32> {
     inp.lines()
         .next()
         .unwrap()
