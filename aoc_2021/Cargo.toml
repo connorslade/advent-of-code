@@ -1,0 +1,8 @@
+[package]
+name = "aoc_2021"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common = { path = "../common" }
+hashbrown = "0.13.1"

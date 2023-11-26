@@ -27,6 +27,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc_2021"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "hashbrown 0.13.1",
+]
+
+[[package]]
 name = "aoc_lib"
 version = "0.1.0"
 dependencies = [
@@ -95,6 +103,10 @@ checksum = "0d4198f73e42b4936b35b5bb248d81d2b595ecb170da0bac7655c54eedfa8da8"
 dependencies = [
  "os_str_bytes",
 ]
+
+[[package]]
+name = "common"
+version = "0.1.0"
 
 [[package]]
 name = "convert_case"

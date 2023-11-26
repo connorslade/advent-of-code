@@ -4,15 +4,7 @@ name = "advent_of_code"
 version = "0.1.0"
 
 [workspace]
-members = ["aoc_lib"]
-
-[lib]
-name = "aoc_lib"
-path = "src/lib/mod.rs"
-
-[[bin]]
-name = "advent_of_code"
-path = "src/main.rs"
+members = ["aoc_lib", "aoc_2021", "common"]
 
 [dependencies]
 clap = { version = "4.0.29", features = ["derive"] }
