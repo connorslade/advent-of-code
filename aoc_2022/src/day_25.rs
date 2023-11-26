@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day25;
 
@@ -7,12 +7,12 @@ impl Solution for Day25 {
         "Full of Hot Air"
     }
 
-    fn part_a(&self, input: &str) -> String {
-        snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).to_string()
+    fn part_a(&self, input: &str) -> Answer {
+        snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).into()
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        String::new()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }
 

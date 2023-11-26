@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day05;
 
@@ -7,12 +7,12 @@ impl Solution for Day05 {
         "Supply Stacks"
     }
 
-    fn part_a(&self, input: &str) -> String {
-        process(&input, true)
+    fn part_a(&self, input: &str) -> Answer {
+        process(&input, true).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
-        process(&input, false)
+    fn part_b(&self, input: &str) -> Answer {
+        process(&input, false).into()
     }
 }
 

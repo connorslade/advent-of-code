@@ -1,7 +1,7 @@
 use hashbrown::HashSet;
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<usize>;
 
@@ -12,18 +12,18 @@ impl Solution for Day13 {
         "Transparent Origami"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut paper = Paper::parse(input);
         paper.fold(0);
 
-        paper.data.len().to_string()
+        paper.data.len().into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut paper = Paper::parse(input);
         (0..paper.folds.len()).for_each(|x| paper.fold(x));
 
-        paper.print()
+        paper.print().into()
     }
 }
 

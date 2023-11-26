@@ -1,6 +1,6 @@
 use hashbrown::HashSet;
 
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day06;
 
@@ -9,12 +9,12 @@ impl Solution for Day06 {
         "Tuning Trouble"
     }
 
-    fn part_a(&self, input: &str) -> String {
-        process(input, 4).to_string()
+    fn part_a(&self, input: &str) -> Answer {
+        process(input, 4).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
-        process(input, 14).to_string()
+    fn part_b(&self, input: &str) -> Answer {
+        process(input, 14).into()
     }
 }
 

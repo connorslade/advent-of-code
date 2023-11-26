@@ -1,6 +1,6 @@
 use hashbrown::HashMap;
 
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day14;
 
@@ -9,14 +9,14 @@ impl Solution for Day14 {
         "Extended Polymerization"
     }
 
-    fn part_a(&self, input: &str) -> String {
-        process(input, 10).to_string()
+    fn part_a(&self, input: &str) -> Answer {
+        process(input, 10).into()
     }
 
     // TODO: work with counts of units instead of the units themselves
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut _polymer = Polymer::parse(input);
-        todo!()
+        Answer::Unimplemented
     }
 }
 

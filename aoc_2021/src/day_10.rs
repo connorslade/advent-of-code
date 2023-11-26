@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
@@ -9,7 +9,7 @@ impl Solution for Day10 {
         "Syntax Scoring"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let data = parse(input);
 
         let mut total = 0;
@@ -34,10 +34,10 @@ impl Solution for Day10 {
             }
         }
 
-        total.to_string()
+        total.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let data = parse(input);
 
         let mut scores = Vec::new();
@@ -75,7 +75,7 @@ impl Solution for Day10 {
 
         scores.sort_unstable();
         let mid = scores.len() / 2;
-        scores[mid].to_string()
+        scores[mid].into()
     }
 }
 

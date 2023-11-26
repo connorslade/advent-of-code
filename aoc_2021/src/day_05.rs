@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 use hashbrown::HashMap;
 
@@ -9,12 +9,12 @@ impl Solution for Day05 {
         "Hydrothermal Venture"
     }
 
-    fn part_a(&self, input: &str) -> String {
-        run(input, false).to_string()
+    fn part_a(&self, input: &str) -> Answer {
+        run(input, false).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
-        run(input, true).to_string()
+    fn part_b(&self, input: &str) -> Answer {
+        run(input, true).into()
     }
 }
 

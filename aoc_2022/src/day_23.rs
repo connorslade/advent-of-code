@@ -1,7 +1,7 @@
 use hashbrown::{hash_map::Entry, HashMap, HashSet};
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<isize>;
 
@@ -12,7 +12,7 @@ impl Solution for Day23 {
         "Unstable Diffusion"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
 
         world.draw();
@@ -21,11 +21,11 @@ impl Solution for Day23 {
             world.draw();
         }
 
-        world.count_blank().to_string()
+        world.count_blank().into()
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        todo!()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }
 

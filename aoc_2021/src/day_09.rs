@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day09;
 
@@ -7,18 +7,18 @@ impl Solution for Day09 {
         "Smoke Basin"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let data = parse(input);
         let low = lowest(data);
 
-        low.iter().map(|x| *x + 1).sum::<u32>().to_string()
+        low.iter().map(|x| *x + 1).sum::<u32>().into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let data = parse(input);
         let basins = basins(data);
 
-        basins.iter().rev().take(3).product::<u32>().to_string()
+        basins.iter().rev().take(3).product::<u32>().into()
     }
 }
 

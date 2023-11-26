@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day02;
 
@@ -7,7 +7,7 @@ impl Solution for Day02 {
         "Dive!"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
 
@@ -23,10 +23,10 @@ impl Solution for Day02 {
             }
         }
 
-        (dep * hor).to_string()
+        (dep * hor).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut dep: u32 = 0;
         let mut hor: u32 = 0;
         let mut aim: u32 = 0;
@@ -46,6 +46,6 @@ impl Solution for Day02 {
             }
         }
 
-        (dep * hor).to_string()
+        (dep * hor).into()
     }
 }

@@ -1,5 +1,5 @@
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 use rayon::prelude::*;
 
@@ -12,7 +12,7 @@ impl Solution for Day15 {
         "Beacon Exclusion Zone"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let world = World::parse(input);
         let y_level = 2000000; // 10 for example
 
@@ -22,15 +22,15 @@ impl Solution for Day15 {
             .filter(|x| world.is_sensed(*x))
             .count();
 
-        (blocked - 1).to_string()
+        (blocked - 1).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let world = World::parse(input);
         let bounds = 4000000;
 
         let distress = world.search(bounds).expect("No distress beacon found");
-        (distress.x * 4000000 + distress.y).to_string()
+        (distress.x * 4000000 + distress.y).into()
     }
 }
 

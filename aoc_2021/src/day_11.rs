@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day11;
 
@@ -7,16 +7,16 @@ impl Solution for Day11 {
         "Dumbo Octopus"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut octopi = parse(input);
 
         (0..100)
             .map(|_| step_octopi(&mut octopi))
             .sum::<usize>()
-            .to_string()
+            .into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut octopi = parse(input);
         let octopi_count = octopi.len() * octopi[0].len();
         let mut i = 0;
@@ -30,7 +30,7 @@ impl Solution for Day11 {
             }
         }
 
-        i.to_string()
+        i.into()
     }
 }
 

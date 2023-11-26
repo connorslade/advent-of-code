@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day04;
 
@@ -7,18 +7,18 @@ impl Solution for Day04 {
         "Giant Squid"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let bingo = Bingo::parse_input(input);
         let winning = bingo.solve();
 
-        winning.0[winning.1].final_out(winning.2).to_string()
+        winning.0[winning.1].final_out(winning.2).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let bingo = Bingo::parse_input(input);
         let loseing = bingo.loseing_solve();
 
-        loseing.0[loseing.1].final_out(loseing.2).to_string()
+        loseing.0[loseing.1].final_out(loseing.2).into()
     }
 }
 

@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day04;
 
@@ -7,24 +7,24 @@ impl Solution for Day04 {
         "Camp Cleanup"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut out = 0;
 
         for (p1, p2) in assignment_loop(input) {
             out += ((p1.0 >= p2.0 && p1.1 <= p2.1) || (p2.0 >= p1.0 && p2.1 <= p1.1)) as usize;
         }
 
-        out.to_string()
+        out.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut out = 0;
 
         for (p1, p2) in assignment_loop(input) {
             out += (p1.0.max(p2.0) <= p1.1.min(p2.1)) as usize;
         }
 
-        out.to_string()
+        out.into()
     }
 }
 

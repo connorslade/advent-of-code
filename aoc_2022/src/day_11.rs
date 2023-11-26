@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day11;
 
@@ -9,17 +9,17 @@ impl Solution for Day11 {
         "Monkey in the Middle"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let monkeys = parse_monkeys(input);
 
-        process(monkeys, 20, |x| x / 3).to_string()
+        process(monkeys, 20, |x| x / 3).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let monkeys = parse_monkeys(input);
 
         let magic = monkeys.iter().map(|x| x.test.divisor).product::<u64>();
-        process(monkeys, 10000, |x| x % magic).to_string()
+        process(monkeys, 10000, |x| x % magic).into()
     }
 }
 

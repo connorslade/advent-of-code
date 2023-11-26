@@ -2,7 +2,7 @@ use hashbrown::HashSet;
 use std::collections::VecDeque;
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<isize>;
 pub struct Day22;
@@ -12,15 +12,15 @@ impl Solution for Day22 {
         "Monkey Map"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
         world.run(wrap_1);
 
-        world.password().to_string()
+        world.password().into()
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        todo!()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }
 

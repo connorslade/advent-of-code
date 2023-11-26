@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 use std::mem;
 
@@ -9,7 +9,7 @@ impl Solution for Day19 {
         ""
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let robots = parse(input);
 
         let mut geodes = Vec::new();
@@ -23,11 +23,11 @@ impl Solution for Day19 {
             .enumerate()
             .map(|(i, e)| e * (1 + i as u32))
             .sum::<u32>()
-            .to_string()
+            .into()
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        todo!()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }
 

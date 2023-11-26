@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day20;
 
@@ -7,16 +7,16 @@ impl Solution for Day20 {
         "Grove Positioning System"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut file = File::new(input);
         file.mix();
-        file.coordinates().to_string()
+        file.coordinates().into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut file = File::new(input).multiply(811589153);
         (0..10).for_each(|_| file.mix());
-        file.coordinates().to_string()
+        file.coordinates().into()
     }
 }
 

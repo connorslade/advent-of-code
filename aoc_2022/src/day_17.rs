@@ -1,7 +1,7 @@
 use hashbrown::{hash_map::Entry, HashMap};
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<i64>;
 
@@ -12,14 +12,14 @@ impl Solution for Day17 {
         "Pyroclastic Flow"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut world = World::new(input);
-        process(&mut world, 2022).to_string()
+        process(&mut world, 2022).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut world = World::new(input);
-        process(&mut world, 1000000000000).to_string()
+        process(&mut world, 1000000000000).into()
     }
 }
 

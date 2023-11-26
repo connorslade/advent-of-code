@@ -1,6 +1,6 @@
 use hashbrown::HashSet;
 
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day03;
 
@@ -9,7 +9,7 @@ impl Solution for Day03 {
         "Rucksack Reorganization"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut out = 0;
 
         for i in input.trim().lines() {
@@ -22,10 +22,10 @@ impl Solution for Day03 {
             out += score_item(bolth[0]) as usize;
         }
 
-        out.to_string()
+        out.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut out = 0;
 
         for i in input.trim().lines().collect::<Vec<_>>().chunks(3) {
@@ -37,7 +37,7 @@ impl Solution for Day03 {
             out += score_item(*all.iter().next().unwrap()) as usize;
         }
 
-        out.to_string()
+        out.into()
     }
 }
 

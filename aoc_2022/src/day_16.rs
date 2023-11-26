@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 // use hashbrown::HashMap;
 // use petgraph::Graph;
@@ -10,16 +10,16 @@ impl Solution for Day16 {
         "Proboscidea Volcanium"
     }
 
-    fn part_a(&self, _input: &str) -> String {
+    fn part_a(&self, _input: &str) -> Answer {
         // let mut _graph = parse(&raw);
 
         // let out = dfs(&mut HashMap::new(), &graph, 0, 0, 0, 30);
 
-        todo!()
+        Answer::Unimplemented
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        todo!()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }
 

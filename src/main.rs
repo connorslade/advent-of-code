@@ -26,7 +26,7 @@ fn main() {
             };
 
             println!("[*] Running: {} ({})", solution.name(), part.to_uppercase());
-            let input = common::load(year, day + 1);
+            let input = common::load(year, day + 1).unwrap();
 
             let start = Instant::now();
             let out = match part.to_lowercase().to_string().as_str() {

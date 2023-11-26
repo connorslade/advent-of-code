@@ -1,7 +1,7 @@
 use aoc_lib::Matrix;
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<usize>;
 
@@ -14,7 +14,7 @@ impl Solution for Day14 {
         "Regolith Reservoir"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
 
         'o: loop {
@@ -28,10 +28,10 @@ impl Solution for Day14 {
             }
         }
 
-        (world.count_sand() - 1).to_string()
+        (world.count_sand() - 1).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
 
         loop {
@@ -44,7 +44,7 @@ impl Solution for Day14 {
             while world.tick(true) {}
         }
 
-        world.count_sand().to_string()
+        world.count_sand().into()
     }
 }
 

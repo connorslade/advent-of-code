@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day03;
 
@@ -7,7 +7,7 @@ impl Solution for Day03 {
         "Binary Diagnostic"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let num_len = input.lines().next().unwrap().len();
 
         let mut gamma = vec![0; num_len];
@@ -32,10 +32,10 @@ impl Solution for Day03 {
         let gamma = int_from_bin(&gamma).unwrap();
         let epsilon = int_from_bin(&epsilon).unwrap();
 
-        (epsilon * gamma).to_string()
+        (epsilon * gamma).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let num_len = input.lines().next().unwrap().len();
 
         let mut oxygen_keep = input.lines().collect::<Vec<&str>>();
@@ -66,7 +66,7 @@ impl Solution for Day03 {
             }
         }
 
-        (oxygen_gen * co2_scrub).to_string()
+        (oxygen_gen * co2_scrub).into()
     }
 }
 

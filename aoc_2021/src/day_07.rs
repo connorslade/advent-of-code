@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day07;
 
@@ -7,7 +7,7 @@ impl Solution for Day07 {
         "The Treachery of Whales"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let data = parse_crabs(input);
 
         let min = data.iter().min().unwrap();
@@ -21,10 +21,10 @@ impl Solution for Day07 {
             }
         }
 
-        this_min.to_string()
+        this_min.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let data = parse_crabs(input);
 
         let min = data.iter().min().unwrap();
@@ -38,7 +38,7 @@ impl Solution for Day07 {
             }
         }
 
-        this_min.to_string()
+        this_min.into()
     }
 }
 

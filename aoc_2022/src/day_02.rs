@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day02;
 
@@ -7,7 +7,7 @@ impl Solution for Day02 {
         "Rock Paper Scissors"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let mut score = 0;
 
         for (other, self_) in input
@@ -22,10 +22,10 @@ impl Solution for Day02 {
             score += score_round(other_move, self_move).to_score();
         }
 
-        score.to_string()
+        score.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut score = 0;
 
         for (other, self_) in input
@@ -45,7 +45,7 @@ impl Solution for Day02 {
             score += score_round(other_move, self_move).to_score();
         }
 
-        score.to_string()
+        score.into()
     }
 }
 

@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 use std::hash::Hash;
 
@@ -11,18 +11,14 @@ impl Solution for Day06 {
         "Lanternfish"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let data = Fish::parse_inp(input);
-        let out = Fish::sim(data, 80);
-
-        out.to_string()
+        Fish::sim(data, 80).into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let data = Fish::parse_inp(input);
-        let out = Fish::sim(data, 256);
-
-        out.to_string()
+        Fish::sim(data, 256).into()
     }
 }
 

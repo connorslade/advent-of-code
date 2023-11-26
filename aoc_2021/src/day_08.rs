@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 use hashbrown::HashMap;
 
@@ -15,7 +15,7 @@ impl Solution for Day08 {
         "Seven Segment Search"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let data = parse(input);
         let mut inc = 0;
 
@@ -26,10 +26,10 @@ impl Solution for Day08 {
                     .count();
         }
 
-        inc.to_string()
+        inc.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let data = parse(input);
         let mut inc = 0;
 
@@ -94,7 +94,7 @@ impl Solution for Day08 {
             }
         }
 
-        inc.to_string()
+        inc.into()
     }
 }
 

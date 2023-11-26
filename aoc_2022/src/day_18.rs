@@ -1,7 +1,7 @@
 use hashbrown::HashSet;
 
 use crate::aoc_lib::Point3;
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day18;
 
@@ -10,7 +10,7 @@ impl Solution for Day18 {
         "Boiling Boulders"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let world = World::parse(input);
 
         let mut open_faces = 0;
@@ -19,10 +19,10 @@ impl Solution for Day18 {
             open_faces += 6 - world.neighbors(i);
         }
 
-        open_faces.to_string()
+        open_faces.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let world = World::parse(input);
 
         let outside = world.flood_fill(Point3::new(0, 0, 0));
@@ -36,7 +36,7 @@ impl Solution for Day18 {
             }
         }
 
-        out.to_string()
+        out.into()
     }
 }
 

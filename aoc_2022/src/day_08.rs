@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day08;
 
@@ -7,7 +7,7 @@ impl Solution for Day08 {
         "Treetop Tree House"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let trees = parse_trees(input);
         let mut count = 0;
 
@@ -24,10 +24,10 @@ impl Solution for Day08 {
             }
         }
 
-        count.to_string()
+        count.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let trees = parse_trees(input);
         let mut count = 0;
 
@@ -42,7 +42,7 @@ impl Solution for Day08 {
             }
         }
 
-        count.to_string()
+        count.into()
     }
 }
 

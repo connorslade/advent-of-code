@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day13;
 
@@ -9,7 +9,7 @@ impl Solution for Day13 {
         "Distress Signal"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let signals = parse(input);
 
         signals
@@ -18,10 +18,10 @@ impl Solution for Day13 {
             .filter(|x| x.1[0].cmp(&x.1[1]) == Ordering::Less)
             .map(|x| 1 + x.0)
             .sum::<usize>()
-            .to_string()
+            .into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut signals = parse(input);
         let div = [Token::Number(6), Token::Number(2)];
         signals.extend(div.clone());
@@ -33,7 +33,7 @@ impl Solution for Day13 {
             .filter(|x| div.contains(x.1))
             .map(|x| x.0 + 1)
             .product::<usize>()
-            .to_string()
+            .into()
     }
 }
 

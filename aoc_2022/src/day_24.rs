@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Answer, Solution};
 
 pub struct Day24;
 
@@ -7,11 +7,11 @@ impl Solution for Day24 {
         ""
     }
 
-    fn part_a(&self, _input: &str) -> String {
-        todo!()
+    fn part_a(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 
-    fn part_b(&self, _input: &str) -> String {
-        todo!()
+    fn part_b(&self, _input: &str) -> Answer {
+        Answer::Unimplemented
     }
 }

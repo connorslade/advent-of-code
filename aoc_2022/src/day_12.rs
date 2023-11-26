@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use crate::aoc_lib;
-use common::Solution;
+use common::{Answer, Solution};
 
 type Point = aoc_lib::Point<usize>;
 
@@ -12,22 +12,22 @@ impl Solution for Day12 {
         "Hill Climbing Algorithm"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let map = parse(input);
 
         run_path(&map, |a, b| a <= b + 1, |c| c == map.end)
             .unwrap()
-            .to_string()
+            .into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let mut map = parse(input);
         map.start = map.end;
         map.current = map.start;
 
         run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y][c.x] == 0)
             .expect("No path found!?")
-            .to_string()
+            .into()
     }
 }
 

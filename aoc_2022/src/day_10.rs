@@ -1,4 +1,4 @@
-use common::Solution;
+use common::{Solution, Answer};
 
 pub struct Day10;
 
@@ -7,7 +7,7 @@ impl Solution for Day10 {
         "Cathode-Ray Tube"
     }
 
-    fn part_a(&self, input: &str) -> String {
+    fn part_a(&self, input: &str) -> Answer {
         let instructions = parse(input);
         let cycles = cycle(&instructions);
 
@@ -16,10 +16,10 @@ impl Solution for Day10 {
             out += cycles[0..i].iter().sum::<i32>() * i as i32;
         }
 
-        out.to_string()
+        out.into()
     }
 
-    fn part_b(&self, input: &str) -> String {
+    fn part_b(&self, input: &str) -> Answer {
         let instructions = parse(input);
         let mut out = "\n".to_owned();
         let mut sprite = 1;
@@ -40,7 +40,7 @@ impl Solution for Day10 {
             sprite += inc;
         }
 
-        make_lines(&out, 40)
+        make_lines(&out, 40).into()
     }
 }
 
