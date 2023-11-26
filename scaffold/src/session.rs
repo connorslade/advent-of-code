@@ -4,6 +4,8 @@ use anyhow::{Context, Result};
 use scraper::Html;
 use url::Url;
 
+use crate::TOKEN_VAR;
+
 pub struct Session {
     token: String,
     from_env: bool,
@@ -18,7 +20,7 @@ impl Session {
     }
 
     pub fn from_env() -> Result<Self> {
-        let token = env::var("AOC_TOKEN")?;
+        let token = env::var(TOKEN_VAR)?;
         Ok(Self {
             token,
             from_env: true,
