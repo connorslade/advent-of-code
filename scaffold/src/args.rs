@@ -76,8 +76,15 @@ pub struct InitArgs {
     /// Useful if you want to use this command with a different language or organization.
     #[arg(short, long)]
     pub no_scaffold: bool,
+    /// Automatically open the solution file in your editor.
+    /// Only works if you are not using `--no-scaffold`.
+    /// Configure the editor with the `--editor` argument.
+    #[arg(short, long)]
+    pub auto_open: bool,
+    /// Command to open a file in your editor.
+    #[arg(short, long, default_value = "code {{file}}")]
+    pub editor: String,
 
-    // auto_open: bool,
     /// The day to fetch the input for.
     pub day: u8,
     /// The year to fetch the input for.

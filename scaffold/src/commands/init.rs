@@ -1,7 +1,8 @@
 use std::{
     fs::{self, File},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
+    process::Command,
 };
 
 use anyhow::{Context, Result};
@@ -25,16 +26,35 @@ pub fn init(session: &Session, cmd: &InitArgs, args: &Args) -> Result<()> {
     write_input(cmd, input, formats)?;
 
     if !cmd.no_scaffold {
-        write_scaffold(cmd, formats)?;
+        let path = write_scaffold(cmd, formats)?;
         modify_module(cmd, formats)?;
+
+        if cmd.auto_open {
+            let command =
+                Formatter::new(&cmd.editor)?.format::<&[_]>(&[("file", path.to_string_lossy())])?;
+            let args = shell_words::split(&command)?;
+            let executable = which::which(&args[0])?;
+            println!("[*] Opening solution file");
+            Command::new(&executable)
+                .args(&args[1..])
+                .spawn()
+                .with_context(|| {
+                    format!(
+                        "Opening editor with `{}` [{:?}]",
+                        executable.to_string_lossy(),
+                        &args[1..]
+                    )
+                })?;
+        }
     }
 
     Ok(())
 }
 
-fn write_scaffold(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
-    let file_location = Formatter::new(&cmd.solution_location)?.format(formats)?;
-    let mut file = create_file(&Path::new(&file_location))?;
+fn write_scaffold(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<PathBuf> {
+    let location = Formatter::new(&cmd.solution_location)?.format(formats)?;
+    let file_location = Path::new(&location);
+    let mut file = create_file(&file_location)?;
 
     println!("[*] Loading template");
     let template = match cmd.solution_template {
@@ -44,8 +64,8 @@ fn write_scaffold(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
     let template = Formatter::new(&template)?.format(formats)?;
 
     file.write_all(template.as_bytes())?;
-    println!("[*] Wrote scaffold to {file_location}");
-    Ok(())
+    println!("[*] Wrote scaffold to {location}");
+    Ok(file_location.to_path_buf())
 }
 
 // todo: Pass args from main func
