@@ -63,7 +63,7 @@ fn get_year(year: u32) -> &'static [&'static dyn Solution] {
     match year {
         2021 => &aoc_2021::ALL,
         2022 => &aoc_2022::ALL,
-        2023 => &aoc_2023::ALL,
+        2023 => aoc_2023::ALL,
         _ => &[],
     }
 }

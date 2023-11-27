@@ -58,8 +58,7 @@ impl Solution for Day10 {
 
             if !is_corrupted {
                 let mut score = 0;
-                while !queue.is_empty() {
-                    let ch = queue.pop().unwrap();
+                while let Some(ch) = queue.pop() {
                     score = 5 * score
                         + match ch {
                             ')' => 1,

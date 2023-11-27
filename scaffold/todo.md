@@ -1,11 +1,12 @@
 # Todo
 
-- [ ] Formatter
-- [ ] Commands
-  - [ ] Init
+- [x] Formatter
+- [x] Commands
+  - [x] Init
     - [x] Scaffold
-    - [ ] Module
+    - [x] Module
     - [x] Input
   - [x] Verify
   - [x] Token
   - [x] Timer
+- [ ] Allow not filling the solution array

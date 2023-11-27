@@ -10,7 +10,7 @@ pub struct Formatter {
 }
 
 #[derive(Debug)]
-enum Component {
+pub enum Component {
     Literal(String),
     Format {
         name: String,
@@ -19,7 +19,7 @@ enum Component {
 }
 
 #[derive(Debug)]
-enum Processor {
+pub enum Processor {
     Pad { width: usize },
     Uppercase,
 }

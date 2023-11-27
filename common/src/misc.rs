@@ -9,5 +9,5 @@ pub fn load(year: u32, day: u32) -> io::Result<String> {
 /// Load the input for the given year and day.
 pub fn load_raw(year: u32, day: u32) -> io::Result<String> {
     let file = format!("data/{year}/{:02}.txt", day);
-    fs::read_to_string(&file)
+    fs::read_to_string(file)
 }

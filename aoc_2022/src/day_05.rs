@@ -8,11 +8,11 @@ impl Solution for Day05 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        process(&input, true).into()
+        process(input, true).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        process(&input, false).into()
+        process(input, false).into()
     }
 }
 

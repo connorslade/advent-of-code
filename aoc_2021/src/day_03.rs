@@ -50,12 +50,12 @@ impl Solution for Day03 {
             // Filter Oxygen
             let imax = get_imax(&oxygen_raw, i);
             oxygen_raw = gen_raw(oxygen_raw, num_len, &oxygen_keep);
-            oxygen_keep.retain(|x| x.chars().into_iter().nth(i).unwrap() == imax);
+            oxygen_keep.retain(|x| x.chars().nth(i).unwrap() == imax);
 
             // Filter Co2
             let imax = get_imax(&co2_raw, i);
             co2_raw = gen_raw(co2_raw, num_len, &co2_keep);
-            co2_keep.retain(|x| x.chars().into_iter().nth(i).unwrap() != imax);
+            co2_keep.retain(|x| x.chars().nth(i).unwrap() != imax);
 
             if oxygen_keep.len() == 1 {
                 oxygen_gen = isize::from_str_radix(oxygen_keep.first().unwrap(), 2).unwrap();

@@ -56,7 +56,7 @@ const NEIGHBORS: [Point3; 6] = [
 impl World {
     fn parse(raw: &str) -> Self {
         Self {
-            points: HashSet::from_iter(parse(raw).into_iter()),
+            points: HashSet::from_iter(parse(raw)),
         }
     }
 
