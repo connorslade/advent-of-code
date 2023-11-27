@@ -93,7 +93,7 @@ impl<T: Display> Arguments for &[(&str, T)] {
 }
 
 mod tokenize {
-    use anyhow::{bail, Result};
+    use anyhow::Result;
 
     use super::{Component, Processor};
 

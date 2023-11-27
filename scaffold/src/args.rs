@@ -16,29 +16,6 @@ pub struct Args {
     pub subcommand: SubCommand,
 }
 
-impl Args {
-    pub fn as_token_args(&self) -> &TokenArgs {
-        match &self.subcommand {
-            SubCommand::Token(args) => args,
-            _ => panic!("Expected token subcommand"),
-        }
-    }
-
-    pub fn as_timer_args(&self) -> &TimerArgs {
-        match &self.subcommand {
-            SubCommand::Timer(args) => args,
-            _ => panic!("Expected timer subcommand"),
-        }
-    }
-
-    pub fn as_init_args(&self) -> &InitArgs {
-        match &self.subcommand {
-            SubCommand::Init(args) => args,
-            _ => panic!("Expected init subcommand"),
-        }
-    }
-}
-
 #[derive(Parser, Debug)]
 pub enum SubCommand {
     /// Verify that the session token provided is still valid
@@ -80,7 +57,7 @@ pub struct InitArgs {
     pub input_location: String,
     /// A formatter that will be used to get the path for the solution file.
     #[arg(short, long, default_value = "aoc_{{year}}/src/day_{{day:pad(2)}}.rs")]
-    solution_location: String,
+    pub solution_location: String,
     /// Location formatter of the file importing each solution module.
     #[arg(long, default_value = "aoc_{{year}}/src/lib.rs")]
     module_location: String,
@@ -94,7 +71,7 @@ pub struct InitArgs {
     /// Path to a template file that will be used to create the solution file.
     /// If not provided, a default template will be used.
     #[arg(short = 't', long)]
-    solution_template: Option<String>,
+    pub solution_template: Option<String>,
     /// Don't create a solution file.
     /// Useful if you want to use this command with a different language or organization.
     #[arg(short, long)]
