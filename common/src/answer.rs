@@ -1,5 +1,6 @@
 use std::fmt::{self, Display};
 
+#[derive(Debug, PartialEq)]
 pub enum Answer {
     String(String),
     Number(u64),

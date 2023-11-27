@@ -62,7 +62,9 @@ impl Processor {
     fn parse(name: &str, args: &str) -> Result<Self> {
         Ok(match name.to_lowercase().as_str() {
             "pad" => {
-                let width = args.parse().unwrap();
+                let width = args
+                    .parse()
+                    .with_context(|| format!("Invalid width of `{args}`"))?;
                 Self::Pad { width }
             }
             "uppercase" => Self::Uppercase,
@@ -93,7 +95,7 @@ impl<T: Display> Arguments for &[(&str, T)] {
 }
 
 mod tokenize {
-    use anyhow::Result;
+    use anyhow::{Context, Result};
 
     use super::{Component, Processor};
 
@@ -155,7 +157,7 @@ mod tokenize {
                         break;
                     }
                     ':' => {
-                        processors.push(self.parse_processor()?);
+                        processors.push(self.parse_processor().context("Parsing processor")?);
                         continue;
                     }
                     _ => name.push(c),

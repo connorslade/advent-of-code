@@ -28,10 +28,6 @@ impl Session {
         })
     }
 
-    pub fn token(&self) -> &str {
-        &self.token
-    }
-
     pub fn is_from_env(&self) -> bool {
         self.from_env
     }

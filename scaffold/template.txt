@@ -1,8 +1,8 @@
 use common::{Answer, Solution};
 
-pub struct Day{{day:pad}};
+pub struct Day{{day:pad(2)}};
 
-impl Solution for Day{{day:pad}} {
+impl Solution for Day{{day:pad(2)}} {
     fn name(&self) -> &'static str {
         "{{problem_name}}"
     }

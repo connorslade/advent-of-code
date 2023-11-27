@@ -1,4 +1,4 @@
-use common::{Solution, Answer};
+use common::{Answer, Solution};
 
 pub struct Day10;
 

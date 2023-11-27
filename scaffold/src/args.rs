@@ -53,21 +53,21 @@ pub struct TimerArgs {
 #[derive(Parser, Debug)]
 pub struct InitArgs {
     /// A formatter that will be used to get the path for the input file.
-    #[arg(short, long, default_value = "{{year}}/{{day:pad(2)}}.txt")]
+    #[arg(short, long, default_value = "data/{{year}}/{{day:pad(2)}}.txt")]
     pub input_location: String,
     /// A formatter that will be used to get the path for the solution file.
     #[arg(short, long, default_value = "aoc_{{year}}/src/day_{{day:pad(2)}}.rs")]
     pub solution_location: String,
     /// Location formatter of the file importing each solution module.
     #[arg(long, default_value = "aoc_{{year}}/src/lib.rs")]
-    module_location: String,
+    pub module_location: String,
     /// A formatter for a new line that will be added to the module file before the marker.
-    #[arg(long, default_values_t = ["mod day_{{day:pad(2)}};".to_owned(), "&day_{{day:pad(2)}}::Day{{day:pad(2)}},".to_owned()])]
-    module_templates: Vec<String>,
+    #[arg(long, default_values_t = ["mod day_{{day:pad(2)}};\n".to_owned(), "&day_{{day:pad(2)}}::Day{{day:pad(2)}},\n    ".to_owned()])]
+    pub module_templates: Vec<String>,
     /// A marker is a string that will be found in the module file and is used to determine where to insert the new line.
     /// If not provided, the default markers will be used.
     #[arg(long, default_values_t = ["// [import_marker]".to_owned(), "// [list_marker]".to_owned()])]
-    module_markers: Vec<String>,
+    pub module_markers: Vec<String>,
     /// Path to a template file that will be used to create the solution file.
     /// If not provided, a default template will be used.
     #[arg(short = 't', long)]
@@ -77,6 +77,7 @@ pub struct InitArgs {
     #[arg(short, long)]
     pub no_scaffold: bool,
 
+    // auto_open: bool,
     /// The day to fetch the input for.
     pub day: u8,
     /// The year to fetch the input for.

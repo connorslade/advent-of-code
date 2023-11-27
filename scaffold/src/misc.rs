@@ -8,6 +8,13 @@ macro_rules! selector {
     }};
 }
 
+macro_rules! regex {
+    ($raw:expr) => {{
+        static REGEX: once_cell::sync::OnceCell<regex::Regex> = once_cell::sync::OnceCell::new();
+        REGEX.get_or_init(|| regex::Regex::new($raw).unwrap())
+    }};
+}
+
 pub fn current_year() -> u16 {
     Utc::now().year() as u16
 }
