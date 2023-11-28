@@ -12,12 +12,12 @@ impl Solution for Day25 {
     }
 
     fn part_b(&self, _input: &str) -> Answer {
+        // No part b for day 25!
         Answer::Unimplemented
     }
 }
 
 mod snafu {
-
     pub fn decode(s: &str) -> i64 {
         let mut value = 0;
 
@@ -45,5 +45,34 @@ mod snafu {
         }
 
         out.chars().rev().collect::<String>()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use indoc::indoc;
+
+    use super::Day25;
+    use common::Solution;
+
+    const CASE: &str = indoc! {r"
+        1=-0-2
+        12111
+        2=0=
+        21
+        2=01
+        111
+        20012
+        112
+        1=-1=
+        1-12
+        12
+        1=
+        122
+    "};
+
+    #[test]
+    fn part_a() {
+        assert_eq!(Day25.part_a(CASE), "2=-1=0".into());
     }
 }
