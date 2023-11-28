@@ -17,25 +17,38 @@ impl Solution for Day24 {
         let end = basin.end();
         let states = basin.all_states();
 
-        let path = bfs(
-            &(vector!(1, 0), 0),
-            move |(pos, idx)| {
-                states[(idx + 1) % states.len()]
-                    .available(*pos)
-                    .iter()
-                    .map(move |x| (*x, *idx))
-                    .collect::<Vec<_>>()
-            },
-            |(pos, _)| *pos == end,
-        )
-        .unwrap();
-
-        path.len().into()
+        path(&states, 0, vector!(1, 0), end).into()
     }
 
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
+    fn part_b(&self, input: &str) -> Answer {
+        let basin = Basin::parse(input);
+        let end = basin.end();
+        let states = basin.all_states();
+
+        let a = path(&states, 0, vector!(1, 0), end);
+        let b = path(&states, a, end, vector!(1, 0));
+        let c = path(&states, a + b, vector!(1, 0), end);
+
+        (a + b + c).into()
     }
+}
+
+fn path(states: &[Basin], state: usize, start: Pos, end: Pos) -> usize {
+    let path = bfs(
+        &(start, state),
+        move |(pos, mut idx)| {
+            idx += 1;
+            states[idx % states.len()]
+                .available(*pos)
+                .iter()
+                .map(move |x| (*x, idx))
+                .collect::<Vec<_>>()
+        },
+        |(pos, _)| *pos == end,
+    )
+    .unwrap();
+
+    path.len() - 1
 }
 
 enum Direction {
@@ -159,35 +172,7 @@ impl Basin {
     }
 
     fn end(&self) -> Pos {
-        vector!(self.size.y() - 1, self.size.x() - 2)
-    }
-
-    fn print_board(&self) {
-        for row in &self.tiles {
-            for tile in row {
-                print!(
-                    "{}",
-                    match tile {
-                        Tile::Empty => '.',
-                        Tile::Wall => '#',
-                        Tile::Blizzard(b) => {
-                            let dir = b.directions();
-                            if dir.len() == 1 {
-                                match dir[0] {
-                                    Direction::Up => '^',
-                                    Direction::Down => 'v',
-                                    Direction::Left => '<',
-                                    Direction::Right => '>',
-                                }
-                            } else {
-                                dir.len().to_string().chars().next().unwrap()
-                            }
-                        }
-                    }
-                )
-            }
-            println!();
-        }
+        vector!(self.size.x() - 2, self.size.y() - 1)
     }
 }
 
@@ -229,16 +214,8 @@ impl Blizzard {
         out
     }
 
-    fn and(&self, other: Blizzard) -> Self {
-        Blizzard(self.0 & other.0)
-    }
-
     fn or(&self, other: Blizzard) -> Self {
         Blizzard(self.0 | other.0)
-    }
-
-    fn is_zero(&self) -> bool {
-        self.0 == 0
     }
 }
 
@@ -258,14 +235,22 @@ impl Tile {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
 
-    use crate::day_24::{Basin, Blizzard};
+    use common::Solution;
 
-    use super::Day24;
+    use super::{Basin, Day24};
 
     const CASE: &str = indoc! {"
+        #.######
+        #>>.<^<#
+        #.<..<<#
+        #>v.><>#
+        #<^v^^>#
+        ######.#
+    "};
+
+    const RESULT: &str = indoc! {"
         #.######
         #>>.<^<#
         #.<..<<#
@@ -280,25 +265,18 @@ mod test {
     }
 
     #[test]
+    fn part_b() {
+        assert_eq!(Day24.part_b(CASE), 54.into());
+    }
+
+    #[test]
     fn tick() {
-        const CASE: &str = indoc! {"
-            #.#####
-            #.....#
-            #>....#
-            #.....#
-            #...v.#
-            #.....#
-            #####.#
-        "};
-
         let mut bliz = Basin::parse(CASE);
-        bliz.print_board();
-        println!();
 
-        for _ in 0..3 {
+        for _ in 0..12 {
             bliz = bliz.tick();
-            bliz.print_board();
-            println!();
         }
+
+        assert_eq!(bliz, Basin::parse(RESULT));
     }
 }

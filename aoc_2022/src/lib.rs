@@ -53,6 +53,6 @@ pub const ALL: [&dyn Solution; 25] = [
     &day_21::Day21,
     &day_22::Day22,
     &day_23::Day23,
-    &DummySolution,
+    &day_24::Day24,
     &day_25::Day25,
 ];
