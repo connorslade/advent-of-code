@@ -63,22 +63,6 @@ impl World {
         Self { elves, iter: 0 }
     }
 
-    fn draw(&self) {
-        let (min, max) = self.bounds();
-
-        println!("\nITER: {}", self.iter);
-        for y in min.y..=max.y {
-            for x in min.x..=max.x {
-                if self.elves.contains(&Point::new(x, y)) {
-                    print!("#");
-                    continue;
-                }
-                print!(".");
-            }
-            println!()
-        }
-    }
-
     fn tick(&mut self) -> bool {
         let mut next = HashSet::new();
         let mut next_to_cur = HashMap::new();

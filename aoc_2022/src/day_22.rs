@@ -14,13 +14,14 @@ impl Solution for Day22 {
 
     fn part_a(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
-        world.run(wrap_1);
-
+        world.run(wrap_2d);
         world.password().into()
     }
 
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
+    fn part_b(&self, input: &str) -> Answer {
+        let mut world = World::parse(input);
+        world.run(wrap_3d);
+        world.password().into()
     }
 }
 
@@ -29,6 +30,7 @@ struct World {
     // == World ==
     walls: HashSet<Point>,
     open: HashSet<Point>,
+    side_len: usize,
 
     // == Player ==
     pos: Point,
@@ -52,15 +54,20 @@ enum Direction {
 
 impl World {
     fn parse(raw: &str) -> Self {
-        let raw = raw.replace('\r', "");
         let (map, instructions) = raw.split_once("\n\n").unwrap();
 
         let mut walls = HashSet::new();
         let mut open = HashSet::new();
+        let mut side_len = 0;
 
         for (y, line) in map.lines().enumerate() {
             for (x, c) in line.chars().enumerate() {
                 let (x, y) = (x as isize, y as isize);
+
+                if y == 0 && c != ' ' {
+                    side_len += 1;
+                }
+
                 match c {
                     '#' => walls.insert(Point::new(x, y)),
                     '.' => open.insert(Point::new(x, y)),
@@ -79,6 +86,7 @@ impl World {
         Self {
             walls,
             pos: *start,
+            side_len,
             open,
             dir: Direction::Right,
             instructions: VecDeque::from(Instruction::parse(instructions)),
@@ -127,22 +135,22 @@ impl Instruction {
             match i {
                 i if i.is_ascii_digit() => working.push(i),
                 'L' => {
-                    Self::_flush(&mut working, &mut out);
+                    Self::flush(&mut working, &mut out);
                     out.push(Instruction::Turn(Direction::Left));
                 }
                 'R' => {
-                    Self::_flush(&mut working, &mut out);
+                    Self::flush(&mut working, &mut out);
                     out.push(Instruction::Turn(Direction::Right));
                 }
                 _ => continue,
             }
         }
 
-        Self::_flush(&mut working, &mut out);
+        Self::flush(&mut working, &mut out);
         out
     }
 
-    fn _flush(working: &mut String, out: &mut Vec<Self>) {
+    fn flush(working: &mut String, out: &mut Vec<Self>) {
         if !working.is_empty() {
             out.push(Instruction::Move(working.parse().unwrap()));
             working.clear();
@@ -188,7 +196,7 @@ impl Direction {
     }
 }
 
-fn wrap_1(world: &World, mut pos: Point) -> Option<(Point, Direction)> {
+fn wrap_2d(world: &World, mut pos: Point) -> Option<(Point, Direction)> {
     loop {
         pos = world.dir.reverse().apply(pos);
         if !world.walls.contains(&pos) && !world.open.contains(&pos) {
@@ -199,6 +207,46 @@ fn wrap_1(world: &World, mut pos: Point) -> Option<(Point, Direction)> {
 
             break Some((pos, world.dir));
         }
+    }
+}
+
+fn wrap_3d(world: &World, mut _pos: Point) -> Option<(Point, Direction)> {
+    let _ = world.side_len;
+    todo!()
+}
+
+#[cfg(test)]
+mod test {
+    use common::Solution;
+    use indoc::indoc;
+
+    use super::Day22;
+
+    const CASE: &str = indoc! {"
+                ...#
+                .#..
+                #...
+                ....
+        ...#.......#
+        ........#...
+        ..#....#....
+        ..........#.
+                ...#....
+                .....#..
+                .#......
+                ......#.
+
+        10R5L5R10L4R5L5
+    "};
+
+    #[test]
+    fn part_a() {
+        assert_eq!(Day22.part_a(CASE), 6032.into());
+    }
+
+    #[test]
+    fn part_b() {
+        assert_eq!(Day22.part_b(CASE), 5031.into());
     }
 }
 
