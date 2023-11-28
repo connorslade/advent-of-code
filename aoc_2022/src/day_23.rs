@@ -15,19 +15,32 @@ impl Solution for Day23 {
     fn part_a(&self, input: &str) -> Answer {
         let mut world = World::parse(input);
 
-        world.draw();
         for _ in 0..10 {
             world.tick();
-            world.draw();
         }
 
         world.count_blank().into()
     }
 
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
+    fn part_b(&self, input: &str) -> Answer {
+        let mut world = World::parse(input);
+        let mut iters = 1;
+
+        while world.tick() {
+            iters += 1;
+        }
+
+        iters.into()
     }
 }
+
+// [North, South, West, East]
+const LOOKUP: [[Point; 3]; 4] = [
+    [Point::new(0, -1), Point::new(-1, -1), Point::new(1, -1)],
+    [Point::new(0, 1), Point::new(-1, 1), Point::new(1, 1)],
+    [Point::new(-1, 0), Point::new(-1, -1), Point::new(-1, 1)],
+    [Point::new(1, 0), Point::new(1, -1), Point::new(1, 1)],
+];
 
 #[derive(Debug)]
 struct World {
@@ -51,7 +64,7 @@ impl World {
     }
 
     fn draw(&self) {
-        let (min, max) = self._bounds();
+        let (min, max) = self.bounds();
 
         println!("\nITER: {}", self.iter);
         for y in min.y..=max.y {
@@ -71,18 +84,18 @@ impl World {
         let mut next_to_cur = HashMap::new();
         let mut contested = HashSet::new();
 
-        for pt in &self.elves {
-            let Some(next_pt) = self._dir_clear_2(pt) else {
-                next.insert(*pt);
+        for elf in &self.elves {
+            let Some(next_pt) = self.next_move(elf) else {
+                next.insert(*elf);
                 continue;
             };
             match next_to_cur.entry(next_pt) {
                 Entry::Occupied(_) => {
                     contested.insert(next_pt);
-                    next.insert(*pt);
+                    next.insert(*elf);
                 }
                 Entry::Vacant(entry) => {
-                    entry.insert(*pt);
+                    entry.insert(*elf);
                 }
             }
         }
@@ -105,7 +118,7 @@ impl World {
     }
 
     fn count_blank(&self) -> usize {
-        let (min, max) = self._bounds();
+        let (min, max) = self.bounds();
         let mut ground = 0;
 
         for y in min.y..=max.y {
@@ -120,36 +133,7 @@ impl World {
         ground
     }
 
-    fn _dir_clear(&self, pos: &Point) -> Option<Point> {
-        'o: for i in 0..4 {
-            let points = match (self.iter + i) % 4 {
-                0 => [Point::new(0, -1), Point::new(-1, -1), Point::new(1, -1)],
-                1 => [Point::new(0, 1), Point::new(-1, 1), Point::new(1, 1)],
-                2 => [Point::new(1, 0), Point::new(1, -1), Point::new(1, 1)],
-                3 => [Point::new(-1, 0), Point::new(-1, -1), Point::new(-1, 1)],
-                _ => unreachable!(),
-            };
-
-            for i in points {
-                if self.elves.contains(&(*pos + i)) {
-                    continue 'o;
-                }
-            }
-
-            return Some(*pos + points[0]);
-        }
-
-        None
-    }
-
-    fn _dir_clear_2(&self, pos: &Point) -> Option<Point> {
-        const LOOKUP: [[Point; 3]; 4] = [
-            [Point::new(0, -1), Point::new(-1, -1), Point::new(1, -1)],
-            [Point::new(0, 1), Point::new(-1, 1), Point::new(1, 1)],
-            [Point::new(1, 0), Point::new(1, -1), Point::new(1, 1)],
-            [Point::new(-1, 0), Point::new(-1, -1), Point::new(-1, 1)],
-        ];
-
+    fn next_move(&self, pos: &Point) -> Option<Point> {
         let candidates: Vec<_> = (0..4)
             .filter_map(|j| {
                 let lookup = LOOKUP[(self.iter + j) % LOOKUP.len()];
@@ -167,7 +151,7 @@ impl World {
         }
     }
 
-    fn _bounds(&self) -> (Point, Point) {
+    fn bounds(&self) -> (Point, Point) {
         let mut min = Point::new(isize::MAX, isize::MAX);
         let mut max = Point::new(isize::MIN, isize::MIN);
 
@@ -177,5 +161,55 @@ impl World {
         }
 
         (min, max)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use common::Solution;
+    use indoc::indoc;
+
+    use super::{Day23, World};
+
+    const CASE: &str = indoc! {"
+        ..............
+        ..............
+        .......#......
+        .....###.#....
+        ...#...#.#....
+        ....#...##....
+        ...#.###......
+        ...##.#.##....
+        ....#..#......
+        ..............
+        ..............
+        ..............
+    "};
+
+    #[test]
+    fn simulate() {
+        const CASE: &str = indoc! {"
+            .....
+            ..##.
+            ..#..
+            .....
+            ..##.
+            .....
+        "};
+
+        let mut world = World::parse(CASE);
+        while world.tick() {}
+
+        assert_eq!(world.count_blank(), 25);
+    }
+
+    #[test]
+    fn part_a() {
+        assert_eq!(Day23.part_a(CASE), 110.into());
+    }
+
+    #[test]
+    fn part_b() {
+        assert_eq!(Day23.part_b(CASE), 20.into());
     }
 }

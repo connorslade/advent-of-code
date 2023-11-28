@@ -27,7 +27,8 @@ Coming Soon!
 - Day 18 Boiling Boulders [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_18.rs#L13), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_18.rs#L36)]
 - Day 20 Grove Positioning System [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_20.rs#L10), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_20.rs#L17)]
 - Day 21 Monkey Math [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_21.rs#L12), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_21.rs#L18)]
-- Day 22 Monkey Math [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L13), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L21)]
+- Day 22 Monkey Map [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L13), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L21)]
+- Day 23 Unstable Diffusion [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_23.rs#L15), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_23.rs#L25)]
 - Day 24 Blizzard Basin [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_24.rs#L15), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_24rs#L23)]
 - Day 25 Monkey Math [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_25.rs#L10), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_25.rs#L15)]
 
