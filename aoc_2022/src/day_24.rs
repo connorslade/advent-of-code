@@ -1,5 +1,7 @@
 use common::{Answer, Solution};
+use hashbrown::HashSet;
 use nd_vec::{vector, Vec2};
+use pathfinding::directed::bfs::bfs;
 
 type Pos = Vec2<usize>;
 
@@ -12,7 +14,23 @@ impl Solution for Day24 {
 
     fn part_a(&self, input: &str) -> Answer {
         let basin = Basin::parse(input);
-        Answer::Unimplemented
+        let end = basin.end();
+        let states = basin.all_states();
+
+        let path = bfs(
+            &(vector!(1, 0), 0),
+            move |(pos, idx)| {
+                states[(idx + 1) % states.len()]
+                    .available(*pos)
+                    .iter()
+                    .map(move |x| (*x, *idx))
+                    .collect::<Vec<_>>()
+            },
+            |(pos, _)| *pos == end,
+        )
+        .unwrap();
+
+        path.len().into()
     }
 
     fn part_b(&self, _input: &str) -> Answer {
@@ -28,17 +46,17 @@ enum Direction {
 }
 
 // [up, down, left, right]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Blizzard(u8);
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Tile {
     Empty,
     Wall,
     Blizzard(Blizzard),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Basin {
     tiles: Vec<Vec<Tile>>,
     size: Pos,
@@ -58,6 +76,34 @@ impl Basin {
         }
     }
 
+    fn available(&self, pos: Pos) -> Vec<Pos> {
+        let mut out = Vec::new();
+        let [x, y] = [pos.x(), pos.y()];
+        let [sx, sy] = [self.size.x(), self.size.y()];
+
+        if self.tiles[y][x] == Tile::Empty {
+            out.push(vector!(x, y));
+        }
+
+        if x >= 1 && self.tiles[y][x - 1] == Tile::Empty {
+            out.push(vector!(x - 1, y));
+        }
+
+        if x + 1 < sx && self.tiles[y][x + 1] == Tile::Empty {
+            out.push(vector!(x + 1, y));
+        }
+
+        if y + 1 < sy && self.tiles[y + 1][x] == Tile::Empty {
+            out.push(vector!(x, y + 1));
+        }
+
+        if y >= 1 && self.tiles[y - 1][x] == Tile::Empty {
+            out.push(vector!(x, y - 1));
+        }
+
+        out
+    }
+
     fn tick(&self) -> Self {
         let mut tiles = vec![vec![Tile::Empty; self.size.x()]; self.size.y()];
 
@@ -73,7 +119,7 @@ impl Basin {
 
                             let [nx, ny] = [new_pos.x(), new_pos.y()];
                             if self.tiles[ny][nx] == Tile::Wall {
-                                let [sx, sy] = [self.size.y() - 2, self.size.x() - 2];
+                                let [sx, sy] = [self.size.x() - 2, self.size.y() - 2];
                                 new_pos = match dir {
                                     Direction::Up => vector!(nx, sy),
                                     Direction::Down => vector!(nx, 1),
@@ -98,6 +144,18 @@ impl Basin {
         }
 
         Self { tiles, ..*self }
+    }
+
+    fn all_states(mut self) -> Vec<Self> {
+        let mut seen = HashSet::new();
+        let mut out = Vec::new();
+
+        while seen.insert(self.clone()) {
+            out.push(self.clone());
+            self = self.tick();
+        }
+
+        out
     }
 
     fn end(&self) -> Pos {
