@@ -1,68 +1,116 @@
 use common::{Answer, Solution};
-
-use std::mem;
+use hashbrown::HashMap;
 
 pub struct Day19;
 
 impl Solution for Day19 {
     fn name(&self) -> &'static str {
-        ""
+        "Not Enough Minerals "
     }
 
     fn part_a(&self, input: &str) -> Answer {
         let robots = parse(input);
 
         let mut geodes = Vec::new();
-        for i in robots.into_iter().take(1) {
-            geodes.push(simulate(i));
+        for i in robots.into_iter() {
+            geodes.push(simulate(State::new(), 24, i, &mut HashMap::new(), &mut 0));
         }
 
-        dbg!(&geodes);
         geodes
             .iter()
             .enumerate()
-            .map(|(i, e)| e * (1 + i as u32))
+            .map(|(i, &e)| e as u32 * (1 + i as u32))
             .sum::<u32>()
             .into()
     }
 
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
+    fn part_b(&self, input: &str) -> Answer {
+        let robots = parse(input);
+
+        let mut result = 1;
+        for i in robots.into_iter().take(3) {
+            result *= simulate(State::new(), 32, i, &mut HashMap::new(), &mut 0) as u32;
+        }
+
+        result.into()
     }
 }
 
-fn simulate(costs: [RobotType; 4]) -> u32 {
-    // [ore, clay, obsidian, geode]
-    let mut resources = [0, 0, 0, 0];
-    let mut robots = [1, 0, 0, 0];
-    let mut ticks = 24;
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct State {
+    resources: [u8; 4],
+    robots: [u8; 4],
+}
 
-    while ticks > 0 {
-        let mut new_robots = robots;
-        while let Some(i) = RobotType::best_buildable(&costs, &resources) {
-            println!("Shound build robot {:?}", i);
-            i.build(&mut resources);
-            println!(" ^ new resource count: {:?}", resources);
-            new_robots[i.index()] += 1;
+impl State {
+    fn new() -> Self {
+        Self {
+            resources: [0, 0, 0, 0],
+            robots: [1, 0, 0, 0],
         }
-
-        for r_type in 0..4 {
-            for _ in 0..robots[r_type] {
-                resources[r_type] += 1;
-            }
-        }
-
-        println!(
-            "mins: {} | ores: {:?} | robots: {:?}",
-            24 - ticks,
-            resources,
-            robots
-        );
-        ticks -= 1;
-        mem::swap(&mut robots, &mut new_robots);
     }
 
-    resources[3]
+    fn tick(self) -> Self {
+        let mut resources = self.resources;
+        for i in 0..4 {
+            resources[i] += self.robots[i];
+        }
+
+        Self { resources, ..self }
+    }
+
+    fn cant_beat(&self, ticks: u8, max_geodes: u8) -> bool {
+        return self.resources[3] as u32
+            + (ticks as u32 * self.robots[3] as u32 + ticks as u32 * (ticks as u32 - 1) / 2)
+            <= max_geodes as u32;
+    }
+}
+
+fn simulate(
+    state: State,
+    ticks: u8,
+    costs: [RobotType; 4],
+    cache: &mut HashMap<State, (u8, u8)>,
+    max: &mut u8,
+) -> u8 {
+    if let Some(res) = cache.get(&state) {
+        if res.0 >= ticks {
+            return res.1;
+        }
+    }
+
+    if ticks == 0 {
+        cache.insert(state, (ticks, state.resources[3]));
+        return state.resources[3];
+    }
+
+    if state.cant_beat(ticks, *max) {
+        return 0;
+    }
+
+    let mut best = 0;
+
+    for i in costs {
+        let can_build = match i {
+            RobotType::Ore(c) => state.resources[0] >= c,
+            RobotType::Clay(c) => state.resources[0] >= c,
+            RobotType::Obsidian(o, c) => state.resources[0] >= o && state.resources[1] >= c,
+            RobotType::Geode(o, c) => state.resources[0] >= o && state.resources[2] >= c,
+        };
+
+        if can_build {
+            let mut new_state = state.tick();
+            i.build(&mut new_state.resources);
+            new_state.robots[i.index()] += 1;
+            best = best.max(simulate(new_state, ticks - 1, costs, cache, max));
+        }
+    }
+
+    best = best.max(simulate(state.tick(), ticks - 1, costs, cache, max));
+    *max = (*max).max(best);
+
+    cache.insert(state, (ticks, best));
+    best
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -129,37 +177,36 @@ impl RobotType {
         }
     }
 
-    fn best_buildable(costs: &[Self; 4], resources: &[u32; 4]) -> Option<RobotType> {
-        let mut out = None;
-
-        for e in costs.iter() {
-            let can_build = match e {
-                Self::Ore(c) => resources[0] >= *c as u32,
-                Self::Clay(c) => resources[0] >= *c as u32,
-                Self::Obsidian(o, c) => resources[0] >= *o as u32 && resources[1] >= *c as u32,
-                Self::Geode(o, c) => resources[0] >= *o as u32 && resources[2] >= *c as u32,
-            };
-
-            if can_build {
-                out = Some(e);
-            }
-        }
-
-        out.copied()
-    }
-
-    fn build(&self, resources: &mut [u32; 4]) {
+    fn build(&self, resources: &mut [u8; 4]) {
         match self {
-            Self::Ore(c) => resources[0] -= *c as u32,
-            Self::Clay(c) => resources[0] -= *c as u32,
+            Self::Ore(c) => resources[0] -= c,
+            Self::Clay(c) => resources[0] -= c,
             Self::Obsidian(o, c) => {
-                resources[0] -= *o as u32;
-                resources[1] -= *c as u32;
+                resources[0] -= o;
+                resources[1] -= c;
             }
             Self::Geode(o, c) => {
-                resources[0] -= *o as u32;
-                resources[2] -= *c as u32;
+                resources[0] -= o;
+                resources[2] -= c;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use indoc::indoc;
+
+    use super::Day19;
+    use common::Solution;
+
+    const CASE: &str = indoc! {"
+        Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
+        Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.
+    "};
+
+    #[test]
+    fn part_a() {
+        assert_eq!(Day19.part_a(CASE), 33.into());
     }
 }

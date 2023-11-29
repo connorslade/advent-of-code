@@ -1,6 +1,4 @@
-use common as problem;
 use common::Solution;
-use problem::DummySolution;
 
 mod aoc_lib;
 mod day_01;
@@ -48,7 +46,7 @@ pub const ALL: [&dyn Solution; 25] = [
     &day_16::Day16,
     &day_17::Day17,
     &day_18::Day18,
-    &DummySolution,
+    &day_19::Day19,
     &day_20::Day20,
     &day_21::Day21,
     &day_22::Day22,

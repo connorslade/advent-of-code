@@ -25,6 +25,7 @@ Coming Soon!
 - Day 15 Beacon Exclusion Zone [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_15.rs#L14), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_15.rs#L28)]
 - Day 17 Pyroclastic Flow [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_17.rs#L14), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_17.rs#L20)]
 - Day 18 Boiling Boulders [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_18.rs#L13), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_18.rs#L36)]
+- Day 19 Not Enough Minerals [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_19.rs#L11), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_19.rs#L27)]
 - Day 20 Grove Positioning System [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_20.rs#L10), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_20.rs#L17)]
 - Day 21 Monkey Math [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_21.rs#L12), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_21.rs#L18)]
 - Day 22 Monkey Map [[A](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L13), [B](https://github.com/Basicprogrammer10/advent-of-code/tree/master/aoc_2022/src/day_22.rs#L21)]
