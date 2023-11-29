@@ -13,49 +13,20 @@ impl Solution for Day16 {
 
     fn part_a(&self, input: &str) -> Answer {
         let parse = parse(input);
-        solve(
-            &mut HashMap::new(),
-            &parse.graph,
-            &parse.distances,
-            0,
-            parse.start,
-            30,
-        )
-        .into()
+        solve(&mut HashMap::new(), &parse, 0, parse.start, 30).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
         let parse = parse(input);
-        let non_zero = parse
-            .graph
-            .iter()
-            .filter(|(_, (flow, _))| *flow != 0)
-            .count();
-        assert!(non_zero <= 64, "Too many valves");
 
         let mut max = 0;
-        let set = (1 << non_zero as u64) - 1;
+        let set = (1 << parse.indices.len() as u64) - 1;
 
         let mut cache = HashMap::new();
         for i in 0..((set + 1) / 2) {
-            let a = solve(
-                &mut cache,
-                &parse.graph,
-                &parse.distances,
-                i,
-                parse.start,
-                26,
-            );
-            let b = solve(
-                &mut cache,
-                &parse.graph,
-                &parse.distances,
-                set ^ i,
-                parse.start,
-                26,
-            );
+            let a = solve(&mut cache, &parse, i, parse.start, 26);
+            let b = solve(&mut cache, &parse, set ^ i, parse.start, 26);
             max = max.max(a + b);
-            println!("{}%", i as f32 / set as f32 * 100.0);
         }
 
         max.into()
@@ -64,8 +35,7 @@ impl Solution for Day16 {
 
 fn solve(
     cache: &mut HashMap<(usize, u32, u64), u32>,
-    graph: &HashMap<usize, (u16, Box<[usize]>)>,
-    distances: &HashMap<usize, Vec<(usize, u32)>>,
+    parse: &ParseResult,
     open: u64,
     pos: usize,
     time: u32,
@@ -75,10 +45,11 @@ fn solve(
     }
 
     let mut result = 0;
-    let neighbors = distances.get(&pos).unwrap();
+    let neighbors = parse.distances.get(&pos).unwrap();
 
     for (neighbor, distance) in neighbors {
-        if open & (1 << neighbor) != 0 {
+        let index = parse.indices.get(neighbor).unwrap();
+        if open & (1 << index) != 0 {
             continue;
         }
 
@@ -87,16 +58,9 @@ fn solve(
             continue;
         }
 
-        let flow = graph.get(neighbor).unwrap().0;
+        let flow = parse.graph.get(neighbor).unwrap().0;
         result = result.max(
-            solve(
-                cache,
-                graph,
-                distances,
-                open | 1 << neighbor,
-                *neighbor,
-                new_time,
-            ) + flow as u32 * new_time,
+            solve(cache, parse, open | 1 << index, *neighbor, new_time) + flow as u32 * new_time,
         );
     }
 
@@ -107,6 +71,7 @@ fn solve(
 struct ParseResult {
     graph: HashMap<usize, (u16, Box<[usize]>)>,
     distances: HashMap<usize, Vec<(usize, u32)>>,
+    indices: HashMap<usize, usize>,
     start: usize,
 }
 
@@ -173,9 +138,20 @@ fn parse(input: &str) -> ParseResult {
         }
     }
 
+    let mut indices = HashMap::new();
+
+    for (index, (flow, _)) in out.iter() {
+        if *flow == 0 {
+            continue;
+        }
+
+        indices.insert(*index, indices.len());
+    }
+
     ParseResult {
         graph: out,
         distances,
+        indices,
         start,
     }
 }
