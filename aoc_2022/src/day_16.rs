@@ -1,7 +1,8 @@
+use std::collections::VecDeque;
+
 use common::{Answer, Solution};
 
-// use hashbrown::HashMap;
-// use petgraph::Graph;
+use hashbrown::HashMap;
 
 pub struct Day16;
 
@@ -10,72 +11,202 @@ impl Solution for Day16 {
         "Proboscidea Volcanium"
     }
 
-    fn part_a(&self, _input: &str) -> Answer {
-        // let mut _graph = parse(&raw);
-
-        // let out = dfs(&mut HashMap::new(), &graph, 0, 0, 0, 30);
-
-        Answer::Unimplemented
+    fn part_a(&self, input: &str) -> Answer {
+        let parse = parse(input);
+        solve(
+            &mut HashMap::new(),
+            &parse.graph,
+            &parse.distances,
+            0,
+            parse.start,
+            30,
+        )
+        .into()
     }
 
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
+    fn part_b(&self, input: &str) -> Answer {
+        let parse = parse(input);
+        let non_zero = parse
+            .graph
+            .iter()
+            .filter(|(_, (flow, _))| *flow != 0)
+            .count();
+        assert!(non_zero <= 64, "Too many valves");
+
+        let mut max = 0;
+        let set = (1 << non_zero as u64) - 1;
+
+        let mut cache = HashMap::new();
+        for i in 0..((set + 1) / 2) {
+            let a = solve(
+                &mut cache,
+                &parse.graph,
+                &parse.distances,
+                i,
+                parse.start,
+                26,
+            );
+            let b = solve(
+                &mut cache,
+                &parse.graph,
+                &parse.distances,
+                set ^ i,
+                parse.start,
+                26,
+            );
+            max = max.max(a + b);
+            println!("{}%", i as f32 / set as f32 * 100.0);
+        }
+
+        max.into()
     }
 }
 
-// struct World {
-//     graph: Graph<Valve, ()>,
-// }
+fn solve(
+    cache: &mut HashMap<(usize, u32, u64), u32>,
+    graph: &HashMap<usize, (u16, Box<[usize]>)>,
+    distances: &HashMap<usize, Vec<(usize, u32)>>,
+    open: u64,
+    pos: usize,
+    time: u32,
+) -> u32 {
+    if let Some(&result) = cache.get(&(pos, time, open)) {
+        return result;
+    }
 
-// impl World {
-//     fn new(raw: &str) -> Self {
-//         Self { graph: parse(raw) }
-//     }
-// }
+    let mut result = 0;
+    let neighbors = distances.get(&pos).unwrap();
 
-// struct Valve {
-//     rate: u16,
-//     opened: bool,
-// }
+    for (neighbor, distance) in neighbors {
+        if open & (1 << neighbor) != 0 {
+            continue;
+        }
 
-// impl Valve {
-//     fn new(rate: u16) -> Self {
-//         Self {
-//             rate,
-//             opened: false,
-//         }
-//     }
-// }
+        let new_time = time.saturating_sub(distance + 1);
+        if new_time <= 0 {
+            continue;
+        }
 
-// fn parse(raw: &str) -> Graph<Valve, ()> {
-//     let mut graph = Graph::new();
-//     // maps (valve) -> (weight, to)
-//     let mut working: HashMap<_, (u16, Vec<&str>)> = HashMap::new();
-//     let mut nodes = HashMap::new();
-//     for i in raw.lines() {
-//         let parts = i.split_whitespace().collect::<Vec<_>>();
-//         let name = parts[1];
-//         let flow = parts[4]
-//             .trim_start_matches("rate=")
-//             .trim_end_matches(";")
-//             .parse::<u16>()
-//             .unwrap();
-//         let to = parts[9..]
-//             .iter()
-//             .map(|x| x.trim_end_matches(','))
-//             .collect::<Vec<_>>();
+        let flow = graph.get(neighbor).unwrap().0;
+        result = result.max(
+            solve(
+                cache,
+                graph,
+                distances,
+                open | 1 << neighbor,
+                *neighbor,
+                new_time,
+            ) + flow as u32 * new_time,
+        );
+    }
 
-//         let node = graph.add_node(Valve::new(flow));
-//         nodes.insert(name.to_string(), node);
-//         working.insert(node, (flow, to));
-//     }
+    cache.insert((pos, time, open), result);
+    result
+}
 
-//     for (node, (flow, to)) in working {
-//         for i in to {
-//             let to = nodes[i];
-//             graph.add_edge(node, to, ());
-//         }
-//     }
+struct ParseResult {
+    graph: HashMap<usize, (u16, Box<[usize]>)>,
+    distances: HashMap<usize, Vec<(usize, u32)>>,
+    start: usize,
+}
 
-//     graph
-// }
+fn parse(input: &str) -> ParseResult {
+    let mut graph = HashMap::new();
+    let mut name_map = HashMap::new();
+
+    for line in input.lines() {
+        let parts = line.split_whitespace().collect::<Vec<_>>();
+        let name = parts[1];
+        let flow = parts[4]
+            .trim_start_matches("rate=")
+            .trim_end_matches(";")
+            .parse::<u16>()
+            .unwrap();
+        let to = parts[9..]
+            .iter()
+            .map(|x| x.trim_end_matches(','))
+            .collect::<Vec<_>>();
+        let index = graph.len();
+        name_map.insert(name, index);
+        graph.insert(index, (flow, to));
+    }
+
+    let mut out: HashMap<usize, (u16, Box<[usize]>)> = HashMap::new();
+
+    for (index, (flow, to)) in graph {
+        let to = to
+            .iter()
+            .map(|x| *name_map.get(x).unwrap())
+            .collect::<Vec<_>>();
+        out.insert(index, (flow, to.into()));
+    }
+
+    let start = *name_map.get("AA").unwrap();
+    let mut distances = HashMap::new();
+
+    for (valve, (flow, _)) in out.iter() {
+        if *flow == 0 && *valve != start {
+            continue;
+        }
+
+        let mut queue = VecDeque::new();
+        let mut visited = vec![false; out.len()];
+        queue.push_back((0, *valve));
+        visited[*valve] = true;
+
+        while let Some((distance, node)) = queue.pop_front() {
+            for neighbor in out.get(&node).unwrap().1.iter() {
+                if visited[*neighbor] {
+                    continue;
+                }
+                visited[*neighbor] = true;
+
+                if out.get(neighbor).unwrap().0 != 0 {
+                    distances
+                        .entry(*valve)
+                        .or_insert(Vec::new())
+                        .push((*neighbor, distance as u32 + 1));
+                }
+
+                queue.push_back((distance + 1, *neighbor));
+            }
+        }
+    }
+
+    ParseResult {
+        graph: out,
+        distances,
+        start,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use common::Solution;
+    use indoc::indoc;
+
+    use super::Day16;
+
+    const CASE: &str = indoc! {"
+        Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+        Valve BB has flow rate=13; tunnels lead to valves CC, AA
+        Valve CC has flow rate=2; tunnels lead to valves DD, BB
+        Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+        Valve EE has flow rate=3; tunnels lead to valves FF, DD
+        Valve FF has flow rate=0; tunnels lead to valves EE, GG
+        Valve GG has flow rate=0; tunnels lead to valves FF, HH
+        Valve HH has flow rate=22; tunnel leads to valve GG
+        Valve II has flow rate=0; tunnels lead to valves AA, JJ
+        Valve JJ has flow rate=21; tunnel leads to valve II
+    "};
+
+    #[test]
+    fn part_a() {
+        assert_eq!(Day16.part_a(CASE), 1651.into());
+    }
+
+    #[test]
+    fn part_b() {
+        assert_eq!(Day16.part_b(CASE), 1707.into());
+    }
+}
