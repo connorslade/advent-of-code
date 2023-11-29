@@ -15,3 +15,24 @@ impl Solution for Day{{day:pad(2)}} {
         Answer::Unimplemented
     }
 }
+
+#[cfg(test)]
+mod test {
+    use indoc::indoc;
+
+    use super::Day{{day:pad(2)}};
+
+    const CASE: &str = indoc! {"
+        ...
+    "};
+
+    #[test]
+    fn test_a() {
+        assert_eq!(Day{{day:pad(2)}}.part_a(CASE), Answer::Unimplemented);
+    }
+
+    #[test]
+    fn test_b() {
+        assert_eq!(Day{{day:pad(2)}}.part_b(CASE), Answer::Unimplemented);
+    }
+}

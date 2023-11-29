@@ -9,4 +9,4 @@
   - [x] Verify
   - [x] Token
   - [x] Timer
-- [ ] Allow not filling the solution array
+  - [x] Submit

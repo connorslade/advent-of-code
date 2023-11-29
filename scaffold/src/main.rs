@@ -26,6 +26,7 @@ fn main() -> Result<()> {
         SubCommand::Token(e) => commands::token::token(&session.ok(), e, &args)?,
         SubCommand::Timer(e) => commands::timer::timer(e)?,
         SubCommand::Init(e) => commands::init::init(&session?, e, &args)?,
+        SubCommand::Submit(e) => commands::submit::submit(&session?, e, &args)?,
     }
 
     Ok(())

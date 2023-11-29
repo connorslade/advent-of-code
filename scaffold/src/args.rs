@@ -1,4 +1,5 @@
 use clap::Parser;
+use regex::Regex;
 use url::Url;
 
 use crate::misc::current_year;
@@ -28,6 +29,8 @@ pub enum SubCommand {
     /// Fetch the puzzle input for a given day and write to a file.
     /// Also creates a base solution file for the given day.
     Init(InitArgs),
+    /// Submit a solution to the Advent of Code server.
+    Submit(SubmitArgs),
 }
 
 #[derive(Parser, Debug)]
@@ -90,4 +93,58 @@ pub struct InitArgs {
     /// The year to fetch the input for.
     #[arg(default_value_t = current_year())]
     pub year: u16,
+}
+
+#[derive(Parser, Debug)]
+pub struct SubmitArgs {
+    /// Command to run to get the solution for the given day.
+    #[arg(
+        short,
+        long,
+        default_value = "cargo r -r -- run {{day}} {{part}} {{year}}"
+    )]
+    pub command: String,
+    /// A regex that will be used to extract the solution from the output of the command.
+    #[arg(long, default_value = r"OUT: (.*) \(")]
+    pub extraction_regex: Regex,
+    /// The group of the regex that contains the solution.
+    #[arg(long, default_value = "1")]
+    pub extraction_group: usize,
+    /// Don't actually submit the solution.
+    /// Useful for testing that the command and extraction regex are correct.
+    #[arg(short, long)]
+    pub dry_run: bool,
+
+    /// The day to submit the solution for.
+    pub day: u8,
+    /// The part to submit the solution for.
+    #[arg(value_parser = parse_part)]
+    pub part: Part,
+    /// The year to submit the solution for.
+    #[arg(default_value_t = current_year())]
+    pub year: u16,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum Part {
+    A,
+    B,
+}
+
+fn parse_part(s: &str) -> Result<Part, String> {
+    match s {
+        "a" => Ok(Part::A),
+        "b" => Ok(Part::B),
+        _ => Err("part must be `a` or `b`".to_owned()),
+    }
+}
+
+impl ToString for Part {
+    fn to_string(&self) -> String {
+        match self {
+            Part::A => "a",
+            Part::B => "b",
+        }
+        .to_owned()
+    }
 }

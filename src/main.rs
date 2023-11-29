@@ -1,7 +1,7 @@
 use std::time::Instant;
 
 use clap::Parser;
-use common::Solution;
+use common::{human_time, Solution};
 
 use args::{Args, Commands};
 mod args;
@@ -66,18 +66,4 @@ fn get_year(year: u32) -> &'static [&'static dyn Solution] {
         2023 => aoc_2023::ALL,
         _ => &[],
     }
-}
-
-pub fn human_time(time: u128) -> String {
-    const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
-
-    let mut time = time;
-    for i in TIME_UNITS {
-        if time < 1000 {
-            return format!("{}{}", time, i);
-        }
-        time /= 1000;
-    }
-
-    format!("{}{}", time, TIME_UNITS.last().unwrap())
 }
