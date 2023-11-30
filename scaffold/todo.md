@@ -10,3 +10,7 @@
   - [x] Token
   - [x] Timer
   - [x] Submit
+
+```sh
+cargo t -p aoc_2023 -- day_01::test::part_a && scaffold submit 1 a
+```
