@@ -57,8 +57,6 @@ pub fn timer(cmd: &TimerArgs) -> Result<()> {
 fn next_release() -> Result<DateTime<Utc>> {
     let mut next = Utc::now()
         .date_naive()
-        .succ_opt()
-        .context("Can not represent tomorrows date.")?
         .and_hms_opt(AOC_TIMEZONE, 0, 0)
         .unwrap()
         .and_utc();

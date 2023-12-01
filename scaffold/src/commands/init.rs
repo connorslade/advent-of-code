@@ -16,7 +16,7 @@ use crate::{
 };
 
 pub fn init(session: &Session, cmd: &InitArgs, args: &Args) -> Result<()> {
-    let input = fetch_input(session, &args.address, cmd.day, cmd.year - 1)?;
+    let input = fetch_input(session, &args.address, cmd.day, cmd.year)?;
     let formats: &[(&str, String)] = &[
         ("year", cmd.year.to_string()),
         ("day", cmd.day.to_string()),
