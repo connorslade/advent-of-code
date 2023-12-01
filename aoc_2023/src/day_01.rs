@@ -16,9 +16,8 @@ impl Solution for Day01 {
         for line in input.lines() {
             let mut digits = line.chars().filter_map(|c| c.to_digit(10));
             let first = digits.next().unwrap();
-            let last = digits.last().unwrap();
-
-            sum += format!("{}{}", first, last).parse::<u32>().unwrap();
+            let last = digits.last().unwrap_or(first);
+            sum += first * 10 + last;
         }
 
         sum.into()
@@ -31,33 +30,42 @@ impl Solution for Day01 {
             let first = digits[0];
             let last = digits[digits.len() - 1];
 
-            sum += format!("{}{}", first, last).parse::<u32>().unwrap();
+            sum += first * 10 + last;
         }
 
         sum.into()
     }
 }
 
-fn digits(i: &str) -> Vec<u8> {
+fn digits(i: &str) -> [u32; 2] {
+    let mut first = None;
+    let mut last = 0;
+
+    let mut digit = |c| {
+        last = c;
+        if first.is_none() {
+            first = Some(c);
+        }
+    };
+
     let chars = i.as_bytes();
-    let mut out = Vec::new();
     let mut i = 0;
 
     while i < chars.len() {
         let c = chars[i];
         if c.is_ascii_digit() {
-            out.push(c - b'0');
+            digit((c - b'0') as u32);
         } else {
             for (j, d) in DIGITS.iter().enumerate() {
                 if chars[i..].starts_with(d.as_bytes()) {
-                    out.push(j as u8 + 1);
+                    digit(j as u32 + 1);
                 }
             }
         }
         i += 1;
     }
 
-    out
+    [first.unwrap(), last]
 }
 
 #[cfg(test)]
