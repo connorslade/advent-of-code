@@ -88,12 +88,12 @@ mod test {
     "};
 
     #[test]
-    fn test_a() {
+    fn part_a() {
         assert_eq!(Day01.part_a(CASE_A), 142.into());
     }
 
     #[test]
-    fn test_b() {
+    fn part_b() {
         assert_eq!(Day01.part_b(CASE_B), 281.into());
     }
 }

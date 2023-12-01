@@ -18,6 +18,7 @@ impl Solution for Day{{day:pad(2)}} {
 
 #[cfg(test)]
 mod test {
+    use common::Solution;
     use indoc::indoc;
 
     use super::Day{{day:pad(2)}};
@@ -27,12 +28,12 @@ mod test {
     "};
 
     #[test]
-    fn test_a() {
+    fn part_a() {
         assert_eq!(Day{{day:pad(2)}}.part_a(CASE), Answer::Unimplemented);
     }
 
     #[test]
-    fn test_b() {
+    fn part_b() {
         assert_eq!(Day{{day:pad(2)}}.part_b(CASE), Answer::Unimplemented);
     }
 }

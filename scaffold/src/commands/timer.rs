@@ -77,5 +77,14 @@ fn next_release() -> Result<DateTime<Utc>> {
             .context("Can not represent the next first of December.")?;
     }
 
+    if Utc::now() > next {
+        next = next
+            .date_naive()
+            .succ_opt()
+            .unwrap()
+            .and_time(next.time())
+            .and_utc();
+    }
+
     Ok(next)
 }

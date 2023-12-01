@@ -54,7 +54,7 @@ pub fn init(session: &Session, cmd: &InitArgs, args: &Args) -> Result<()> {
 fn write_scaffold(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<PathBuf> {
     let location = Formatter::new(&cmd.solution_location)?.format(formats)?;
     let file_location = Path::new(&location);
-    let mut file = create_file(&file_location)?;
+    let mut file = create_file(&file_location, cmd.allow_overwrite)?;
 
     println!("[*] Loading template");
     let template = match cmd.solution_template {
@@ -88,7 +88,7 @@ fn modify_module(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
 
 fn write_input(cmd: &InitArgs, input: ProblemInput, formats: &[(&str, String)]) -> Result<()> {
     let file_location = Formatter::new(&cmd.input_location)?.format(formats)?;
-    let mut file = create_file(&Path::new(&file_location))?;
+    let mut file = create_file(&Path::new(&file_location), true)?;
     file.write_all(input.body.as_bytes())?;
     println!("[*] Wrote input to {file_location}");
     Ok(())
@@ -126,11 +126,15 @@ struct ProblemInput {
     body: String,
 }
 
-fn create_file(path: &Path) -> Result<File> {
+fn create_file(path: &Path, allow_overwrite: bool) -> Result<File> {
     if let Some(parent) = path.parent() {
         if !parent.exists() {
             fs::create_dir_all(parent)?;
         }
+    }
+
+    if !allow_overwrite && path.exists() {
+        return Err(anyhow::anyhow!("File already exists: {}", path.display()));
     }
 
     Ok(File::create(path)?)

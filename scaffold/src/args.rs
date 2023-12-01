@@ -79,6 +79,9 @@ pub struct InitArgs {
     /// Useful if you want to use this command with a different language or organization.
     #[arg(short, long)]
     pub no_scaffold: bool,
+    /// Allows overwriting the existing solution file.
+    #[arg(long)]
+    pub allow_overwrite: bool,
     /// Automatically open the solution file in your editor.
     /// Only works if you are not using `--no-scaffold`.
     /// Configure the editor with the `--editor` argument.
