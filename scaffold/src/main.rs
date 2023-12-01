@@ -14,6 +14,7 @@ mod session;
 const TOKEN_VAR: &str = "AOC_TOKEN";
 
 fn main() -> Result<()> {
+    dotenv::dotenv()?;
     let args = Args::parse();
 
     let session = match &args.token {
