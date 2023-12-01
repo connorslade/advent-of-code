@@ -137,6 +137,7 @@ name = "aoc_2023"
 version = "0.1.0"
 dependencies = [
  "common",
+ "indoc",
 ]
 
 [[package]]
