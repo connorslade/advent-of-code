@@ -27,10 +27,7 @@ impl Solution for Day01 {
         let mut sum = 0;
         for line in input.lines() {
             let digits = digits(line);
-            let first = digits[0];
-            let last = digits[digits.len() - 1];
-
-            sum += first * 10 + last;
+            sum += digits[0] * 10 + digits[1];
         }
 
         sum.into()
@@ -42,10 +39,8 @@ fn digits(i: &str) -> [u32; 2] {
     let mut last = 0;
 
     let mut digit = |c| {
+        first = first.or(Some(c));
         last = c;
-        if first.is_none() {
-            first = Some(c);
-        }
     };
 
     let chars = i.as_bytes();
