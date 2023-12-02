@@ -44,10 +44,7 @@ fn digits(i: &str) -> [u32; 2] {
     };
 
     let chars = i.as_bytes();
-    let mut i = 0;
-
-    while i < chars.len() {
-        let c = chars[i];
+    for (i, c) in chars.iter().enumerate() {
         if c.is_ascii_digit() {
             digit((c - b'0') as u32);
         } else {
@@ -57,7 +54,6 @@ fn digits(i: &str) -> [u32; 2] {
                 }
             }
         }
-        i += 1;
     }
 
     [first.unwrap(), last]

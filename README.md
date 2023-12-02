@@ -6,6 +6,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 ## [2023](https://adventofcode.com/2022) [![aoc_2023](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2023.yml)
 
 - [Day 01: Trebuchet?!](aoc_2023/src/day_01.rs)
+- [Day 02: Cube Conundrum](aoc_2023/src/day_02.rs)
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
 
