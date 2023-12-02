@@ -11,93 +11,57 @@ impl Solution for Day02 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        let runs = input
-            .lines()
-            .map(|line| {
-                let (game, cubes) = line.split_once(':').unwrap();
-                let game = game.trim_start_matches("Game ").parse::<u32>().unwrap();
-                let sets = cubes.split(';').collect::<Vec<_>>();
-
-                let mut cube_sets = Vec::new();
-                for part in sets {
-                    let iter = part.trim().split(',');
-
-                    let mut cubes = CubeSet::default();
-                    for i in iter {
-                        let mut iter = i.trim().split_whitespace();
-                        let count = iter.next().unwrap().parse::<u32>().unwrap();
-                        let color = iter.next().unwrap();
-
-                        match color {
-                            "red" => cubes.red += count,
-                            "green" => cubes.green += count,
-                            "blue" => cubes.blue += count,
-                            _ => unreachable!(),
-                        }
-                    }
-                    cube_sets.push(cubes);
-                }
-
-                (game, cube_sets)
-            })
-            .filter(|(_, games)| {
-                for game in games {
-                    if game.red <= MAX_CUBES[0]
-                        && game.green <= MAX_CUBES[1]
-                        && game.blue <= MAX_CUBES[2]
-                    {
-                        continue;
-                    } else {
-                        return false;
-                    }
-                }
-                true
-            })
-            .map(|x| x.0)
-            .sum::<u32>();
-        runs.into()
+        parse(input)
+            .iter()
+            .enumerate()
+            .filter(|(_, games)| games.iter().all(|game| game.is_possible()))
+            .map(|x| x.0 + 1)
+            .sum::<usize>()
+            .into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        let runs = input
-            .lines()
-            .map(|line| {
-                let (game, cubes) = line.split_once(':').unwrap();
-                let game = game.trim_start_matches("Game ").parse::<u32>().unwrap();
-                let sets = cubes.split(';').collect::<Vec<_>>();
-
-                let mut cube_sets = Vec::new();
-                for part in sets {
-                    let iter = part.trim().split(',');
-
-                    let mut cubes = CubeSet::default();
-                    for i in iter {
-                        let mut iter = i.trim().split_whitespace();
-                        let count = iter.next().unwrap().parse::<u32>().unwrap();
-                        let color = iter.next().unwrap();
-
-                        match color {
-                            "red" => cubes.red += count,
-                            "green" => cubes.green += count,
-                            "blue" => cubes.blue += count,
-                            _ => unreachable!(),
-                        }
-                    }
-                    cube_sets.push(cubes);
-                }
-
-                (game, cube_sets)
-            })
-            .map(|(num, games)| {
+        parse(input)
+            .iter()
+            .map(|games| {
                 let mut max = CubeSet::default();
                 for game in games {
                     max = max.max(&game);
                 }
                 max.red * max.green * max.blue
             })
-            .sum::<u32>();
-        runs.into()
+            .sum::<u32>()
+            .into()
     }
+}
+
+fn parse(input: &str) -> Vec<Vec<CubeSet>> {
+    input
+        .lines()
+        .map(|line| {
+            let cubes = line.split_once(':').unwrap().1;
+
+            let mut sets = Vec::new();
+            for game in cubes.split(';') {
+                let mut cubes = CubeSet::default();
+                for i in game.split(',') {
+                    let mut iter = i.trim().split_whitespace();
+                    let count = iter.next().unwrap().parse::<u32>().unwrap();
+                    let color = iter.next().unwrap();
+
+                    match color {
+                        "red" => cubes.red += count,
+                        "green" => cubes.green += count,
+                        "blue" => cubes.blue += count,
+                        _ => unreachable!(),
+                    }
+                }
+                sets.push(cubes);
+            }
+
+            sets
+        })
+        .collect()
 }
 
 #[derive(Debug, Default)]
@@ -114,6 +78,10 @@ impl CubeSet {
             green: self.green.max(other.green),
             blue: self.blue.max(other.blue),
         }
+    }
+
+    fn is_possible(&self) -> bool {
+        self.red <= MAX_CUBES[0] && self.green <= MAX_CUBES[1] && self.blue <= MAX_CUBES[2]
     }
 }
 
