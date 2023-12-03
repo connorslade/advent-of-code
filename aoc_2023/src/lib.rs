@@ -1,5 +1,6 @@
 use common::Solution;
 
+#[macro_use]
 mod aoc_lib;
 mod day_01;
 mod day_02;

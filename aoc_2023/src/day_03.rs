@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use nd_vec::{vector, Vec2};
 
@@ -40,68 +40,36 @@ struct ParseResult {
 }
 
 fn parse(input: &str) -> ParseResult {
-    let chars = input
-        .lines()
-        .map(|line| line.chars().collect::<Vec<_>>())
-        .collect::<Vec<_>>();
-
-    let mut symbols = HashSet::new();
-    let mut ratios = HashMap::new();
-    for (y, line) in chars.iter().enumerate() {
-        for (x, c) in line.iter().enumerate() {
-            if !"0123456789.".contains(*c) {
-                symbols.insert(vector!(x, y));
+    let mut symbols = HashMap::new();
+    for (y, line) in input.lines().enumerate() {
+        for (x, c) in line.char_indices() {
+            if !c.is_ascii_digit() && c != '.' {
+                symbols.insert(vector!(x, y), c);
             }
         }
     }
 
     let mut gears = Vec::new();
-    for (y, line) in chars.iter().enumerate() {
-        let mut pos = None;
+    let mut ratios = HashMap::new();
+    for (y, line) in input.lines().enumerate() {
+        for m in regex!(r"\d+").find_iter(line) {
+            let value = m.as_str().parse().unwrap();
 
-        let mut check = |pos, x| {
-            if let Some(pos) = pos {
-                let [start, end] = [pos, x - 1];
-                let value = line[start..=end]
-                    .iter()
-                    .collect::<String>()
-                    .parse()
-                    .unwrap();
-
-                let mut part_number = false;
-                for nx in (start as isize - 1)..=(end as isize + 1) {
-                    for ny in (y as isize - 1)..=(y as isize + 1) {
-                        if nx < 0 || ny < 0 {
-                            continue;
-                        }
-
-                        let [nx, ny] = [nx as usize, ny as usize];
-                        let pos = vector!(nx, ny);
-                        part_number |= symbols.contains(&pos);
-
-                        if symbols.contains(&pos) && chars[ny][nx] == '*' {
-                            ratios.entry(pos).or_insert(Vec::new()).push(value);
-                        }
+            let mut part_number = false;
+            for nx in m.start().saturating_sub(1)..=m.end() {
+                for ny in y.saturating_sub(1)..=y + 1 {
+                    let pos = vector!(nx, ny);
+                    let symbol = symbols.get(&pos);
+                    part_number |= symbol.is_some();
+                    
+                    if symbol == Some(&'*') {
+                        ratios.entry(pos).or_insert(Vec::new()).push(value);
                     }
                 }
-
-                gears.push(Gear { value, part_number });
             }
-        };
 
-        let mut x = 0;
-        while x < line.len() {
-            if line[x].is_numeric() {
-                if pos.is_none() {
-                    pos = Some(x);
-                }
-            } else {
-                check(pos, x);
-                pos = None;
-            }
-            x += 1;
+            gears.push(Gear { value, part_number });
         }
-        check(pos, x);
     }
 
     ParseResult { gears, ratios }
