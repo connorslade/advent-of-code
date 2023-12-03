@@ -26,7 +26,7 @@ impl Solution for Day02 {
             .map(|games| {
                 let mut max = CubeSet::default();
                 for game in games {
-                    max = max.max(&game);
+                    max = max.max(game);
                 }
                 max.red * max.green * max.blue
             })
@@ -45,7 +45,7 @@ fn parse(input: &str) -> Vec<Vec<CubeSet>> {
             for game in cubes.split(';') {
                 let mut cubes = CubeSet::default();
                 for i in game.split(',') {
-                    let mut iter = i.trim().split_whitespace();
+                    let mut iter = i.split_whitespace();
                     let count = iter.next().unwrap().parse::<u32>().unwrap();
                     let color = iter.next().unwrap();
 
