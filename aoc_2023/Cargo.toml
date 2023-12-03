@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 common = { path = "../common" }
 indoc = "2.0.4"
+nd_vec = "0.3.0"
