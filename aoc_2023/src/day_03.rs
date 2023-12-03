@@ -15,7 +15,7 @@ impl Solution for Day03 {
 
     fn part_a(&self, input: &str) -> Answer {
         parse(input)
-            .0
+            .gears
             .iter()
             .filter(|x| x.part_number)
             .map(|x| x.value)
@@ -25,7 +25,7 @@ impl Solution for Day03 {
 
     fn part_b(&self, input: &str) -> Answer {
         parse(input)
-            .1
+            .ratios
             .iter()
             .filter(|(_, vals)| vals.len() == 2)
             .map(|(_, vals)| vals[0] * vals[1])
@@ -34,7 +34,12 @@ impl Solution for Day03 {
     }
 }
 
-fn parse(input: &str) -> (Vec<Gear>, HashMap<Pos, Vec<u32>>) {
+struct ParseResult {
+    gears: Vec<Gear>,
+    ratios: HashMap<Pos, Vec<u32>>,
+}
+
+fn parse(input: &str) -> ParseResult {
     let chars = input
         .lines()
         .map(|line| line.chars().collect::<Vec<_>>())
@@ -70,22 +75,17 @@ fn parse(input: &str) -> (Vec<Gear>, HashMap<Pos, Vec<u32>>) {
                             continue;
                         }
 
-                        let pos = vector!(nx as usize, ny as usize);
+                        let [nx, ny] = [nx as usize, ny as usize];
+                        let pos = vector!(nx, ny);
                         part_number |= symbols.contains(&pos);
 
-                        if symbols.contains(&pos) {
-                            let symbol = chars[ny as usize][nx as usize];
-                            if symbol == '*' {
-                                ratios.entry(pos).or_insert(Vec::new()).push(value);
-                            }
+                        if symbols.contains(&pos) && chars[ny][nx] == '*' {
+                            ratios.entry(pos).or_insert(Vec::new()).push(value);
                         }
                     }
                 }
 
-                gears.push(Gear {
-                    value,
-                    part_number,
-                });
+                gears.push(Gear { value, part_number });
             }
         };
 
@@ -104,7 +104,7 @@ fn parse(input: &str) -> (Vec<Gear>, HashMap<Pos, Vec<u32>>) {
         check(pos, x);
     }
 
-    (gears, ratios)
+    ParseResult { gears, ratios }
 }
 
 #[derive(Debug)]
