@@ -11,9 +11,8 @@ impl Solution for Day04 {
         let cards = parse(input);
         cards
             .iter()
-            .map(|x| x.count_wins())
-            .filter(|x| *x > 0)
-            .map(|x| 2u32.pow(x.saturating_sub(1) as u32))
+            .filter(|x| x.wins > 0)
+            .map(|x| 2u32.pow(x.wins.saturating_sub(1) as u32))
             .sum::<u32>()
             .into()
     }
@@ -21,19 +20,19 @@ impl Solution for Day04 {
     fn part_b(&self, input: &str) -> Answer {
         let cards = parse(input);
 
-        let mut queue = cards.clone();
+        let mut queue = (0..cards.len()).collect::<Vec<_>>();
         let mut visited = 0;
 
-        while let Some(card) = queue.pop() {
-            let wins = card.count_wins();
+        while let Some(i) = queue.pop() {
             visited += 1;
-            if wins == 0 {
+
+            let card = &cards[i];
+            if card.wins == 0 {
                 continue;
             }
 
-            let num = card.number as usize;
-            for i in num + 1..=num + wins {
-                queue.push(cards[i as usize - 1].clone());
+            for j in 0..card.wins as usize {
+                queue.push(j + i + 1);
             }
         }
 
@@ -41,11 +40,8 @@ impl Solution for Day04 {
     }
 }
 
-#[derive(Clone)]
 struct Card {
-    number: u8,
-    winning: Vec<u8>,
-    scratch: Vec<u8>,
+    wins: u8,
 }
 
 fn parse(input: &str) -> Vec<Card> {
@@ -53,24 +49,20 @@ fn parse(input: &str) -> Vec<Card> {
     for line in input.lines() {
         let (_, line) = line.split_once(": ").unwrap();
         let (winning, scratch) = line.split_once(" | ").unwrap();
-        let parse = |s: &str| s.split_whitespace().map(|x| x.parse().unwrap()).collect();
+        let parse = |s: &str| {
+            s.split_whitespace()
+                .map(|x| x.parse().unwrap())
+                .collect::<Vec<u8>>()
+        };
+
+        let winning = parse(winning);
+        let scratch = parse(scratch);
         cards.push(Card {
-            number: cards.len() as u8 + 1,
-            winning: parse(winning),
-            scratch: parse(scratch),
+            wins: scratch.iter().filter(|x| winning.contains(x)).count() as u8,
         });
     }
 
     cards
-}
-
-impl Card {
-    fn count_wins(&self) -> usize {
-        self.scratch
-            .iter()
-            .filter(|x| self.winning.contains(x))
-            .count()
-    }
 }
 
 #[cfg(test)]
