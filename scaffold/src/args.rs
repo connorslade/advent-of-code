@@ -1,4 +1,5 @@
 use clap::Parser;
+use common::Part;
 use regex::Regex;
 use url::Url;
 
@@ -121,33 +122,8 @@ pub struct SubmitArgs {
     /// The day to submit the solution for.
     pub day: u8,
     /// The part to submit the solution for.
-    #[arg(value_parser = parse_part)]
     pub part: Part,
     /// The year to submit the solution for.
     #[arg(default_value_t = current_year())]
     pub year: u16,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub enum Part {
-    A,
-    B,
-}
-
-fn parse_part(s: &str) -> Result<Part, String> {
-    match s {
-        "a" => Ok(Part::A),
-        "b" => Ok(Part::B),
-        _ => Err("part must be `a` or `b`".to_owned()),
-    }
-}
-
-impl ToString for Part {
-    fn to_string(&self) -> String {
-        match self {
-            Part::A => "a",
-            Part::B => "b",
-        }
-        .to_owned()
-    }
 }
