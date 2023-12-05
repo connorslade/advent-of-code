@@ -1,4 +1,5 @@
 use common::{Answer, Solution};
+use rayon::{iter::ParallelIterator, slice::ParallelSlice};
 
 pub struct Day05;
 
@@ -13,7 +14,7 @@ impl Solution for Day05 {
         let mut min = u32::MAX;
         for mut seed in seeds.seeds {
             for map in &seeds.maps {
-                seed = map.get(seed);
+                seed = map.map(seed);
             }
             min = min.min(seed);
         }
@@ -24,18 +25,25 @@ impl Solution for Day05 {
     fn part_b(&self, input: &str) -> Answer {
         let seeds = parse(input);
 
-        let mut min = u32::MAX;
-        for seed in seeds.seeds.chunks_exact(2) {
-            for mut seed in seed[0]..seed[0] + seed[1] {
-                for map in &seeds.maps {
-                    seed = map.get(seed);
+        // eh its fast enough
+        // ~1min on my machine
+        seeds
+            .seeds
+            .par_chunks_exact(2)
+            .map(|seed| {
+                let mut min = u32::MAX;
+                for mut seed in seed[0]..=seed[0] + seed[1] {
+                    for map in &seeds.maps {
+                        seed = map.map(seed);
+                    }
+
+                    min = min.min(seed);
                 }
-
-                min = min.min(seed);
-            }
-        }
-
-        min.into()
+                min
+            })
+            .min()
+            .unwrap()
+            .into()
     }
 }
 
@@ -44,10 +52,10 @@ struct Map {
     ranges: Vec<Range>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Range {
-    start: u32,
     end: u32,
+    start: u32,
     length: u32,
 }
 
@@ -89,12 +97,17 @@ fn parse(input: &str) -> ParseResult {
     ParseResult { maps, seeds }
 }
 
+impl Range {
+    fn start_contains(&self, value: u32) -> bool {
+        self.start <= value && value < self.start + self.length
+    }
+}
+
 impl Map {
-    fn get(&self, value: u32) -> u32 {
+    fn map(&self, value: u32) -> u32 {
         for range in &self.ranges {
-            if range.start <= value && value <= range.start + range.length {
-                let diff = value - range.start;
-                return range.end + diff;
+            if range.start_contains(value) {
+                return range.end + value - range.start;
             }
         }
 

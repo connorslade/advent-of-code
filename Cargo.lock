@@ -142,6 +142,7 @@ dependencies = [
  "indoc",
  "nd_vec",
  "once_cell",
+ "rayon",
  "regex",
 ]
 
