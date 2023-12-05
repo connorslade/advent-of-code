@@ -9,6 +9,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 02: Cube Conundrum](aoc_2023/src/day_02.rs)
 - [Day 03: Gear Ratios](aoc_2023/src/day_03.rs)
 - [Day 04: Scratchcards](aoc_2023/src/day_04.rs)
+- [Day 05: If You Give A Seed A Fertilizer](aoc_2023/src/day_05.rs)
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
 
