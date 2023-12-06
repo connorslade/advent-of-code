@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use clap::Parser;
 use common::Part;
 use regex::Regex;
@@ -57,11 +59,14 @@ pub struct TimerArgs {
 #[derive(Parser, Debug)]
 pub struct InitArgs {
     /// A formatter that will be used to get the path for the input file.
-    #[arg(short, long, default_value = "data/{{year}}/{{day:pad(2)}}.txt")]
+    #[arg(short = 'l', long, default_value = "data/{{year}}/{{day:pad(2)}}.txt")]
     pub input_location: String,
-    /// A formatter that will be used to get the path for the solution file.
-    #[arg(short, long, default_value = "aoc_{{year}}/src/day_{{day:pad(2)}}.rs")]
-    pub solution_location: String,
+    /// An inserter is a string that will be inserted into a file at a specific marker.
+    /// The argument is formatted as `{location}:{marker}:{template}` or if you want to use multiple markers `{location}:{marker}:{template}:{marker}:{template}:...`.
+    /// This argument can be provided multiple times.
+    /// Some uses of inserters are automatically importing the new source into a module or adding the day to the list of days.
+    #[arg(short, long, default_values = ["aoc_{{year}}/src/lib.rs|// [import_marker]|mod day_{{day:pad(2)}};\\n|// [list_marker]|&day_{{day:pad(2)}}::Day{{day:pad(2)}},\\n    "])]
+    pub inserter: Vec<Insertion>,
     /// Location formatter of the file importing each solution module.
     #[arg(long, default_value = "aoc_{{year}}/src/lib.rs")]
     pub module_location: String,
@@ -72,6 +77,9 @@ pub struct InitArgs {
     /// If not provided, the default markers will be used.
     #[arg(long, default_values_t = ["// [import_marker]".to_owned(), "// [list_marker]".to_owned()])]
     pub module_markers: Vec<String>,
+    /// A formatter that will be used to get the path for the solution file.
+    #[arg(short, long, default_value = "aoc_{{year}}/src/day_{{day:pad(2)}}.rs")]
+    pub solution_location: String,
     /// Path to a template file that will be used to create the solution file.
     /// If not provided, a default template will be used.
     #[arg(short = 't', long)]
@@ -126,4 +134,32 @@ pub struct SubmitArgs {
     /// The year to submit the solution for.
     #[arg(default_value_t = current_year())]
     pub year: u16,
+}
+
+#[derive(Debug, Clone)]
+pub struct Insertion {
+    pub location: String,
+    // (Marker, Template)
+    pub parts: Vec<(String, String)>,
+}
+
+impl FromStr for Insertion {
+    type Err = &'static str;
+
+    /// `{location}:{marker}:{template}`
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut parts = s.split('|').collect::<Vec<_>>();
+
+        if parts.len() < 3 {
+            return Err("Expected at least 3 parts");
+        }
+
+        let location = parts.remove(0).to_owned();
+        let parts = parts
+            .chunks_exact(2)
+            .map(|x| (x[0].to_owned(), x[1].to_owned()))
+            .collect::<Vec<_>>();
+
+        Ok(Self { location, parts })
+    }
 }

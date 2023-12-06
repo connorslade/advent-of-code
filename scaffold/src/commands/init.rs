@@ -28,6 +28,7 @@ pub fn init(session: &Session, cmd: &InitArgs, args: &Args) -> Result<()> {
     if !cmd.no_scaffold {
         let path = write_scaffold(cmd, formats)?;
         modify_module(cmd, formats)?;
+        run_inserters(cmd, formats)?;
 
         if cmd.auto_open {
             let command =
@@ -68,7 +69,29 @@ fn write_scaffold(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<PathBuf>
     Ok(file_location.to_path_buf())
 }
 
-// todo: Pass args from main func
+fn run_inserters(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
+    for inserter in &cmd.inserter {
+        let file_path = Formatter::new(&inserter.location)?.format(formats)?;
+        let mut file = fs::read_to_string(&file_path)
+            .with_context(|| format!("Failed to read {file_path}"))?;
+
+        for (marker, template) in &inserter.parts {
+            let marker = file
+                .find(marker)
+                .with_context(|| format!("Marker `{}` was not found", marker))?;
+            let new_line = Formatter::new(template)?
+                .format(formats)?
+                .replace("\\n", "\n");
+            file.insert_str(marker, &new_line);
+        }
+
+        fs::write(&file_path, file)?;
+        println!("[*] Modified {}", file_path);
+    }
+
+    Ok(())
+}
+
 fn modify_module(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
     let module_file = Formatter::new(&cmd.module_location)?.format(formats)?;
     let mut file = fs::read_to_string(&module_file)?;
