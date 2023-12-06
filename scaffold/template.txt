@@ -29,11 +29,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day{{day:pad(2)}}.part_a(CASE), Answer::Unimplemented);
+        assert_eq!(Day{{day:pad(2)}}.part_a(CASE), ().into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day{{day:pad(2)}}.part_b(CASE), Answer::Unimplemented);
+        assert_eq!(Day{{day:pad(2)}}.part_b(CASE), ().into());
     }
 }

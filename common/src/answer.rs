@@ -31,22 +31,23 @@ impl From<&str> for Answer {
     }
 }
 
+impl From<()> for Answer {
+    fn from(_value: ()) -> Self {
+        Self::Unimplemented
+    }
+}
+
 macro_rules! answer_impl {
-    ($answer:ident, $answer_type:ty, { $($type:ty),* }) => {
-        $(impl From<$type> for Answer {
+    ($($answer:ident, $answer_type:ty => { $($type:ty),* }),*) => {
+        $($(impl From<$type> for Answer {
             fn from(n: $type) -> Self {
                 Self::$answer(n as $answer_type)
             }
-        })*
+        })*)*
     };
 }
 
 answer_impl!(
-    Number, u64,
-    { u8, u16, u32, u64, usize, i8, i16, i32, i64, isize }
-);
-
-answer_impl!(
-    Float, f64,
-    { f32, f64 }
+    Number, u64 => { u8, u16, u32, u64, usize, i8, i16, i32, i64, isize },
+    Float, f64 => { f32, f64 }
 );
