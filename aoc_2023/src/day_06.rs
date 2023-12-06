@@ -1,4 +1,5 @@
 use common::{Answer, Solution};
+use itertools::Itertools;
 
 pub struct Day06;
 
@@ -8,8 +9,11 @@ impl Solution for Day06 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        let races = parse(input);
-        races.iter().map(Race::ways_to_win).product::<u64>().into()
+        parse_a(input)
+            .iter()
+            .map(Race::ways_to_win)
+            .product::<u64>()
+            .into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
@@ -23,37 +27,35 @@ struct Race {
     distance: u64,
 }
 
-fn parse(input: &str) -> Vec<Race> {
-    let mut out = Vec::new();
-
-    let mut lines = input.lines();
-    let time_races = lines.next().unwrap().split_whitespace().skip(1);
-    let distance_races = lines.next().unwrap().split_whitespace().skip(1);
-    for (time, distance) in time_races.zip(distance_races) {
-        let race = Race {
-            time: time.parse::<u64>().unwrap(),
-            distance: distance.parse::<u64>().unwrap(),
-        };
-        out.push(race);
-    }
-
-    out
+fn parse_a(input: &str) -> Vec<Race> {
+    let (a, b) = input
+        .lines()
+        .map(|x| {
+            x.split_whitespace()
+                .skip(1)
+                .map(|x| x.parse::<u64>().unwrap())
+        })
+        .next_tuple()
+        .unwrap();
+    a.zip(b)
+        .map(|(time, distance)| Race { time, distance })
+        .collect::<Vec<_>>()
 }
 
 fn parse_b(input: &str) -> Race {
-    let mut lines = input.lines();
-    let mut parse = || {
-        lines
-            .next()
-            .unwrap()
-            .split_whitespace()
-            .skip(1)
-            .collect::<String>()
-    };
-    Race {
-        time: parse().parse().unwrap(),
-        distance: parse().parse().unwrap(),
-    }
+    let (time, distance) = input
+        .lines()
+        .map(|x| {
+            x.split_whitespace()
+                .skip(1)
+                .collect::<String>()
+                .parse::<u64>()
+                .unwrap()
+        })
+        .next_tuple()
+        .unwrap();
+
+    Race { time, distance }
 }
 
 impl Race {

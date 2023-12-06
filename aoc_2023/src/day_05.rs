@@ -77,7 +77,7 @@ fn parse(input: &str) -> ParseResult {
         .map(|s| s.parse().unwrap())
         .collect();
 
-    for section in sections.into_iter().filter(|x| !x.is_empty()) {
+    for section in sections.filter(|x| !x.is_empty()) {
         let lines = section.lines();
         let mut ranges = Vec::new();
 
