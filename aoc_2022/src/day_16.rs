@@ -54,7 +54,7 @@ fn solve(
         }
 
         let new_time = time.saturating_sub(distance + 1);
-        if new_time <= 0 {
+        if new_time == 0 {
             continue;
         }
 
@@ -84,7 +84,7 @@ fn parse(input: &str) -> ParseResult {
         let name = parts[1];
         let flow = parts[4]
             .trim_start_matches("rate=")
-            .trim_end_matches(";")
+            .trim_end_matches(';')
             .parse::<u16>()
             .unwrap();
         let to = parts[9..]

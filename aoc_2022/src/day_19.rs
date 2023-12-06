@@ -52,17 +52,17 @@ impl State {
 
     fn tick(self) -> Self {
         let mut resources = self.resources;
-        for i in 0..4 {
-            resources[i] += self.robots[i];
+        for (i, resource) in resources.iter_mut().enumerate() {
+            *resource += self.robots[i];
         }
 
         Self { resources, ..self }
     }
 
     fn cant_beat(&self, ticks: u8, max_geodes: u8) -> bool {
-        return self.resources[3] as u32
+        self.resources[3] as u32
             + (ticks as u32 * self.robots[3] as u32 + ticks as u32 * (ticks as u32 - 1) / 2)
-            <= max_geodes as u32;
+            <= max_geodes as u32
     }
 }
 
