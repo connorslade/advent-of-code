@@ -60,16 +60,10 @@ fn parse_b(input: &str) -> Race {
 
 impl Race {
     fn ways_to_win(&self) -> u64 {
-        let mut out = 0;
-
-        for i in 0..self.time {
-            let distance = i * (self.time - i);
-            if distance > self.distance {
-                out += 1;
-            }
-        }
-
-        out
+        let a = ((self.time * self.time - 4 * self.distance) as f32).sqrt();
+        let x1 = ((self.time as f32 - a) / 2.0 + 1.0).floor();
+        let x2 = ((self.time as f32 + a) / 2.0 - 1.0).ceil();
+        (x2 - x1 + 1.0) as u64
     }
 }
 
