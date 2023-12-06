@@ -9,20 +9,11 @@ impl Solution for Day06 {
 
     fn part_a(&self, input: &str) -> Answer {
         let races = parse(input);
-        races
-            .iter()
-            .map(|x| x.ways_to_win())
-            .fold(1, |a, b| a * b)
-            .into()
+        races.iter().map(Race::ways_to_win).product::<u64>().into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        let race = Race {
-            time: 44826981,
-            distance: 202107611381458,
-        };
-
-        race.ways_to_win().into()
+        parse_b(input).ways_to_win().into()
     }
 }
 
@@ -49,8 +40,24 @@ fn parse(input: &str) -> Vec<Race> {
     out
 }
 
+fn parse_b(input: &str) -> Race {
+    let mut lines = input.lines();
+    let mut parse = || {
+        lines
+            .next()
+            .unwrap()
+            .split_whitespace()
+            .skip(1)
+            .collect::<String>()
+    };
+    Race {
+        time: parse().parse().unwrap(),
+        distance: parse().parse().unwrap(),
+    }
+}
+
 impl Race {
-    fn ways_to_win(&self) -> u32 {
+    fn ways_to_win(&self) -> u64 {
         let mut out = 0;
 
         for i in 0..self.time {
