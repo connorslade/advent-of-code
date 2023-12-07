@@ -49,15 +49,6 @@ impl Solution for Day07 {
             }
         });
 
-        // KTJJT
-        // QQQJA
-        // T55J5
-        // KK677
-        // 32T3K
-
-        //    249058757
-        // => 248652697
-
         hands
             .iter()
             .rev()
@@ -134,75 +125,36 @@ fn score_b(cards: &[u8]) -> HandType {
     }
 
     let jacks = counts[12];
-    let counts = &counts[0..12];
+    let mut counts = counts[0..12]
+        .into_iter()
+        .map(|&x| x)
+        .filter(|x| *x != 0)
+        .collect::<Vec<_>>();
+    counts.sort_by_key(|x| *x);
+    counts.reverse();
 
-    if counts.iter().any(|&c| c + jacks == 5) {
+    if counts.len() <= 1 {
         HandType::FiveOfAKind
-    } else if counts.iter().any(|&c| c + jacks == 4) {
+    } else if counts[0] + jacks == 5 {
+        HandType::FiveOfAKind
+    } else if counts[0] + jacks == 4 {
         HandType::FourOfAKind
-    } else if {
-        counts.iter().any(|&c| c + jacks == 3)
-            && counts
-                .iter()
-                .enumerate()
-                .any(|(i, &c)| c == 2 && i != counts.iter().position(|x| x + jacks == 3).unwrap())
-    } {
+    } else if ((counts[0] + jacks == 3) && (counts[1] == 2))
+        || ((counts[0] == 3) && (counts[1] + jacks == 2))
+    {
         HandType::FullHouse
-    } else if counts.iter().any(|&c| c + jacks == 3) {
+    } else if counts[0] + jacks == 3 {
         HandType::ThreeOfAKind
-    } else if counts.iter().any(|&c| c == 2) && counts.iter().any(|&c| c + jacks == 2) {
+    } else if (counts[0] + jacks == 2 && counts[1] == 2)
+        || (counts[0] == 2 && counts[1] + jacks == 2)
+    {
         HandType::TwoPair
-    } else if counts.iter().any(|&c| c + jacks == 2) {
+    } else if counts[0] + jacks == 2 {
         HandType::OnePair
     } else {
         HandType::HighCard
     }
 }
-
-// fn score_b(cards: &[u8]) -> HandType {
-//     let mut best_type = HandType::HighCard;
-
-//     let mut jokers = Vec::new();
-//     for (i, c) in cards.iter().enumerate() {
-//         if *c == 1 {
-//             jokers.push(i);
-//         }
-//     }
-
-//     if jokers.is_empty() {
-//         return score(cards);
-//     }
-
-//     // Take tha max of score(cards) with every permutation of joker replacements
-//     let mut joker_values = vec![1; jokers.len()];
-//     'outer: while joker_values[0] != 12 {
-//         let idx = joker_values.len() - 1;
-//         joker_values[idx] += 1;
-//         for i in (0..joker_values.len()).rev() {
-//             if joker_values[i] == 12 {
-//                 joker_values[i] = 1;
-
-//                 if i == 0 {
-//                     break 'outer;
-//                 }
-
-//                 joker_values[i - 1] += 1;
-//             }
-//         }
-
-//         let mut cards = cards.to_vec();
-//         for (i, &v) in joker_values.iter().enumerate() {
-//             cards[jokers[i]] = v;
-//         }
-
-//         let score = score(&cards);
-//         if score as u8 > best_type as u8 {
-//             best_type = score;
-//         }
-//     }
-
-//     best_type
-// }
 
 fn score_first(a: &[u8], b: &[u8]) -> Ordering {
     for (&a, &b) in a.iter().zip(b.iter()) {
@@ -212,22 +164,6 @@ fn score_first(a: &[u8], b: &[u8]) -> Ordering {
     }
 
     Ordering::Equal
-}
-
-impl Debug for Hand {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Hand")
-            .field(
-                "cards",
-                &self
-                    .cards
-                    .iter()
-                    .map(|x| CARDS_B.as_bytes()[13 - *x as usize] as char)
-                    .collect::<String>(),
-            )
-            .field("bid", &self.bid)
-            .finish()
-    }
 }
 
 #[cfg(test)]
