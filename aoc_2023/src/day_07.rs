@@ -1,9 +1,7 @@
 use std::{cmp::Ordering, fmt::Debug};
 
 use common::{Answer, Solution};
-
-const CARDS_A: &str = "AKQJT98765432";
-const CARDS_B: &str = "AKQT98765432J";
+use itertools::Itertools;
 
 pub struct Day07;
 
@@ -13,50 +11,25 @@ impl Solution for Day07 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        let mut hands = parse(input, CARDS_A);
-
-        hands.sort_by(|a, b| {
-            let a_score = score(&a.cards) as u8;
-            let b_score = score(&b.cards) as u8;
-
-            if a_score == b_score {
-                score_first(&b.cards, &a.cards)
-            } else {
-                a_score.cmp(&b_score)
-            }
-        });
-
-        hands
-            .iter()
-            .rev()
-            .enumerate()
-            .map(|(i, e)| e.bid as usize * (i + 1))
-            .sum::<usize>()
-            .into()
+        let hands = parse(input, "AKQJT98765432");
+        solve(hands, Hand::score_a).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        let mut hands = parse(input, CARDS_B);
-
-        hands.sort_by(|a, b| {
-            let a_score = score_b(&a.cards) as u8;
-            let b_score = score_b(&b.cards) as u8;
-
-            if a_score == b_score {
-                score_first(&b.cards, &a.cards)
-            } else {
-                a_score.cmp(&b_score)
-            }
-        });
-
-        hands
-            .iter()
-            .rev()
-            .enumerate()
-            .map(|(i, e)| e.bid as usize * (i + 1))
-            .sum::<usize>()
-            .into()
+        let hands = parse(input, "AKQT98765432J");
+        solve(hands, Hand::score_b).into()
     }
+}
+
+fn solve(mut hands: Vec<Hand>, score: fn(&Hand) -> HandType) -> usize {
+    hands.sort_by(|a, b| score(a).cmp(&score(b)).then_with(|| b.score_first(a)));
+
+    hands
+        .iter()
+        .rev()
+        .enumerate()
+        .map(|(i, e)| e.bid as usize * (i + 1))
+        .sum::<usize>()
 }
 
 struct Hand {
@@ -83,8 +56,7 @@ fn parse(input: &str, mappings: &'static str) -> Vec<Hand> {
     hands
 }
 
-#[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord)]
 enum HandType {
     FiveOfAKind,
     FourOfAKind,
@@ -95,75 +67,75 @@ enum HandType {
     HighCard,
 }
 
-fn score(cards: &[u8]) -> HandType {
-    let mut counts = [0; 13];
-    for &c in cards {
-        counts[13 - c as usize] += 1;
-    }
+impl Hand {
+    fn score_a(&self) -> HandType {
+        let mut counts = [0; 13];
+        for &c in &self.cards {
+            counts[13 - c as usize] += 1;
+        }
 
-    if counts.iter().any(|&c| c == 5) {
-        HandType::FiveOfAKind
-    } else if counts.iter().any(|&c| c == 4) {
-        HandType::FourOfAKind
-    } else if counts.iter().any(|&c| c == 3) && counts.iter().any(|&c| c == 2) {
-        HandType::FullHouse
-    } else if counts.iter().any(|&c| c == 3) {
-        HandType::ThreeOfAKind
-    } else if counts.iter().filter(|&&c| c == 2).count() == 2 {
-        HandType::TwoPair
-    } else if counts.iter().any(|&c| c == 2) {
-        HandType::OnePair
-    } else {
-        HandType::HighCard
-    }
-}
-
-fn score_b(cards: &[u8]) -> HandType {
-    let mut counts = [0; 13];
-    for &c in cards {
-        counts[13 - c as usize] += 1;
-    }
-
-    let jacks = counts[12];
-    let mut counts = counts[0..12]
-        .into_iter()
-        .map(|&x| x)
-        .filter(|x| *x != 0)
-        .collect::<Vec<_>>();
-    counts.sort_by_key(|x| *x);
-    counts.reverse();
-
-    if counts.len() <= 1 {
-        HandType::FiveOfAKind
-    } else if counts[0] + jacks == 5 {
-        HandType::FiveOfAKind
-    } else if counts[0] + jacks == 4 {
-        HandType::FourOfAKind
-    } else if ((counts[0] + jacks == 3) && (counts[1] == 2))
-        || ((counts[0] == 3) && (counts[1] + jacks == 2))
-    {
-        HandType::FullHouse
-    } else if counts[0] + jacks == 3 {
-        HandType::ThreeOfAKind
-    } else if (counts[0] + jacks == 2 && counts[1] == 2)
-        || (counts[0] == 2 && counts[1] + jacks == 2)
-    {
-        HandType::TwoPair
-    } else if counts[0] + jacks == 2 {
-        HandType::OnePair
-    } else {
-        HandType::HighCard
-    }
-}
-
-fn score_first(a: &[u8], b: &[u8]) -> Ordering {
-    for (&a, &b) in a.iter().zip(b.iter()) {
-        if a != b {
-            return a.cmp(&b);
+        if counts.iter().any(|&c| c == 5) {
+            HandType::FiveOfAKind
+        } else if counts.iter().any(|&c| c == 4) {
+            HandType::FourOfAKind
+        } else if counts.iter().any(|&c| c == 3) && counts.iter().any(|&c| c == 2) {
+            HandType::FullHouse
+        } else if counts.iter().any(|&c| c == 3) {
+            HandType::ThreeOfAKind
+        } else if counts.iter().filter(|&&c| c == 2).count() == 2 {
+            HandType::TwoPair
+        } else if counts.iter().any(|&c| c == 2) {
+            HandType::OnePair
+        } else {
+            HandType::HighCard
         }
     }
 
-    Ordering::Equal
+    fn score_b(&self) -> HandType {
+        let mut counts = [0; 13];
+        for &c in &self.cards {
+            counts[13 - c as usize] += 1;
+        }
+
+        let jacks = counts[12];
+        let counts = counts[0..12]
+            .iter()
+            .copied()
+            .filter(|x| *x != 0)
+            .sorted()
+            .rev()
+            .collect::<Vec<_>>();
+
+        if counts.len() <= 1 || counts[0] + jacks == 5 {
+            HandType::FiveOfAKind
+        } else if counts[0] + jacks == 4 {
+            HandType::FourOfAKind
+        } else if ((counts[0] + jacks == 3) && (counts[1] == 2))
+            || ((counts[0] == 3) && (counts[1] + jacks == 2))
+        {
+            HandType::FullHouse
+        } else if counts[0] + jacks == 3 {
+            HandType::ThreeOfAKind
+        } else if (counts[0] + jacks == 2 && counts[1] == 2)
+            || (counts[0] == 2 && counts[1] + jacks == 2)
+        {
+            HandType::TwoPair
+        } else if counts[0] + jacks == 2 {
+            HandType::OnePair
+        } else {
+            HandType::HighCard
+        }
+    }
+
+    fn score_first(&self, other: &Hand) -> Ordering {
+        for (&a, &b) in self.cards.iter().zip(other.cards.iter()) {
+            if a != b {
+                return a.cmp(&b);
+            }
+        }
+
+        Ordering::Equal
+    }
 }
 
 #[cfg(test)]
