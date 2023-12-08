@@ -142,6 +142,7 @@ dependencies = [
  "indoc",
  "itertools",
  "nd_vec",
+ "num-traits",
  "once_cell",
  "rayon",
  "regex",

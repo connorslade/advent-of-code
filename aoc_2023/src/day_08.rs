@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use common::{Answer, Solution};
 use itertools::Itertools;
 
+use crate::aoc_lib::math::lcm;
+
 pub struct Day08;
 
 impl Solution for Day08 {
@@ -10,20 +12,19 @@ impl Solution for Day08 {
         "Haunted Wasteland"
     }
 
+    /// Just start at `AAA` and follow the instructions until you reach `ZZZ`.
     fn part_a(&self, input: &str) -> Answer {
         let map = parse(input);
 
         let mut i = 0;
-        let mut pos = "AAA".to_string();
+        let mut pos = "AAA";
         loop {
-            let direction = map.instructions[i % map.instructions.len()];
-            i += 1;
-
-            let (left, right) = map.nodes.get(&pos).unwrap();
-            pos = match direction {
-                Direction::Left => left.to_owned(),
-                Direction::Right => right.to_owned(),
+            let (left, right) = map.nodes.get(pos).unwrap();
+            pos = match map.instructions[i % map.instructions.len()] {
+                Direction::Left => left.as_str(),
+                Direction::Right => right.as_str(),
             };
+            i += 1;
 
             if pos == "ZZZ" {
                 break;
@@ -33,6 +34,8 @@ impl Solution for Day08 {
         i.into()
     }
 
+    /// Get the cycle length for each starting position, this is the number of positions you need to get from `AAA` to `ZZZ`.
+    /// Calculate the least common multiple of all cycle lengths to get the number of steps needed to get from `AAA` to `ZZZ` for all starting positions.
     fn part_b(&self, input: &str) -> Answer {
         let map = parse(input);
 
@@ -48,14 +51,12 @@ impl Solution for Day08 {
             let mut cycle_len = 0;
             let mut i = 0;
             loop {
-                let instruction = map.instructions[i % map.instructions.len()];
-                i += 1;
-
                 let (left, right) = map.nodes.get(pos).unwrap();
-                pos = match instruction {
+                pos = match map.instructions[i % map.instructions.len()] {
                     Direction::Left => left.as_str(),
                     Direction::Right => right.as_str(),
                 };
+                i += 1;
 
                 cycle_len += 1;
                 if pos.ends_with("Z") {
@@ -67,19 +68,6 @@ impl Solution for Day08 {
 
         cycles.iter().fold(1, |x, &acc| lcm(x, acc)).into()
     }
-}
-
-fn gcd(mut a: usize, mut b: usize) -> usize {
-    while b != 0 {
-        let tmp = b;
-        b = a % b;
-        a = tmp;
-    }
-    a
-}
-
-fn lcm(a: usize, b: usize) -> usize {
-    a * b / gcd(a, b)
 }
 
 #[derive(Debug, Clone, Copy)]
