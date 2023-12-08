@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use common::{Answer, Solution};
-use itertools::Itertools;
 
 use crate::aoc_lib::math::lcm;
 
@@ -19,11 +18,7 @@ impl Solution for Day08 {
         let mut i = 0;
         let mut pos = "AAA";
         loop {
-            let (left, right) = map.nodes.get(pos).unwrap();
-            pos = match map.instructions[i % map.instructions.len()] {
-                Direction::Left => left.as_str(),
-                Direction::Right => right.as_str(),
-            };
+            pos = map.get(pos, i);
             i += 1;
 
             if pos == "ZZZ" {
@@ -40,9 +35,9 @@ impl Solution for Day08 {
         let map = parse(input);
 
         let mut pos = Vec::new();
-        for (id, _) in &map.nodes {
+        for (&id, _) in &map.nodes {
             if id.ends_with("A") {
-                pos.push(id.as_str());
+                pos.push(id);
             }
         }
 
@@ -51,11 +46,7 @@ impl Solution for Day08 {
             let mut cycle_len = 0;
             let mut i = 0;
             loop {
-                let (left, right) = map.nodes.get(pos).unwrap();
-                pos = match map.instructions[i % map.instructions.len()] {
-                    Direction::Left => left.as_str(),
-                    Direction::Right => right.as_str(),
-                };
+                pos = map.get(pos, i);
                 i += 1;
 
                 cycle_len += 1;
@@ -66,49 +57,45 @@ impl Solution for Day08 {
             }
         }
 
-        cycles.iter().fold(1, |x, &acc| lcm(x, acc)).into()
+        cycles.into_iter().reduce(lcm).unwrap().into()
     }
 }
 
-#[derive(Debug, Clone, Copy)]
-enum Direction {
-    Left,
-    Right,
+#[derive(Debug)]
+struct Map<'a> {
+    // Char array of 'L's and 'R's
+    instructions: &'a [u8],
+    // Node => (Left, Right)
+    nodes: HashMap<&'a str, (&'a str, &'a str)>,
 }
 
-#[derive(Debug)]
-struct Map {
-    instructions: Vec<Direction>,
-    nodes: HashMap<String, (String, String)>,
+impl<'a> Map<'a> {
+    fn get(&self, pos: &'a str, i: usize) -> &'a str {
+        let (left, right) = self.nodes.get(pos).unwrap();
+        match self.instructions[i % self.instructions.len()] as char {
+            'L' => left,
+            'R' => right,
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn parse(input: &str) -> Map {
     let (instructions, node_list) = input.split_once("\n\n").unwrap();
-    let instructions = instructions
-        .chars()
-        .map(|char| match char {
-            'L' => Direction::Left,
-            'R' => Direction::Right,
-            _ => panic!("Invalid direction: {}", char),
-        })
-        .collect();
 
     let mut nodes = HashMap::new();
     for node in node_list.lines() {
         let (id, children) = node.split_once(" = ").unwrap();
-        let id = id.parse().unwrap();
         let children = children
             .trim_start_matches('(')
             .trim_end_matches(')')
-            .split(", ")
-            .map(|child| child.parse().unwrap())
-            .collect_tuple()
+            .split_once(", ")
             .unwrap();
         nodes.insert(id, children);
     }
 
     Map {
-        instructions,
+        instructions: instructions.as_bytes(),
         nodes,
     }
 }
