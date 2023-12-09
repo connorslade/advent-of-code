@@ -35,8 +35,8 @@ impl Solution for Day08 {
         let map = parse(input);
 
         let mut pos = Vec::new();
-        for (&id, _) in &map.nodes {
-            if id.ends_with("A") {
+        for &id in map.nodes.keys() {
+            if id.ends_with('A') {
                 pos.push(id);
             }
         }
@@ -50,7 +50,7 @@ impl Solution for Day08 {
                 i += 1;
 
                 cycle_len += 1;
-                if pos.ends_with("Z") {
+                if pos.ends_with('Z') {
                     cycles.push(cycle_len);
                     break;
                 }
