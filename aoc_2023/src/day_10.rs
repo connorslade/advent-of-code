@@ -6,6 +6,13 @@ use common::{Answer, Solution};
 
 type Pos = Vec2<usize>;
 
+const START_PIECES: [(char, [Direction; 2]); 4] = [
+    ('F', [Direction::Down, Direction::Right]),
+    ('7', [Direction::Down, Direction::Left]),
+    ('J', [Direction::Up, Direction::Left]),
+    ('L', [Direction::Up, Direction::Right]),
+];
+
 pub struct Day10;
 
 impl Solution for Day10 {
@@ -21,32 +28,21 @@ impl Solution for Day10 {
     fn part_b(&self, input: &str) -> Answer {
         let mut maze = parse(input);
         let walls = maze.walls();
+
+        maze.remove_garbage(&walls.walls);
         maze.segments[maze.start.y()][maze.start.x()] = walls.start_piece;
-        let walls = walls.walls;
-        maze.remove_garbage(&walls);
 
         let mut inside = 0;
-
         for y in 0..maze.segments.len() {
             for x in 0..maze.segments[y].len() {
                 if maze.segments[y][x] != '.' {
-                    print!("{}", maze.segments[y][x]);
                     continue;
-                }
-
-                #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-                enum Riding {
-                    None,
-                    Up,
-                    Down,
                 }
 
                 let mut within = false;
                 let mut riding = Riding::None;
-                let mut nx = x;
-                while nx > 0 {
-                    nx -= 1;
-                    if let Some(wall) = walls.get(&vector!(nx, y)) {
+                for x in (0..x).rev() {
+                    if let Some(wall) = walls.walls.get(&vector!(x, y)) {
                         let chr = maze.segments[wall.y()][wall.x()];
                         if chr == '|' {
                             within ^= true;
@@ -54,7 +50,7 @@ impl Solution for Day10 {
                             riding = Riding::Down;
                         } else if chr == 'J' {
                             riding = Riding::Up;
-                        } else if "FL".contains(chr) {
+                        } else if chr == 'F' || chr == 'L' {
                             if (riding == Riding::Up && chr != 'L')
                                 || (riding == Riding::Down && chr != 'F')
                             {
@@ -72,6 +68,13 @@ impl Solution for Day10 {
 
         inside.into()
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Riding {
+    None,
+    Up,
+    Down,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -138,25 +141,11 @@ impl Maze {
             pos = self.start;
         }
 
-        let start_piece = if start_approaches.contains(&Direction::Up) {
-            if start_approaches.contains(&Direction::Left) {
-                'J'
-            } else if start_approaches.contains(&Direction::Right) {
-                'L'
-            } else {
-                unreachable!()
-            }
-        } else if start_approaches.contains(&Direction::Down) {
-            if start_approaches.contains(&Direction::Left) {
-                '7'
-            } else if start_approaches.contains(&Direction::Right) {
-                'F'
-            } else {
-                unreachable!()
-            }
-        } else {
-            unreachable!()
-        };
+        let start_piece = START_PIECES
+            .iter()
+            .find(|(_, approaches)| start_approaches == *approaches)
+            .map(|(piece, _)| *piece)
+            .unwrap();
 
         Walls { walls, start_piece }
     }
