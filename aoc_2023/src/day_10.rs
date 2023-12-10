@@ -8,8 +8,6 @@ type Pos = Vec2<usize>;
 
 pub struct Day10;
 
-// This is a mess, but it took me a while to figure out -- so I shall clean it up later (probs like 12 hours)
-
 impl Solution for Day10 {
     fn name(&self) -> &'static str {
         "Pipe Maze"
@@ -19,50 +17,27 @@ impl Solution for Day10 {
         let maze = parse(input);
 
         let mut pos = maze.start;
-        let mut dir = Direction::Right;
         let mut len = 0;
 
-        loop {
-            len += 1;
-            pos = match dir {
-                Direction::Up => vector!(pos.x(), pos.y() - 1),
-                Direction::Down => vector!(pos.x(), pos.y() + 1),
-                Direction::Left => vector!(pos.x() - 1, pos.y()),
-                Direction::Right => vector!(pos.x() + 1, pos.y()),
-            };
+        'outer: for mut dir in Direction::ALL {
+            loop {
+                pos = dir.step(pos).unwrap();
+                len += 1;
 
-            let pipe = maze.segments[pos.y()][pos.x()];
-            dir = match pipe {
-                '|' | '-' => dir,
-                '7' => match dir {
-                    Direction::Right => Direction::Down,
-                    Direction::Up => Direction::Left,
-                    _ => unreachable!(),
-                },
-                'L' => match dir {
-                    Direction::Left => Direction::Up,
-                    Direction::Down => Direction::Right,
-                    _ => unreachable!(),
-                },
-                'J' => match dir {
-                    Direction::Right => Direction::Up,
-                    Direction::Down => Direction::Left,
-                    _ => unreachable!(),
-                },
-                'F' => match dir {
-                    Direction::Up => Direction::Right,
-                    Direction::Left => Direction::Down,
-                    _ => unreachable!(),
-                },
-                'S' => break,
-                _ => unreachable!(),
-            };
+                match turn(dir, maze.segments[pos.y()][pos.x()]) {
+                    TurnResult::Turn(new_dir) => dir = new_dir,
+                    TurnResult::End => break 'outer,
+                    TurnResult::Fail => break,
+                }
+            }
+
+            len = 0;
+            pos = maze.start;
         }
 
         (len / 2).into()
     }
 
-    // 501
     fn part_b(&self, input: &str) -> Answer {
         let maze = parse(input);
 
@@ -74,7 +49,7 @@ impl Solution for Day10 {
             .segments
             .iter()
             .enumerate()
-            .map(|(y, line)| {
+            .flat_map(|(y, line)| {
                 let mut new = vec![Vec::with_capacity(line.len() * 2); 2];
 
                 for (x, c) in line.iter().enumerate() {
@@ -134,58 +109,28 @@ impl Solution for Day10 {
 
                 new
             })
-            .flatten()
             .collect::<Vec<_>>();
 
         let mut pos = start;
         let mut walls = HashSet::new();
 
-        'outer: for mut dir in [
-            Direction::Down,
-            Direction::Up,
-            Direction::Left,
-            Direction::Right,
-        ] {
-            walls.clear();
-
+        'outer: for mut dir in Direction::ALL {
             loop {
                 walls.insert(pos);
-                pos = match dir {
-                    Direction::Up if pos.y() > 0 => vector!(pos.x(), pos.y() - 1),
-                    Direction::Down => vector!(pos.x(), pos.y() + 1),
-                    Direction::Left if pos.x() > 0 => vector!(pos.x() - 1, pos.y()),
-                    Direction::Right => vector!(pos.x() + 1, pos.y()),
-                    _ => break,
+                pos = match dir.step(pos) {
+                    Some(pos) => pos,
+                    None => break,
                 };
 
-                let pipe = segments[pos.y()][pos.x()];
-                dir = match pipe {
-                    '|' | '-' => dir,
-                    '7' => match dir {
-                        Direction::Right => Direction::Down,
-                        Direction::Up => Direction::Left,
-                        _ => unreachable!(),
-                    },
-                    'L' => match dir {
-                        Direction::Left => Direction::Up,
-                        Direction::Down => Direction::Right,
-                        _ => unreachable!(),
-                    },
-                    'J' => match dir {
-                        Direction::Right => Direction::Up,
-                        Direction::Down => Direction::Left,
-                        _ => unreachable!(),
-                    },
-                    'F' => match dir {
-                        Direction::Up => Direction::Right,
-                        Direction::Left => Direction::Down,
-                        _ => unreachable!(),
-                    },
-                    'S' => break 'outer,
-                    '.' => break,
-                    _ => unreachable!(),
-                };
+                match turn(dir, segments[pos.y()][pos.x()]) {
+                    TurnResult::Turn(new_dir) => dir = new_dir,
+                    TurnResult::End => break 'outer,
+                    TurnResult::Fail => break,
+                }
             }
+
+            pos = start;
+            walls.clear();
         }
 
         for y in 0..segments.len() {
@@ -249,6 +194,7 @@ impl Solution for Day10 {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 enum Direction {
     Up,
     Down,
@@ -276,6 +222,47 @@ fn parse(input: &str) -> Maze {
         start: vector!(start.0, start.1),
         segments: input.lines().map(|l| l.chars().collect()).collect(),
     }
+}
+
+enum TurnResult {
+    Turn(Direction),
+    End,
+    Fail,
+}
+
+impl Direction {
+    const ALL: [Direction; 4] = [
+        Direction::Up,
+        Direction::Down,
+        Direction::Left,
+        Direction::Right,
+    ];
+
+    fn step(&self, pos: Pos) -> Option<Pos> {
+        Some(match self {
+            Direction::Up if pos.y() > 0 => vector!(pos.x(), pos.y() - 1),
+            Direction::Down => vector!(pos.x(), pos.y() + 1),
+            Direction::Left if pos.x() > 0 => vector!(pos.x() - 1, pos.y()),
+            Direction::Right => vector!(pos.x() + 1, pos.y()),
+            _ => return None,
+        })
+    }
+}
+
+fn turn(facing: Direction, tile: char) -> TurnResult {
+    TurnResult::Turn(match (tile, facing) {
+        ('|' | '-', _) => facing,
+        ('7', Direction::Right) => Direction::Down,
+        ('7', Direction::Up) => Direction::Left,
+        ('L', Direction::Left) => Direction::Up,
+        ('L', Direction::Down) => Direction::Right,
+        ('J', Direction::Right) => Direction::Up,
+        ('J', Direction::Down) => Direction::Left,
+        ('F', Direction::Up) => Direction::Right,
+        ('F', Direction::Left) => Direction::Down,
+        ('S', _) => return TurnResult::End,
+        _ => return TurnResult::Fail,
+    })
 }
 
 #[cfg(test)]
