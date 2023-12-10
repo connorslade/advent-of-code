@@ -15,186 +15,66 @@ impl Solution for Day10 {
 
     fn part_a(&self, input: &str) -> Answer {
         let maze = parse(input);
-
-        let mut pos = maze.start;
-        let mut len = 0;
-
-        'outer: for mut dir in Direction::ALL {
-            loop {
-                pos = dir.step(pos).unwrap();
-                len += 1;
-
-                match turn(dir, maze.segments[pos.y()][pos.x()]) {
-                    TurnResult::Turn(new_dir) => dir = new_dir,
-                    TurnResult::End => break 'outer,
-                    TurnResult::Fail => break,
-                }
-            }
-
-            len = 0;
-            pos = maze.start;
-        }
-
-        (len / 2).into()
+        (maze.walls().walls.len() / 2).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        let maze = parse(input);
+        let mut maze = parse(input);
+        let walls = maze.walls();
+        maze.segments[maze.start.y()][maze.start.x()] = walls.start_piece;
+        let walls = walls.walls;
+        maze.remove_garbage(&walls);
 
-        let (org_x, org_y) = (maze.segments[0].len(), maze.segments.len());
-        let mut org_walls = 0;
+        let mut inside = 0;
 
-        let mut start = maze.start;
-        let mut segments = maze
-            .segments
-            .iter()
-            .enumerate()
-            .flat_map(|(y, line)| {
-                let mut new = vec![Vec::with_capacity(line.len() * 2); 2];
-
-                for (x, c) in line.iter().enumerate() {
-                    if c != &'.' {
-                        org_walls += 1;
-                    }
-
-                    match c {
-                        '|' => {
-                            new[0].extend_from_slice(&['|', '.']);
-                            new[1].extend_from_slice(&['|', '.']);
-                        }
-                        '-' => {
-                            new[0].extend_from_slice(&['-', '-']);
-                            new[1].extend_from_slice(&['.', '.']);
-                        }
-                        '7' => {
-                            new[0].extend_from_slice(&['7', '.']);
-                            new[1].extend_from_slice(&['|', '.']);
-                        }
-                        'F' => {
-                            new[0].extend_from_slice(&['F', '-']);
-                            new[1].extend_from_slice(&['|', '.']);
-                        }
-                        'L' => {
-                            new[0].extend_from_slice(&['L', '-']);
-                            new[1].extend_from_slice(&['.', '.']);
-                        }
-                        'J' => {
-                            new[0].extend_from_slice(&['J', '.']);
-                            new[1].extend_from_slice(&['.', '.']);
-                        }
-                        'S' => {
-                            start = vector!(x * 2, y * 2);
-                            new[0].extend_from_slice(&[
-                                'S',
-                                match maze.segments[y][x + 1] {
-                                    '-' | '7' | 'J' => '-',
-                                    _ => '.',
-                                },
-                            ]);
-                            new[1].extend_from_slice(&[
-                                match maze.segments[y + 1][x] {
-                                    '|' | 'L' | 'J' => '|',
-                                    _ => '.',
-                                },
-                                '.',
-                            ]);
-                        }
-                        '.' => {
-                            new[0].extend_from_slice(&['.', '.']);
-                            new[1].extend_from_slice(&['.', '.']);
-                        }
-                        _ => unreachable!(),
-                    }
-                }
-
-                new
-            })
-            .collect::<Vec<_>>();
-
-        let mut pos = start;
-        let mut walls = HashSet::new();
-
-        'outer: for mut dir in Direction::ALL {
-            loop {
-                walls.insert(pos);
-                pos = match dir.step(pos) {
-                    Some(pos) => pos,
-                    None => break,
-                };
-
-                match turn(dir, segments[pos.y()][pos.x()]) {
-                    TurnResult::Turn(new_dir) => dir = new_dir,
-                    TurnResult::End => break 'outer,
-                    TurnResult::Fail => break,
-                }
-            }
-
-            pos = start;
-            walls.clear();
-        }
-
-        for y in 0..segments.len() {
-            for x in 0..segments[0].len() {
-                if !walls.contains(&vector!(x, y)) && segments[y][x] != '.' {
-                    segments[y][x] = '.';
-
-                    if x % 2 == 0 && y % 2 == 0 {
-                        org_walls -= 1;
-                    }
-                }
-            }
-        }
-
-        // Flood fill to find the number of reachable not reachable from the outside
-        let mut stack = vec![];
-
-        // Add perimeter to stack
-        for x in 0..segments[0].len() {
-            stack.push(vector!(x, 0));
-            stack.push(vector!(x, segments.len() - 1));
-        }
-
-        for y in 0..segments.len() {
-            stack.push(vector!(0, y));
-            stack.push(vector!(segments[0].len() - 1, y));
-        }
-
-        stack.retain(|x| segments[x.y()][x.x()] == '.');
-
-        let mut visited = HashSet::new();
-        let mut outside = 0;
-
-        while let Some(pos) = stack.pop() {
-            let [x, y] = [pos.x() as isize, pos.y() as isize];
-            for pos in [
-                vector!(x, y - 1),
-                vector!(x, y + 1),
-                vector!(x - 1, y),
-                vector!(x + 1, y),
-            ] {
-                if pos.x() < 0 || pos.y() < 0 {
+        for y in 0..maze.segments.len() {
+            for x in 0..maze.segments[y].len() {
+                if maze.segments[y][x] != '.' {
+                    print!("{}", maze.segments[y][x]);
                     continue;
                 }
 
-                let pos = vector!(pos.x() as usize, pos.y() as usize);
+                #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+                enum Riding {
+                    None,
+                    Up,
+                    Down,
+                }
 
-                let in_bounds = pos.x() < segments[0].len() && pos.y() < segments.len();
-                if in_bounds && !visited.contains(&pos) && segments[pos.y()][pos.x()] == '.' {
-                    stack.push(pos);
-                    visited.insert(pos);
+                let mut within = false;
+                let mut riding = Riding::None;
+                let mut nx = x;
+                while nx > 0 {
+                    nx -= 1;
+                    if let Some(wall) = walls.get(&vector!(nx, y)) {
+                        let chr = maze.segments[wall.y()][wall.x()];
+                        if chr == '|' {
+                            within ^= true;
+                        } else if chr == '7' {
+                            riding = Riding::Down;
+                        } else if chr == 'J' {
+                            riding = Riding::Up;
+                        } else if "FL".contains(chr) {
+                            if (riding == Riding::Up && chr != 'L')
+                                || (riding == Riding::Down && chr != 'F')
+                            {
+                                within ^= true;
+                            }
 
-                    if pos.x() % 2 == 0 && pos.y() % 2 == 0 {
-                        outside += 1;
+                            riding = Riding::None;
+                        }
                     }
                 }
+
+                inside += within as usize;
             }
         }
 
-        (org_x * org_y - outside - org_walls).into()
+        inside.into()
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Direction {
     Up,
     Down,
@@ -224,6 +104,74 @@ fn parse(input: &str) -> Maze {
     }
 }
 
+struct Walls {
+    walls: HashSet<Pos>,
+    start_piece: char,
+}
+
+impl Maze {
+    fn walls(&self) -> Walls {
+        let mut pos = self.start;
+        let mut walls = HashSet::new();
+        let mut start_approaches = [Direction::Up; 2];
+
+        'outer: for mut dir in Direction::ALL {
+            start_approaches[0] = dir;
+            loop {
+                walls.insert(pos);
+                pos = match dir.step(pos) {
+                    Some(p) => p,
+                    None => break,
+                };
+
+                match turn(dir, self.segments[pos.y()][pos.x()]) {
+                    TurnResult::Turn(new_dir) => dir = new_dir,
+                    TurnResult::End => {
+                        start_approaches[1] = dir.opposite();
+                        break 'outer;
+                    }
+                    TurnResult::Fail => break,
+                }
+            }
+
+            walls.clear();
+            pos = self.start;
+        }
+
+        let start_piece = if start_approaches.contains(&Direction::Up) {
+            if start_approaches.contains(&Direction::Left) {
+                'J'
+            } else if start_approaches.contains(&Direction::Right) {
+                'L'
+            } else {
+                unreachable!()
+            }
+        } else if start_approaches.contains(&Direction::Down) {
+            if start_approaches.contains(&Direction::Left) {
+                '7'
+            } else if start_approaches.contains(&Direction::Right) {
+                'F'
+            } else {
+                unreachable!()
+            }
+        } else {
+            unreachable!()
+        };
+
+        Walls { walls, start_piece }
+    }
+
+    fn remove_garbage(&mut self, walls: &HashSet<Pos>) {
+        for y in 0..self.segments.len() {
+            for x in 0..self.segments[y].len() {
+                if !walls.contains(&vector!(x, y)) {
+                    self.segments[y][x] = '.';
+                }
+            }
+        }
+    }
+}
+
 enum TurnResult {
     Turn(Direction),
     End,
@@ -246,6 +194,15 @@ impl Direction {
             Direction::Right => vector!(pos.x() + 1, pos.y()),
             _ => return None,
         })
+    }
+
+    fn opposite(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left,
+        }
     }
 }
 
