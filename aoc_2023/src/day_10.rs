@@ -137,45 +137,55 @@ impl Solution for Day10 {
             .flatten()
             .collect::<Vec<_>>();
 
-        let mut pos = dbg!(start);
-        let mut dir = Direction::Right;
+        let mut pos = start;
         let mut walls = HashSet::new();
 
-        loop {
-            walls.insert(pos);
-            pos = match dir {
-                Direction::Up => vector!(pos.x(), pos.y() - 1),
-                Direction::Down => vector!(pos.x(), pos.y() + 1),
-                Direction::Left => vector!(pos.x() - 1, pos.y()),
-                Direction::Right => vector!(pos.x() + 1, pos.y()),
-            };
+        'outer: for mut dir in [
+            Direction::Down,
+            Direction::Up,
+            Direction::Left,
+            Direction::Right,
+        ] {
+            walls.clear();
 
-            let pipe = segments[pos.y()][pos.x()];
-            dir = match pipe {
-                '|' | '-' => dir,
-                '7' => match dir {
-                    Direction::Right => Direction::Down,
-                    Direction::Up => Direction::Left,
+            loop {
+                walls.insert(pos);
+                pos = match dir {
+                    Direction::Up if pos.y() > 0 => vector!(pos.x(), pos.y() - 1),
+                    Direction::Down => vector!(pos.x(), pos.y() + 1),
+                    Direction::Left if pos.x() > 0 => vector!(pos.x() - 1, pos.y()),
+                    Direction::Right => vector!(pos.x() + 1, pos.y()),
+                    _ => break,
+                };
+
+                let pipe = segments[pos.y()][pos.x()];
+                dir = match pipe {
+                    '|' | '-' => dir,
+                    '7' => match dir {
+                        Direction::Right => Direction::Down,
+                        Direction::Up => Direction::Left,
+                        _ => unreachable!(),
+                    },
+                    'L' => match dir {
+                        Direction::Left => Direction::Up,
+                        Direction::Down => Direction::Right,
+                        _ => unreachable!(),
+                    },
+                    'J' => match dir {
+                        Direction::Right => Direction::Up,
+                        Direction::Down => Direction::Left,
+                        _ => unreachable!(),
+                    },
+                    'F' => match dir {
+                        Direction::Up => Direction::Right,
+                        Direction::Left => Direction::Down,
+                        _ => unreachable!(),
+                    },
+                    'S' => break 'outer,
+                    '.' => break,
                     _ => unreachable!(),
-                },
-                'L' => match dir {
-                    Direction::Left => Direction::Up,
-                    Direction::Down => Direction::Right,
-                    _ => unreachable!(),
-                },
-                'J' => match dir {
-                    Direction::Right => Direction::Up,
-                    Direction::Down => Direction::Left,
-                    _ => unreachable!(),
-                },
-                'F' => match dir {
-                    Direction::Up => Direction::Right,
-                    Direction::Left => Direction::Down,
-                    _ => unreachable!(),
-                },
-                'S' => break,
-                _ => unreachable!(),
-            };
+                };
+            }
         }
 
         for y in 0..segments.len() {
@@ -189,14 +199,6 @@ impl Solution for Day10 {
                 }
             }
         }
-
-        for line in segments.iter() {
-            for c in line.iter() {
-                print!("{}", c);
-            }
-            println!();
-        }
-        println!();
 
         // Flood fill to find the number of reachable not reachable from the outside
         let mut stack = vec![];
@@ -224,10 +226,6 @@ impl Solution for Day10 {
                 vector!(x, y + 1),
                 vector!(x - 1, y),
                 vector!(x + 1, y),
-                // vector!(x + 1, y + 1),
-                // vector!(x - 1, y + 1),
-                // vector!(x + 1, y - 1),
-                // vector!(x - 1, y - 1),
             ] {
                 if pos.x() < 0 || pos.y() < 0 {
                     continue;
@@ -246,20 +244,6 @@ impl Solution for Day10 {
                 }
             }
         }
-
-        for (y, line) in segments.iter().enumerate() {
-            for (x, c) in line.iter().enumerate() {
-                if !visited.contains(&vector!(x, y)) {
-                    print!("{}", c);
-                } else {
-                    print!(" ");
-                }
-            }
-            println!();
-        }
-
-        dbg!(org_x * org_y, outside, org_walls);
-        dbg!(org_x * org_y - org_walls);
 
         (org_x * org_y - outside - org_walls).into()
     }
