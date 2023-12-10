@@ -17,8 +17,8 @@ impl Solution for Day09 {
 
     fn part_b(&self, input: &str) -> Answer {
         parse(input)
-            .iter()
-            .map(Sequence::predict_back)
+            .into_iter()
+            .map(|x| x.reverse().predict())
             .sum::<i64>()
             .into()
     }
@@ -43,7 +43,7 @@ fn parse(input: &str) -> Vec<Sequence> {
 }
 
 impl Sequence {
-    fn derive(&self, rev: bool) -> Vec<Vec<i64>> {
+    fn derive(&self) -> Vec<Vec<i64>> {
         let mut derived = vec![self.values.clone()];
 
         while !derived.last().unwrap().iter().all(|&x| x == 0) {
@@ -51,11 +51,7 @@ impl Sequence {
             let mut next = Vec::new();
 
             for i in 1..last.len() {
-                if rev {
-                    next.push(last[i - 1] - last[i]);
-                } else {
-                    next.push(last[i] - last[i - 1]);
-                }
+                next.push(last[i] - last[i - 1]);
             }
 
             derived.push(next);
@@ -64,12 +60,13 @@ impl Sequence {
         derived
     }
 
-    fn predict(&self) -> i64 {
-        self.derive(false).iter().filter_map(|v| v.last()).sum()
+    fn reverse(mut self) -> Self {
+        self.values.reverse();
+        self
     }
 
-    fn predict_back(&self) -> i64 {
-        self.derive(true).iter().rev().map(|v| v[0]).sum()
+    fn predict(&self) -> i64 {
+        self.derive().iter().filter_map(|v| v.last()).sum()
     }
 }
 
