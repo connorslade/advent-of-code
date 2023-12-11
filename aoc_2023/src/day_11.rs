@@ -76,15 +76,11 @@ impl Galaxies {
     fn total_distance(&self) -> usize {
         self.galaxies
             .iter()
+            .map(|x| x.num_cast::<isize>().unwrap())
             .tuple_combinations()
-            .map(|(&a, &b)| manhattan_distance(a, b))
+            .map(|(a, b)| a.manhattan_distance(&b) as usize)
             .sum()
     }
-}
-
-fn manhattan_distance(a: Pos, b: Pos) -> usize {
-    let vec = |x: Pos| vector!(x.x() as isize, x.y() as isize);
-    (vec(a) - vec(b)).abs().as_slice().iter().sum::<isize>() as usize
 }
 
 #[cfg(test)]
