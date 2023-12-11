@@ -61,7 +61,7 @@ fn parse(input: &str) -> ParseResult {
                     let pos = vector!(nx, ny);
                     let symbol = symbols.get(&pos);
                     part_number |= symbol.is_some();
-                    
+
                     if symbol == Some(&'*') {
                         ratios.entry(pos).or_insert(Vec::new()).push(value);
                     }
