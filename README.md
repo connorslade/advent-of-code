@@ -15,6 +15,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 08: Haunted Wasteland](aoc_2023/src/day_08.rs)
 - [Day 09: Mirage Maintenance](aoc_2023/src/day_09.rs)
 - [Day 10: Pipe Maze](aoc_2023/src/day_10.rs)
+- [Day 11: Cosmic Expansion](aoc_2023/src/day_11.rs)
 <!-- MARKER -->
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
