@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bitvec = "1.0.1"
 common = { path = "../common" }
 indoc = "2.0.4"
 itertools = "0.12.0"

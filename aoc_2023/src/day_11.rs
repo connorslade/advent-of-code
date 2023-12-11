@@ -1,3 +1,4 @@
+use bitvec::{bitvec, vec::BitVec};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2};
 
@@ -27,23 +28,23 @@ impl Solution for Day11 {
 
 struct Galaxies {
     galaxies: Vec<Pos>,
-    rows: Vec<bool>,
-    cols: Vec<bool>,
+    rows: BitVec,
+    cols: BitVec,
 }
 
 fn parse(input: &str) -> Galaxies {
+    let lines = input.lines().collect::<Vec<_>>();
     let mut galaxies = Vec::new();
-    let (height, width) = (input.lines().count(), input.lines().next().unwrap().len());
 
-    let mut rows = vec![false; height];
-    let mut cols = vec![false; width];
+    let mut rows = bitvec![0; lines[0].len()];
+    let mut cols = bitvec![0; lines.len()];
 
-    for (y, line) in input.lines().enumerate() {
+    for (y, line) in lines.iter().enumerate() {
         for (x, c) in line.chars().enumerate() {
             if c == '#' {
                 galaxies.push(vector!(x, y));
-                rows[y] = true;
-                cols[x] = true;
+                rows.set(y, true);
+                cols.set(x, true);
             }
         }
     }
@@ -59,19 +60,15 @@ impl Galaxies {
     fn expand(&mut self, mut multiplier: usize) {
         multiplier -= 1;
 
-        for (y, _) in self.rows.iter().enumerate().rev().filter(|(_, &row)| !row) {
-            for pos in &mut self.galaxies {
-                if pos.y() > y {
-                    *pos += vector!(0, multiplier)
-                }
+        for (y, _) in self.rows.iter().enumerate().rev().filter(|x| !x.1.as_ref()) {
+            for pos in self.galaxies.iter_mut().filter(|pos| pos.y() > y) {
+                *pos += vector!(0, multiplier)
             }
         }
 
-        for (x, _) in self.cols.iter().enumerate().rev().filter(|(_, &col)| !col) {
-            for pos in &mut self.galaxies {
-                if pos.x() > x {
-                    *pos += vector!(multiplier, 0)
-                }
+        for (x, _) in self.cols.iter().enumerate().rev().filter(|x| !x.1.as_ref()) {
+            for pos in self.galaxies.iter_mut().filter(|pos| pos.x() > x) {
+                *pos += vector!(multiplier, 0)
             }
         }
     }
@@ -79,16 +76,15 @@ impl Galaxies {
     fn total_distance(&self) -> usize {
         self.galaxies
             .iter()
-            .combinations(2)
-            .map(|pair| {
-                let (a, b) = (pair[0], pair[1]);
-                let dist = (a.x() as isize - b.x() as isize).abs()
-                    + (a.y() as isize - b.y() as isize).abs();
-
-                dist as usize
-            })
+            .tuple_combinations()
+            .map(|(&a, &b)| manhattan_distance(a, b))
             .sum()
     }
+}
+
+fn manhattan_distance(a: Pos, b: Pos) -> usize {
+    let vec = |x: Pos| vector!(x.x() as isize, x.y() as isize);
+    (vec(a) - vec(b)).abs().as_slice().iter().sum::<isize>() as usize
 }
 
 #[cfg(test)]
