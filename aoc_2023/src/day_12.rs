@@ -13,11 +13,7 @@ impl Solution for Day12 {
     fn part_a(&self, input: &str) -> Answer {
         parse(input)
             .iter()
-            .map(|s| {
-                let mut s = s.clone();
-                s.field.push('.');
-                s.arrangements_b()
-            })
+            .map(|s| s.arrangements())
             .sum::<usize>()
             .into()
     }
@@ -25,7 +21,7 @@ impl Solution for Day12 {
     fn part_b(&self, input: &str) -> Answer {
         parse(input)
             .par_iter()
-            .map(|s| s.expand().arrangements_b())
+            .map(|s| s.expand().arrangements())
             .sum::<usize>()
             .into()
     }
@@ -46,7 +42,8 @@ fn parse(input: &str) -> Vec<Spring> {
             .split(',')
             .map(|s| s.parse().unwrap())
             .collect::<Vec<_>>();
-        let field = field.chars().collect::<Vec<_>>();
+        let mut field = field.chars().collect::<Vec<_>>();
+        field.push('.');
         out.push(Spring { field, springs });
     }
 
@@ -54,53 +51,51 @@ fn parse(input: &str) -> Vec<Spring> {
 }
 
 impl Spring {
-    fn arrangements_b(&self) -> usize {
+    fn arrangements(&self) -> usize {
         fn count(
             memo: &mut HashMap<(usize, usize, usize), usize>,
-            field: &[char],
-            counts: &[usize],
+            spring: &Spring,
             pos: usize,
-            current_count: usize,
-            count_pos: usize,
+            sequence_idx: usize,
+            sequences: usize,
         ) -> usize {
-            if let Some(&ret) = memo.get(&(pos, current_count, count_pos)) {
+            if let Some(&ret) = memo.get(&(pos, sequence_idx, sequences)) {
                 return ret;
             }
 
-            let mut ret = 0;
-
-            if pos == field.len() {
-                ret = if count_pos == counts.len() { 1 } else { 0 };
-            } else if field[pos] == '#' {
-                ret = count(memo, field, counts, pos + 1, current_count + 1, count_pos);
-            } else if field[pos] == '.' || count_pos == counts.len() {
-                if count_pos < counts.len() && current_count == counts[count_pos] {
-                    ret = count(memo, field, counts, pos + 1, 0, count_pos + 1);
-                } else if current_count == 0 {
-                    ret = count(memo, field, counts, pos + 1, 0, count_pos);
+            let ret = if pos == spring.field.len() {
+                (sequences == spring.springs.len()) as usize
+            } else if spring.field[pos] == '#' {
+                count(memo, spring, pos + 1, sequence_idx + 1, sequences)
+            } else if spring.field[pos] == '.' || sequences == spring.springs.len() {
+                if sequences < spring.springs.len() && sequence_idx == spring.springs[sequences] {
+                    count(memo, spring, pos + 1, 0, sequences + 1)
+                } else if sequence_idx == 0 {
+                    count(memo, spring, pos + 1, 0, sequences)
+                } else {
+                    0
                 }
             } else {
-                let hash_count = count(memo, field, counts, pos + 1, current_count + 1, count_pos);
+                let hash_count = count(memo, spring, pos + 1, sequence_idx + 1, sequences);
                 let mut dot_count = 0;
-                if current_count == counts[count_pos] {
-                    dot_count = count(memo, field, counts, pos + 1, 0, count_pos + 1);
-                } else if current_count == 0 {
-                    dot_count = count(memo, field, counts, pos + 1, 0, count_pos);
+                if sequence_idx == spring.springs[sequences] {
+                    dot_count = count(memo, spring, pos + 1, 0, sequences + 1);
+                } else if sequence_idx == 0 {
+                    dot_count = count(memo, spring, pos + 1, 0, sequences);
                 }
-                ret = hash_count + dot_count;
-            }
+                hash_count + dot_count
+            };
 
-            memo.insert((pos, current_count, count_pos), ret);
+            memo.insert((pos, sequence_idx, sequences), ret);
             ret
         }
 
-        let mut memo = HashMap::new();
-        count(&mut memo, &self.field, &self.springs, 0, 0, 0)
+        count(&mut HashMap::new(), &self, 0, 0, 0)
     }
 
     fn expand(&self) -> Self {
         let mut new_field = self.field.clone();
-        new_field.push('?');
+        *new_field.last_mut().unwrap() = '?';
 
         Self {
             field: new_field.repeat(5),
