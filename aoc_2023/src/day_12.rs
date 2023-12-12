@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use common::{Answer, Solution};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
@@ -11,7 +13,11 @@ impl Solution for Day12 {
     fn part_a(&self, input: &str) -> Answer {
         parse(input)
             .iter()
-            .map(|s| s.arrangements())
+            .map(|s| {
+                let mut s = s.clone();
+                s.field.push('.');
+                s.arrangements_b()
+            })
             .sum::<usize>()
             .into()
     }
@@ -19,13 +25,13 @@ impl Solution for Day12 {
     fn part_b(&self, input: &str) -> Answer {
         parse(input)
             .par_iter()
-            .map(|s| s.expand().arrangements())
+            .map(|s| s.expand().arrangements_b())
             .sum::<usize>()
             .into()
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Spring {
     field: Vec<char>,
     springs: Vec<usize>,
@@ -40,65 +46,56 @@ fn parse(input: &str) -> Vec<Spring> {
             .split(',')
             .map(|s| s.parse().unwrap())
             .collect::<Vec<_>>();
-
-        out.push(Spring {
-            field: field.chars().collect(),
-            springs,
-        });
+        let field = field.chars().collect::<Vec<_>>();
+        out.push(Spring { field, springs });
     }
 
     out
 }
 
 impl Spring {
-    // In this example, the number of possible arrangements for each row is:
+    fn arrangements_b(&self) -> usize {
+        fn count(
+            memo: &mut HashMap<(usize, usize, usize), usize>,
+            field: &[char],
+            counts: &[usize],
+            pos: usize,
+            current_count: usize,
+            count_pos: usize,
+        ) -> usize {
+            if let Some(&ret) = memo.get(&(pos, current_count, count_pos)) {
+                return ret;
+            }
 
-    // ???.### 1,1,3 - 1 arrangement
-    // .??..??...?##. 1,1,3 - 4 arrangements
-    // ?#?#?#?#?#?#?#? 1,3,1,6 - 1 arrangement
-    // ????.#...#... 4,1,1 - 1 arrangement
-    // ????.######..#####. 1,6,5 - 4 arrangements
-    // ?###???????? 3,2,1 - 10 arrangements
-    fn arrangements(&self) -> usize {
-        let unknown = self.field.iter().filter(|&&c| c == '?').count();
-        let mut count = 0;
-        let mut valid = 0;
+            let mut ret = 0;
 
-        while count < (2 << unknown - 1) {
-            count += 1;
-
-            // Create new field using the bits of count to determine which unknowns are set
-            let mut field = self.field.clone();
-            let mut i = 0;
-            for c in field.iter_mut() {
-                if *c == '?' {
-                    *c = if count & (1 << i) != 0 { '#' } else { '.' };
-                    i += 1;
+            if pos == field.len() {
+                ret = if count_pos == counts.len() { 1 } else { 0 };
+            } else if field[pos] == '#' {
+                ret = count(memo, field, counts, pos + 1, current_count + 1, count_pos);
+            } else if field[pos] == '.' || count_pos == counts.len() {
+                if count_pos < counts.len() && current_count == counts[count_pos] {
+                    ret = count(memo, field, counts, pos + 1, 0, count_pos + 1);
+                } else if current_count == 0 {
+                    ret = count(memo, field, counts, pos + 1, 0, count_pos);
                 }
-            }
-
-            // Find each spring and how long it is
-            let mut springs = Vec::new();
-            let mut spring = 0;
-            for c in field.iter() {
-                if *c == '#' {
-                    spring += 1;
-                } else if spring > 0 {
-                    springs.push(spring);
-                    spring = 0;
+            } else {
+                let hash_count = count(memo, field, counts, pos + 1, current_count + 1, count_pos);
+                let mut dot_count = 0;
+                if current_count == counts[count_pos] {
+                    dot_count = count(memo, field, counts, pos + 1, 0, count_pos + 1);
+                } else if current_count == 0 {
+                    dot_count = count(memo, field, counts, pos + 1, 0, count_pos);
                 }
+                ret = hash_count + dot_count;
             }
 
-            if spring > 0 {
-                springs.push(spring);
-            }
-
-            if springs == self.springs {
-                valid += 1;
-            }
+            memo.insert((pos, current_count, count_pos), ret);
+            ret
         }
 
-        valid
+        let mut memo = HashMap::new();
+        count(&mut memo, &self.field, &self.springs, 0, 0, 0)
     }
 
     fn expand(&self) -> Self {
@@ -117,7 +114,7 @@ mod test {
     use common::Solution;
     use indoc::indoc;
 
-    use super::{Day12, Spring};
+    use super::Day12;
 
     const CASE: &str = indoc! {"
         ???.### 1,1,3
@@ -127,15 +124,6 @@ mod test {
         ????.######..#####. 1,6,5
         ?###???????? 3,2,1
     "};
-
-    #[test]
-    fn test() {
-        let sprint = Spring {
-            field: ".??..??...?##.".chars().collect(),
-            springs: vec![1, 1, 3],
-        };
-        dbg!(sprint.arrangements());
-    }
 
     #[test]
     fn part_a() {
