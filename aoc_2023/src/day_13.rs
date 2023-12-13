@@ -19,19 +19,15 @@ impl Solution for Day13 {
 }
 
 fn solve(valleys: &[Valley], limit: usize) -> usize {
-    let mut out = 0;
-    for valley in valleys {
-        if let Some(r) = valley.horizontal_reflection(limit) {
-            out += 100 * r;
-            continue;
-        }
-
-        if let Some(r) = valley.vertical_reflection(limit) {
-            out += r;
-        }
-    }
-
-    out
+    valleys
+        .iter()
+        .filter_map(|valley| {
+            valley
+                .horizontal_reflection(limit)
+                .map(|x| 100 * x)
+                .or_else(|| valley.vertical_reflection(limit))
+        })
+        .sum()
 }
 
 struct Valley {
@@ -60,10 +56,9 @@ impl Valley {
             let mut diff = 0;
             for a in start..mid {
                 let b = mid * 2 - a - 1;
-
-                for i in 0..self.tiles[a].len() {
-                    diff += (self.tiles[a][i] != self.tiles[b][i]) as usize
-                }
+                diff += (0..self.tiles[a].len())
+                    .filter(|&i| self.tiles[a][i] != self.tiles[b][i])
+                    .count();
             }
 
             if diff == error {
@@ -82,10 +77,9 @@ impl Valley {
             let mut diff = 0;
             for a in start..mid {
                 let b = mid * 2 - a - 1;
-
-                for i in 0..self.tiles.len() {
-                    diff += (self.tiles[i][a] != self.tiles[i][b]) as usize
-                }
+                diff += (0..self.tiles.len())
+                    .filter(|&i| self.tiles[i][a] != self.tiles[i][b])
+                    .count();
             }
 
             if diff == error {
