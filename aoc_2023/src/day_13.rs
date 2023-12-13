@@ -9,25 +9,29 @@ impl Solution for Day13 {
 
     fn part_a(&self, input: &str) -> Answer {
         let valleys = parse(input);
-
-        let mut out = 0;
-        for valley in valleys {
-            if let Some(r) = valley.horizontal_reflection() {
-                out += 100 * r;
-                continue;
-            }
-
-            if let Some(r) = valley.vertical_reflection() {
-                out += r;
-            }
-        }
-
-        out.into()
+        solve(&valleys, 0).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        Answer::Unimplemented
+        let valleys = parse(input);
+        solve(&valleys, 1).into()
     }
+}
+
+fn solve(valleys: &[Valley], limit: usize) -> usize {
+    let mut out = 0;
+    for valley in valleys {
+        if let Some(r) = valley.horizontal_reflection(limit) {
+            out += 100 * r;
+            continue;
+        }
+
+        if let Some(r) = valley.vertical_reflection(limit) {
+            out += r;
+        }
+    }
+
+    out
 }
 
 struct Valley {
@@ -48,59 +52,45 @@ fn parse(input: &str) -> Vec<Valley> {
 impl Valley {
     // Find a horizontal reflection in the valley.
     // Horizontal reflections is from left to right.
-    fn horizontal_reflection(&self) -> Option<usize> {
-        'outer: for mid in 1..self.tiles.len() - 1 {
+    fn horizontal_reflection(&self, error: usize) -> Option<usize> {
+        for mid in 1..=self.tiles.len() - 1 {
             let side_len = mid.min(self.tiles.len() - mid);
             let start = mid - side_len;
 
-            for a in start..=mid {
+            let mut diff = 0;
+            for a in start..mid {
                 let b = mid * 2 - a - 1;
-                if b >= self.tiles.len() {
-                    continue;
-                }
 
-                let mut diff = 0;
                 for i in 0..self.tiles[a].len() {
-                    if self.tiles[a][i] != self.tiles[b][i] {
-                        diff += 1;
-                    }
-                }
-
-                if diff != 0 {
-                    continue 'outer;
+                    diff += (self.tiles[a][i] != self.tiles[b][i]) as usize
                 }
             }
 
-            return Some(mid);
+            if diff == error {
+                return Some(mid);
+            }
         }
 
         None
     }
 
-    fn vertical_reflection(&self) -> Option<usize> {
-        'outer: for mid in 1..=self.tiles[0].len() - 1 {
+    fn vertical_reflection(&self, error: usize) -> Option<usize> {
+        for mid in 1..=self.tiles[0].len() - 1 {
             let side_len = mid.min(self.tiles[0].len() - mid);
             let start = mid - side_len;
 
-            for a in start..=mid {
+            let mut diff = 0;
+            for a in start..mid {
                 let b = mid * 2 - a - 1;
-                if b >= self.tiles[0].len() {
-                    continue;
-                }
 
-                let mut diff = 0;
                 for i in 0..self.tiles.len() {
-                    if self.tiles[i][a] != self.tiles[i][b] {
-                        diff += 1;
-                    }
-                }
-
-                if diff != 0 {
-                    continue 'outer;
+                    diff += (self.tiles[i][a] != self.tiles[i][b]) as usize
                 }
             }
 
-            return Some(mid);
+            if diff == error {
+                return Some(mid);
+            }
         }
 
         None
@@ -139,6 +129,6 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(Day13.part_b(CASE), ().into());
+        assert_eq!(Day13.part_b(CASE), 400.into());
     }
 }
