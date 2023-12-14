@@ -18,6 +18,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 11: Cosmic Expansion](aoc_2023/src/day_11.rs)
 - [Day 12: Hot Springs](aoc_2023/src/day_12.rs)
 - [Day 13: Point of Incidence](aoc_2023/src/day_13.rs)
+- [Day 14: Parabolic Reflector Dish](aoc_2023/src/day_14.rs)
 <!-- MARKER -->
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
