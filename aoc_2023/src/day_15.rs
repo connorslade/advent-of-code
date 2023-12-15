@@ -9,7 +9,12 @@ impl Solution for Day15 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        input.split(",").map(|x| hash(x) as u32).sum::<u32>().into()
+        input
+            .trim()
+            .split(',')
+            .map(|x| hash(x) as u32)
+            .sum::<u32>()
+            .into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
@@ -46,7 +51,7 @@ impl Solution for Day15 {
 fn parse(input: &str) -> Vec<(&str, Option<u32>)> {
     let mut out = Vec::new();
 
-    for i in input.split(",") {
+    for i in input.trim().split(',') {
         let (label, focal_len) = i.split(['=', '-'].as_ref()).collect_tuple().unwrap();
         out.push((label, focal_len.parse::<u32>().ok()));
     }
@@ -56,7 +61,6 @@ fn parse(input: &str) -> Vec<(&str, Option<u32>)> {
 
 fn hash(input: &str) -> u8 {
     let mut out = 0u8;
-
     for c in input.chars() {
         out = out.wrapping_add(c as u8).wrapping_mul(17);
     }
