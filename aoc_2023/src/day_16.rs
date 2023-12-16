@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use nd_vec::{vector, Vec2};
-
 use common::{Answer, Solution};
+use itertools::Itertools;
+use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<isize>;
 
@@ -14,28 +14,21 @@ impl Solution for Day16 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        let tiles = parse(input);
-        tiles.lazer(vector!(-1, 0), Direction::Right).into()
+        parse(input).lazer(vector!(-1, 0), Direction::Right).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
         let tiles = parse(input);
         let mut max = 0;
 
-        for y in 0..tiles.tiles.len() {
-            max = max.max(tiles.lazer(vector!(-1, y as isize), Direction::Right));
-            max = max.max(tiles.lazer(
-                vector!(tiles.tiles[0].len() as isize, y as isize),
-                Direction::Left,
-            ));
+        for y in 0..tiles.tiles.len() as isize {
+            max = max.max(tiles.lazer(vector!(-1, y), Direction::Right));
+            max = max.max(tiles.lazer(vector!(tiles.tiles[0].len() as isize, y), Direction::Left));
         }
 
-        for x in 0..tiles.tiles[0].len() {
-            max = max.max(tiles.lazer(vector!(x as isize, -1), Direction::Down));
-            max = max.max(tiles.lazer(
-                vector!(x as isize, tiles.tiles.len() as isize),
-                Direction::Up,
-            ));
+        for x in 0..tiles.tiles[0].len() as isize {
+            max = max.max(tiles.lazer(vector!(x, -1), Direction::Down));
+            max = max.max(tiles.lazer(vector!(x, tiles.tiles.len() as isize), Direction::Up));
         }
 
         max.into()
@@ -65,15 +58,10 @@ enum Tile {
 }
 
 fn parse(input: &str) -> Cavern {
-    let mut tiles = Vec::new();
-
-    for line in input.trim().lines() {
-        let mut row = Vec::new();
-        for c in line.chars() {
-            row.push(Tile::from_char(c));
-        }
-        tiles.push(row);
-    }
+    let tiles = input
+        .lines()
+        .map(|line| line.chars().map(Tile::from_char).collect_vec())
+        .collect_vec();
 
     Cavern { tiles }
 }
@@ -81,14 +69,8 @@ fn parse(input: &str) -> Cavern {
 impl Cavern {
     fn lazer(&self, start: Pos, direction: Direction) -> usize {
         fn _lazer(cavern: &Cavern, visited: &mut HashSet<Pos>, mut pos: Pos, mut dir: Direction) {
-            visited.insert(pos);
-
-            loop {
-                if let Some(i) = dir.advance(pos) {
-                    pos = i;
-                } else {
-                    break;
-                }
+            while let Some(i) = dir.advance(pos) {
+                pos = i;
 
                 if pos.x() >= cavern.tiles[0].len() as isize
                     || pos.y() >= cavern.tiles.len() as isize
@@ -136,9 +118,8 @@ impl Cavern {
         }
 
         let mut visited = HashSet::new();
-        _lazer(&self, &mut visited, start, direction);
-
-        visited.len() - 1
+        _lazer(self, &mut visited, start, direction);
+        visited.len()
     }
 }
 
@@ -155,11 +136,11 @@ impl Tile {
     }
 
     fn matching_dir(&self, direction: Direction) -> bool {
-        match self {
-            Self::Horizontal => matches!(direction, Direction::Left | Direction::Right),
-            Self::Vertical => matches!(direction, Direction::Up | Direction::Down),
-            _ => false,
-        }
+        matches!(
+            (self, direction),
+            (Self::Horizontal, Direction::Left | Direction::Right)
+                | (Self::Vertical, Direction::Up | Direction::Down)
+        )
     }
 }
 
