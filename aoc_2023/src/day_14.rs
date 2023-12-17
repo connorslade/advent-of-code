@@ -1,8 +1,9 @@
-use std::{collections::HashMap, hash::Hash};
-
-use nd_vec::{vector, Vec2};
+use std::{collections::HashMap, convert::identity, hash::Hash};
 
 use common::{Answer, Solution};
+use nd_vec::{vector, Vec2};
+
+use crate::aoc_lib::matrix::Matrix;
 
 type Pos = Vec2<isize>;
 
@@ -41,44 +42,35 @@ impl Solution for Day14 {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Dish {
-    tiles: Vec<Vec<char>>,
+    tiles: Matrix<char>,
 }
 
 fn parse(input: &str) -> Dish {
-    let times = input.lines().map(|line| line.chars().collect()).collect();
-    Dish { tiles: times }
+    Dish {
+        tiles: Matrix::new_chars(input, identity),
+    }
 }
 
 impl Dish {
-    fn tilt(&mut self, pos: Pos) {
+    fn tilt(&mut self, tilt: Pos) {
+        let tiles = &mut self.tiles;
         loop {
             let mut moved = false;
-            for y in 0..self.tiles.len() {
-                for x in 0..self.tiles[y].len() {
-                    if self.tiles[y][x] != 'O' {
+            for y in 0..tiles.size.y() {
+                for x in 0..tiles.size.x() {
+                    let pos = vector!(x as isize, y as isize);
+                    if tiles[pos] != 'O' {
                         continue;
                     }
 
-                    let new_pos = vector!(x, y).num_cast().unwrap() + pos;
-                    if new_pos.x() < 0
-                        || new_pos.x() >= self.tiles[y].len() as isize
-                        || new_pos.y() < 0
-                        || new_pos.y() >= self.tiles.len() as isize
-                    {
+                    let new_pos = vector!(x, y).num_cast().unwrap() + tilt;
+                    if !tiles.contains(new_pos) || tiles[new_pos] != '.' {
                         continue;
                     }
 
-                    let [nx, ny] = {
-                        let a = new_pos.num_cast::<usize>().unwrap();
-                        [a.x(), a.y()]
-                    };
-                    if self.tiles[ny][nx] != '.' {
-                        continue;
-                    }
-
-                    let tile = self.tiles[y][x];
-                    self.tiles[y][x] = '.';
-                    self.tiles[ny][nx] = tile;
+                    let tile = tiles[pos];
+                    tiles.set(pos, '.');
+                    tiles.set(new_pos, tile);
                     moved = true;
                 }
             }
@@ -96,12 +88,13 @@ impl Dish {
     }
 
     fn score(&self) -> usize {
+        let tiles = &self.tiles;
         let mut acc = 0;
 
-        for y in 0..self.tiles.len() {
-            for x in 0..self.tiles[y].len() {
-                if self.tiles[y][x] == 'O' {
-                    acc += self.tiles.len() - y;
+        for y in 0..tiles.size.y() {
+            for x in 0..tiles.size.x() {
+                if tiles[[x, y]] == 'O' {
+                    acc += tiles.size.y() - y;
                 }
             }
         }

@@ -9,6 +9,7 @@ pub enum Direction {
     Right,
 }
 
+#[allow(dead_code)]
 impl Direction {
     pub const ALL: [Direction; 4] = [
         Direction::Up,

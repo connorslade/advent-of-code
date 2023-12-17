@@ -3,7 +3,7 @@ use std::collections::{HashMap, VecDeque};
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
 
-use crate::aoc_lib::direction::Direction;
+use crate::aoc_lib::{direction::Direction, matrix::Matrix};
 
 type Pos = Vec2<usize>;
 
@@ -23,12 +23,16 @@ impl Solution for Day17 {
     }
 }
 
-fn pathfind(board: Vec<Vec<u8>>, min_dist: u8, max_dist: u8) -> u32 {
+fn parse(input: &str) -> Matrix<u8> {
+    Matrix::new_chars(input, |c| c as u8 - b'0')
+}
+
+fn pathfind(board: Matrix<u8>, min_dist: u8, max_dist: u8) -> u32 {
     let mut queue = VecDeque::new();
     let mut visited = HashMap::new();
     let mut res = u32::MAX;
 
-    let end = vector!(board[0].len() - 1, board.len() - 1);
+    let end = board.size() - vector!(1, 1);
     for dir in [Direction::Down, Direction::Right] {
         let state = State::new(vector!(0, 0), dir, 1);
         queue.push_back((0, state));
@@ -39,10 +43,10 @@ fn pathfind(board: Vec<Vec<u8>>, min_dist: u8, max_dist: u8) -> u32 {
         let mut explore = |facing: Direction, turn_distance: u8| {
             if let Some(pos) = facing
                 .try_advance(state.pos)
-                .filter(|pos| pos.y() < board.len() && pos.x() < board[0].len())
+                .filter(|pos| board.contains(*pos))
             {
                 let state = State::new(pos, facing, turn_distance);
-                let cost = cost + board[pos.y()][pos.x()] as u32;
+                let cost = cost + board[pos] as u32;
 
                 if !visited.contains_key(&state) || visited.get(&state).unwrap() > &cost {
                     queue.push_back((cost, state));
@@ -67,13 +71,6 @@ fn pathfind(board: Vec<Vec<u8>>, min_dist: u8, max_dist: u8) -> u32 {
     }
 
     res
-}
-
-fn parse(input: &str) -> Vec<Vec<u8>> {
-    input
-        .lines()
-        .map(|line| line.chars().map(|x| x as u8 - b'0').collect())
-        .collect::<Vec<_>>()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
