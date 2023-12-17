@@ -21,6 +21,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 14: Parabolic Reflector Dish](aoc_2023/src/day_14.rs)
 - [Day 15: Lens Library](aoc_2023/src/day_15.rs)
 - [Day 16: The Floor Will Be Lava](aoc_2023/src/day_16.rs)
+- [Day 17: Clumsy Crucible](aoc_2023/src/day_17.rs)
 <!-- MARKER -->
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
