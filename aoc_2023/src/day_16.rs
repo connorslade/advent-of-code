@@ -4,6 +4,8 @@ use common::{Answer, Solution};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2};
 
+use crate::aoc_lib::direction::Direction;
+
 type Pos = Vec2<isize>;
 
 pub struct Day16;
@@ -40,14 +42,6 @@ struct Cavern {
     tiles: Vec<Vec<Tile>>,
 }
 
-#[derive(Debug, Clone, Copy)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum Tile {
     Empty,      // .
@@ -69,7 +63,7 @@ fn parse(input: &str) -> Cavern {
 impl Cavern {
     fn lazer(&self, start: Pos, direction: Direction) -> usize {
         fn _lazer(cavern: &Cavern, visited: &mut HashSet<Pos>, mut pos: Pos, mut dir: Direction) {
-            while let Some(i) = dir.advance(pos) {
+            while let Some(i) = dir.try_advance(pos) {
                 pos = i;
 
                 if pos.x() >= cavern.tiles[0].len() as isize
@@ -141,18 +135,6 @@ impl Tile {
             (Self::Horizontal, Direction::Left | Direction::Right)
                 | (Self::Vertical, Direction::Up | Direction::Down)
         )
-    }
-}
-
-impl Direction {
-    fn advance(&self, pos: Pos) -> Option<Pos> {
-        Some(match self {
-            Self::Up if pos.y() > 0 => pos - vector!(0, 1),
-            Self::Down => pos + vector!(0, 1),
-            Self::Left if pos.x() > 0 => pos - vector!(1, 0),
-            Self::Right => pos + vector!(1, 0),
-            _ => return None,
-        })
     }
 }
 

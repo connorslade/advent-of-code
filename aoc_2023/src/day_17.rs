@@ -3,6 +3,8 @@ use std::collections::{HashMap, VecDeque};
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
 
+use crate::aoc_lib::direction::Direction;
+
 type Pos = Vec2<usize>;
 
 pub struct Day17;
@@ -34,16 +36,17 @@ fn pathfind(board: Vec<Vec<u8>>, min_dist: u8, max_dist: u8) -> u32 {
     }
 
     while let Some((cost, state)) = queue.pop_front() {
-        let mut push = |facing: Direction, turn_distance: u8| {
-            if let Some(pos) = facing.advance(state.pos) {
-                if pos.y() < board.len() && pos.x() < board[0].len() {
-                    let state = State::new(pos, facing, turn_distance);
-                    let cost = cost + board[pos.y()][pos.x()] as u32;
+        let mut explore = |facing: Direction, turn_distance: u8| {
+            if let Some(pos) = facing
+                .try_advance(state.pos)
+                .filter(|pos| pos.y() < board.len() && pos.x() < board[0].len())
+            {
+                let state = State::new(pos, facing, turn_distance);
+                let cost = cost + board[pos.y()][pos.x()] as u32;
 
-                    if !visited.contains_key(&state) || visited.get(&state).unwrap() > &cost {
-                        queue.push_back((cost, state));
-                        visited.insert(state, cost);
-                    }
+                if !visited.contains_key(&state) || visited.get(&state).unwrap() > &cost {
+                    queue.push_back((cost, state));
+                    visited.insert(state, cost);
                 }
             }
         };
@@ -54,12 +57,12 @@ fn pathfind(board: Vec<Vec<u8>>, min_dist: u8, max_dist: u8) -> u32 {
         }
 
         if state.turn_distance < max_dist {
-            push(state.facing, state.turn_distance + 1);
+            explore(state.facing, state.turn_distance + 1);
         }
 
         if state.turn_distance >= min_dist {
-            push(state.facing.turn_left(), 1);
-            push(state.facing.turn_right(), 1);
+            explore(state.facing.turn_left(), 1);
+            explore(state.facing.turn_right(), 1);
         }
     }
 
@@ -86,44 +89,6 @@ impl State {
             pos,
             facing,
             turn_distance,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl Direction {
-    fn advance(&self, pos: Pos) -> Option<Pos> {
-        Some(match self {
-            Self::Up if pos.y() > 0 => pos - vector!(0, 1),
-            Self::Down => pos + vector!(0, 1),
-            Self::Left if pos.x() > 0 => pos - vector!(1, 0),
-            Self::Right => pos + vector!(1, 0),
-            _ => return None,
-        })
-    }
-
-    fn turn_left(&self) -> Self {
-        match self {
-            Self::Up => Self::Left,
-            Self::Down => Self::Right,
-            Self::Left => Self::Down,
-            Self::Right => Self::Up,
-        }
-    }
-
-    fn turn_right(&self) -> Self {
-        match self {
-            Self::Up => Self::Right,
-            Self::Down => Self::Left,
-            Self::Left => Self::Up,
-            Self::Right => Self::Down,
         }
     }
 }

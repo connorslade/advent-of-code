@@ -4,6 +4,8 @@ use nd_vec::{vector, Vec2};
 
 use common::{Answer, Solution};
 
+use crate::aoc_lib::direction::Direction;
+
 type Pos = Vec2<usize>;
 
 const START_PIECES: [(char, [Direction; 2]); 4] = [
@@ -77,14 +79,6 @@ enum Riding {
     Down,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
 struct Maze {
     start: Pos,
     segments: Vec<Vec<char>>,
@@ -122,7 +116,7 @@ impl Maze {
             start_approaches[0] = dir;
             loop {
                 walls.insert(pos);
-                pos = match dir.step(pos) {
+                pos = match dir.try_advance(pos) {
                     Some(p) => p,
                     None => break,
                 };
@@ -165,34 +159,6 @@ enum TurnResult {
     Turn(Direction),
     End,
     Fail,
-}
-
-impl Direction {
-    const ALL: [Direction; 4] = [
-        Direction::Up,
-        Direction::Down,
-        Direction::Left,
-        Direction::Right,
-    ];
-
-    fn step(&self, pos: Pos) -> Option<Pos> {
-        Some(match self {
-            Direction::Up if pos.y() > 0 => vector!(pos.x(), pos.y() - 1),
-            Direction::Down => vector!(pos.x(), pos.y() + 1),
-            Direction::Left if pos.x() > 0 => vector!(pos.x() - 1, pos.y()),
-            Direction::Right => vector!(pos.x() + 1, pos.y()),
-            _ => return None,
-        })
-    }
-
-    fn opposite(&self) -> Self {
-        match self {
-            Direction::Up => Direction::Down,
-            Direction::Down => Direction::Up,
-            Direction::Left => Direction::Right,
-            Direction::Right => Direction::Left,
-        }
-    }
 }
 
 fn turn(facing: Direction, tile: char) -> TurnResult {
