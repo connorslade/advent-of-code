@@ -1,5 +1,5 @@
 use nd_vec::{vector, Vec2};
-use num_traits::Num;
+use num_traits::{Num, Signed};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -17,6 +17,15 @@ impl Direction {
         Direction::Left,
         Direction::Right,
     ];
+
+    pub fn as_vector<T: Num + Signed + Copy>(&self) -> Vec2<T> {
+        match self {
+            Self::Up => vector!(T::zero(), -T::one()),
+            Self::Down => vector!(T::zero(), T::one()),
+            Self::Left => vector!(-T::one(), T::zero()),
+            Self::Right => vector!(T::one(), T::zero()),
+        }
+    }
 
     #[rustfmt::skip]
     pub fn try_advance<T: Num + Copy + PartialOrd>(&self, pos: Vec2<T>) -> Option<Vec2<T>> {
