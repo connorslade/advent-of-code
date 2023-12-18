@@ -11,22 +11,21 @@ impl Solution for Day18 {
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        solve(&parse_a(input)).into()
+        solve(parse_a(input)).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        solve(&parse_b(input)).into()
+        solve(parse_b(input)).into()
     }
 }
 
-fn solve(instructions: &[(Direction, u32)]) -> i64 {
+fn solve(instructions: Vec<(Direction, u32)>) -> i64 {
     let mut pos = vector!(0, 0);
     let mut perimeter = 0;
     let mut area = 0;
 
-    for (dir, steps) in instructions.iter().copied() {
-        let dir = dir.as_vector();
-        let cng = dir * (steps as i64);
+    for (dir, steps) in instructions.into_iter() {
+        let cng = dir.as_vector() * (steps as i64);
         pos += cng;
 
         perimeter += steps as i64;
