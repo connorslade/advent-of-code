@@ -26,17 +26,11 @@ impl Solution for Day19 {
                             value,
                             destination,
                         } => {
-                            let val = match field {
-                                Field::X => shape.x,
-                                Field::M => shape.m,
-                                Field::A => shape.a,
-                                Field::S => shape.s,
-                            };
-                            let result = match comparison {
+                            let val = shape.get(field);
+                            if match comparison {
                                 Comparison::LessThan => val < *value,
                                 Comparison::GreaterThan => val > *value,
-                            };
-                            if result {
+                            } {
                                 workflow = destination;
                                 break;
                             }
@@ -48,15 +42,11 @@ impl Solution for Day19 {
                     }
                 }
 
-                match workflow {
-                    "A" => {
-                        out += shape.x + shape.m + shape.a + shape.s;
-                        break;
-                    }
-                    "R" => {
-                        break;
-                    }
-                    _ => {}
+                if workflow == "A" {
+                    out += shape.x + shape.m + shape.a + shape.s;
+                    break;
+                } else if workflow == "R" {
+                    break;
                 }
             }
         }
@@ -77,17 +67,16 @@ impl Solution for Day19 {
     }
 }
 
-fn sz(ranges: &ShapeRange) -> i64 {
-    let mut out = 1;
-    out *= ranges.x.1 as i64 - ranges.x.0 as i64 + 1;
-    out *= ranges.m.1 as i64 - ranges.m.0 as i64 + 1;
-    out *= ranges.a.1 as i64 - ranges.a.0 as i64 + 1;
-    out *= ranges.s.1 as i64 - ranges.s.0 as i64 + 1;
-    out
-}
-
-fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str) -> i64 {
+fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str) -> u64 {
     let mut out = 0;
+
+    let mut common = |range: ShapeRange, destination: &str| {
+        if destination == "A" {
+            out += calc_size(&range);
+        } else if destination != "R" {
+            out += solve_b(rules, range, destination);
+        }
+    };
 
     for rule in rules.get(map).unwrap() {
         match rule {
@@ -96,68 +85,38 @@ fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str)
                 comparison,
                 value,
                 destination,
-            } => match comparison {
-                Comparison::GreaterThan => {
-                    let mut new_range = range.clone();
-                    let val = match field {
-                        Field::X => &mut new_range.x,
-                        Field::M => &mut new_range.m,
-                        Field::A => &mut new_range.a,
-                        Field::S => &mut new_range.s,
-                    };
-                    if val.1 > *value {
+            } => {
+                let mut new_range = range;
+                let val = new_range.get_mut(field);
+                let rng = range.get_mut(field);
+
+                match comparison {
+                    Comparison::GreaterThan if val.1 > *value => {
                         val.0 = val.0.max(*value + 1);
-                        if destination == "A" {
-                            out += sz(&new_range);
-                        } else if destination != "R" {
-                            out += solve_b(rules, new_range, destination);
-                        }
-
-                        let val2 = match field {
-                            Field::X => &mut range.x,
-                            Field::M => &mut range.m,
-                            Field::A => &mut range.a,
-                            Field::S => &mut range.s,
-                        };
-                        val2.1 = val2.1.min(*value);
+                        rng.1 = rng.1.min(*value);
                     }
-                }
-                Comparison::LessThan => {
-                    let mut new_range = range.clone();
-                    let val = match field {
-                        Field::X => &mut new_range.x,
-                        Field::M => &mut new_range.m,
-                        Field::A => &mut new_range.a,
-                        Field::S => &mut new_range.s,
-                    };
-                    if val.0 < *value {
+                    Comparison::LessThan if val.0 < *value => {
                         val.1 = val.1.min(*value - 1);
-                        if destination == "A" {
-                            out += sz(&new_range);
-                        } else if destination != "R" {
-                            out += solve_b(rules, new_range, destination);
-                        }
-
-                        let val2 = match field {
-                            Field::X => &mut range.x,
-                            Field::M => &mut range.m,
-                            Field::A => &mut range.a,
-                            Field::S => &mut range.s,
-                        };
-                        val2.0 = val2.0.max(*value);
+                        rng.0 = rng.0.max(*value);
                     }
+                    _ => continue,
                 }
-            },
-            Rule::Default { destination } => {
-                if destination == "A" {
-                    out += sz(&range);
-                } else if destination != "R" {
-                    out += solve_b(rules, range, destination);
-                }
+
+                common(new_range, destination);
             }
+            Rule::Default { destination } => common(range, destination),
         }
     }
 
+    out
+}
+
+fn calc_size(ranges: &ShapeRange) -> u64 {
+    let mut out = 1;
+    out *= ranges.x.1 as u64 - ranges.x.0 as u64 + 1;
+    out *= ranges.m.1 as u64 - ranges.m.0 as u64 + 1;
+    out *= ranges.a.1 as u64 - ranges.a.0 as u64 + 1;
+    out *= ranges.s.1 as u64 - ranges.s.0 as u64 + 1;
     out
 }
 
@@ -210,7 +169,6 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
 
     let (rule, shape) = input.split_once("\n\n").unwrap();
     for rule in rule.lines() {
-        // px{a<2006:qkq,m>2090:A,rfg}
         let (name, rule) = rule.split_once('{').unwrap();
         let rule = rule.split_once('}').unwrap().0;
 
@@ -266,6 +224,28 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
     }
 
     (rules_out, shapes)
+}
+
+impl Shape {
+    fn get(&self, field: &Field) -> u32 {
+        match field {
+            Field::X => self.x,
+            Field::M => self.m,
+            Field::A => self.a,
+            Field::S => self.s,
+        }
+    }
+}
+
+impl ShapeRange {
+    fn get_mut(&mut self, field: &Field) -> &mut (u32, u32) {
+        match field {
+            Field::X => &mut self.x,
+            Field::M => &mut self.m,
+            Field::A => &mut self.a,
+            Field::S => &mut self.s,
+        }
+    }
 }
 
 #[cfg(test)]
