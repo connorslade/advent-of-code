@@ -67,10 +67,10 @@ impl Solution for Day19 {
     }
 }
 
-fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str) -> u64 {
+fn solve_b(rules: &HashMap<&str, Vec<Rule>>, mut range: ShapeRange, map: &str) -> u64 {
     let mut out = 0;
 
-    let mut common = |range: ShapeRange, destination: &str| {
+    let mut solve = |range: ShapeRange, destination: &str| {
         if destination == "A" {
             out += calc_size(&range);
         } else if destination != "R" {
@@ -102,9 +102,9 @@ fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str)
                     _ => continue,
                 }
 
-                common(new_range, destination);
+                solve(new_range, destination);
             }
-            Rule::Default { destination } => common(range, destination),
+            Rule::Default { destination } => solve(range, destination),
         }
     }
 
@@ -135,15 +135,15 @@ enum Field {
 }
 
 #[derive(Debug, Clone)]
-enum Rule {
+enum Rule<'a> {
     Comparison {
         field: Field,
         comparison: Comparison,
         value: u32,
-        destination: String,
+        destination: &'a str,
     },
     Default {
-        destination: String,
+        destination: &'a str,
     },
 }
 
@@ -163,32 +163,21 @@ struct ShapeRange {
     s: (u32, u32),
 }
 
-fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
+fn parse(input: &str) -> (HashMap<&str, Vec<Rule>>, Vec<Shape>) {
     let mut rules_out = HashMap::new();
     let mut shapes = Vec::new();
 
     let (rule, shape) = input.split_once("\n\n").unwrap();
     for rule in rule.lines() {
         let (name, rule) = rule.split_once('{').unwrap();
-        let rule = rule.split_once('}').unwrap().0;
 
         let mut rules = Vec::new();
-        for i in rule.split(',') {
-            if !i.contains(':') {
-                rules.push(Rule::Default {
-                    destination: i.to_string(),
-                });
+        for destination in rule[..rule.len() - 1].split(',') {
+            let Some((comparison, destination)) = destination.split_once(':') else {
+                rules.push(Rule::Default { destination });
                 continue;
-            }
-
-            let (comparison, destination) = i.split_once(':').unwrap();
-            let field = match &comparison[0..1] {
-                "x" => Field::X,
-                "m" => Field::M,
-                "a" => Field::A,
-                "s" => Field::S,
-                _ => panic!("Invalid field"),
             };
+            let field = Field::from_str(&comparison[0..1]);
             let comp = match &comparison[1..2] {
                 "<" => Comparison::LessThan,
                 ">" => Comparison::GreaterThan,
@@ -199,11 +188,11 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
                 field,
                 comparison: comp,
                 value,
-                destination: destination.to_string(),
+                destination,
             });
         }
 
-        rules_out.insert(name.to_string(), rules);
+        rules_out.insert(name, rules);
     }
 
     for shape in shape.lines() {
@@ -212,18 +201,26 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
         for field in shape.split(',') {
             let (field, value) = field.split_once('=').unwrap();
             let value = value.parse().unwrap();
-            match field {
-                "x" => x.x = value,
-                "m" => x.m = value,
-                "a" => x.a = value,
-                "s" => x.s = value,
-                _ => panic!("Invalid field"),
-            }
+
+            let field = Field::from_str(field);
+            *x.get_mut(&field) = value;
         }
         shapes.push(x);
     }
 
     (rules_out, shapes)
+}
+
+impl Field {
+    fn from_str(from: &str) -> Self {
+        match from {
+            "x" => Self::X,
+            "m" => Self::M,
+            "a" => Self::A,
+            "s" => Self::S,
+            _ => panic!("Invalid field"),
+        }
+    }
 }
 
 impl Shape {
@@ -233,6 +230,15 @@ impl Shape {
             Field::M => self.m,
             Field::A => self.a,
             Field::S => self.s,
+        }
+    }
+
+    fn get_mut(&mut self, field: &Field) -> &mut u32 {
+        match field {
+            Field::X => &mut self.x,
+            Field::M => &mut self.m,
+            Field::A => &mut self.a,
+            Field::S => &mut self.s,
         }
     }
 }
