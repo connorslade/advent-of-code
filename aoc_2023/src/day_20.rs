@@ -15,7 +15,7 @@ impl Solution for Day20 {
         let mut low_pulse = 999;
         let mut high_pulse = 0;
 
-        simulate(connections, |i, _source, _target, pulse| {
+        simulate(&connections, |i, _source, _target, pulse| {
             match pulse {
                 Pulse::Low => low_pulse += 1,
                 Pulse::High => high_pulse += 1,
@@ -29,14 +29,14 @@ impl Solution for Day20 {
 
     fn part_b(&self, input: &str) -> Answer {
         let connections = parse_input(input);
+        let important_connections = important_connections(&connections);
 
-        const IMPORTANT_CONNECTIONS: &[&str] = &["kd", "zf", "vg", "gs"];
         let mut last_cycle = [0; 4];
         let mut cycle_length = [0; 4];
 
-        simulate(connections, |i, source, target, pulse| {
+        simulate(&connections, |i, source, target, pulse| {
             if target == "rg" && pulse == Pulse::High {
-                if let Some(idx) = IMPORTANT_CONNECTIONS.iter().position(|s| s == &source) {
+                if let Some(idx) = important_connections.iter().position(|s| s == &source) {
                     let last = last_cycle[idx];
                     last_cycle[idx] = i;
                     cycle_length[idx] = (i - last + 1) as u64;
@@ -55,7 +55,7 @@ impl Solution for Day20 {
 }
 
 fn simulate(
-    connections: HashMap<&str, Connection<'_>>,
+    connections: &HashMap<&str, Connection<'_>>,
     mut hook: impl FnMut(u32, &str, &str, Pulse) -> bool,
 ) {
     let mut flop_memory = HashMap::new();
@@ -132,13 +132,29 @@ fn simulate(
     }
 }
 
+fn important_connections<'a>(connections: &'a HashMap<&'a str, Connection<'a>>) -> Vec<&'a str> {
+    // Find node that connects to rx
+    let drain = connections
+        .values()
+        .find(|i| i.target.contains(&"rx"))
+        .unwrap();
+    assert_eq!(drain.connection_type, ConnectionType::Conjunction);
+
+    // Find all nodes that connect to drain
+    connections
+        .values()
+        .filter(|i| i.target.contains(&drain.source))
+        .map(|i| i.source)
+        .collect()
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum Pulse {
     Low,
     High,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum ConnectionType {
     Normal,
     FlipFlop,
