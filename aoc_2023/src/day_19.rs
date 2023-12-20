@@ -26,7 +26,7 @@ impl Solution for Day19 {
                             value,
                             destination,
                         } => {
-                            let val = shape.get(field);
+                            let val = shape[*field];
                             if match comparison {
                                 Comparison::LessThan => val < *value,
                                 Comparison::GreaterThan => val > *value,
@@ -43,7 +43,7 @@ impl Solution for Day19 {
                 }
 
                 if workflow == "A" {
-                    out += shape.x + shape.m + shape.a + shape.s;
+                    out += shape.iter().sum::<u32>();
                     break;
                 } else if workflow == "R" {
                     break;
@@ -57,20 +57,15 @@ impl Solution for Day19 {
     fn part_b(&self, input: &str) -> Answer {
         let (rules, _) = parse(input);
 
-        let range = ShapeRange {
-            x: (1, 4000),
-            m: (1, 4000),
-            a: (1, 4000),
-            s: (1, 4000),
-        };
+        let range = [(1, 4000); 4];
         solve_b(&rules, range, "in").into()
     }
 }
 
-fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str) -> u64 {
+fn solve_b(rules: &HashMap<&str, Vec<Rule>>, mut range: [(u32, u32); 4], map: &str) -> u64 {
     let mut out = 0;
 
-    let mut common = |range: ShapeRange, destination: &str| {
+    let mut solve = |range: [(u32, u32); 4], destination: &str| {
         if destination == "A" {
             out += calc_size(&range);
         } else if destination != "R" {
@@ -87,8 +82,8 @@ fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str)
                 destination,
             } => {
                 let mut new_range = range;
-                let val = new_range.get_mut(field);
-                let rng = range.get_mut(field);
+                let val = &mut new_range[*field];
+                let rng = &mut range[*field];
 
                 match comparison {
                     Comparison::GreaterThan if val.1 > *value => {
@@ -102,21 +97,20 @@ fn solve_b(rules: &HashMap<String, Vec<Rule>>, mut range: ShapeRange, map: &str)
                     _ => continue,
                 }
 
-                common(new_range, destination);
+                solve(new_range, destination);
             }
-            Rule::Default { destination } => common(range, destination),
+            Rule::Default { destination } => solve(range, destination),
         }
     }
 
     out
 }
 
-fn calc_size(ranges: &ShapeRange) -> u64 {
+fn calc_size(ranges: &[(u32, u32); 4]) -> u64 {
     let mut out = 1;
-    out *= ranges.x.1 as u64 - ranges.x.0 as u64 + 1;
-    out *= ranges.m.1 as u64 - ranges.m.0 as u64 + 1;
-    out *= ranges.a.1 as u64 - ranges.a.0 as u64 + 1;
-    out *= ranges.s.1 as u64 - ranges.s.0 as u64 + 1;
+    for i in 0..4 {
+        out *= ranges[i].1 as u64 - ranges[i].0 as u64 + 1;
+    }
     out
 }
 
@@ -126,68 +120,32 @@ enum Comparison {
     GreaterThan,
 }
 
-#[derive(Debug, Copy, Clone)]
-enum Field {
-    X,
-    M,
-    A,
-    S,
-}
-
 #[derive(Debug, Clone)]
-enum Rule {
+enum Rule<'a> {
     Comparison {
-        field: Field,
+        field: usize,
         comparison: Comparison,
         value: u32,
-        destination: String,
+        destination: &'a str,
     },
     Default {
-        destination: String,
+        destination: &'a str,
     },
 }
 
-#[derive(Default, Debug, Copy, Clone)]
-struct Shape {
-    x: u32,
-    m: u32,
-    a: u32,
-    s: u32,
-}
-
-#[derive(Default, Debug, Copy, Clone)]
-struct ShapeRange {
-    x: (u32, u32),
-    m: (u32, u32),
-    a: (u32, u32),
-    s: (u32, u32),
-}
-
-fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
+fn parse(input: &str) -> (HashMap<&str, Vec<Rule>>, Vec<[u32; 4]>) {
     let mut rules_out = HashMap::new();
     let mut shapes = Vec::new();
 
     let (rule, shape) = input.split_once("\n\n").unwrap();
     for rule in rule.lines() {
         let (name, rule) = rule.split_once('{').unwrap();
-        let rule = rule.split_once('}').unwrap().0;
 
         let mut rules = Vec::new();
-        for i in rule.split(',') {
-            if !i.contains(':') {
-                rules.push(Rule::Default {
-                    destination: i.to_string(),
-                });
+        for destination in rule[..rule.len() - 1].split(',') {
+            let Some((comparison, destination)) = destination.split_once(':') else {
+                rules.push(Rule::Default { destination });
                 continue;
-            }
-
-            let (comparison, destination) = i.split_once(':').unwrap();
-            let field = match &comparison[0..1] {
-                "x" => Field::X,
-                "m" => Field::M,
-                "a" => Field::A,
-                "s" => Field::S,
-                _ => panic!("Invalid field"),
             };
             let comp = match &comparison[1..2] {
                 "<" => Comparison::LessThan,
@@ -196,29 +154,22 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
             };
             let value = comparison[2..].parse().unwrap();
             rules.push(Rule::Comparison {
-                field,
+                field: field_idx(&comparison[0..1]),
                 comparison: comp,
                 value,
-                destination: destination.to_string(),
+                destination,
             });
         }
 
-        rules_out.insert(name.to_string(), rules);
+        rules_out.insert(name, rules);
     }
 
     for shape in shape.lines() {
-        let shape = &shape[1..shape.len() - 1];
-        let mut x = Shape::default();
-        for field in shape.split(',') {
+        let mut x = [0; 4];
+        for field in shape[1..shape.len() - 1].split(',') {
             let (field, value) = field.split_once('=').unwrap();
             let value = value.parse().unwrap();
-            match field {
-                "x" => x.x = value,
-                "m" => x.m = value,
-                "a" => x.a = value,
-                "s" => x.s = value,
-                _ => panic!("Invalid field"),
-            }
+            x[field_idx(field)] = value;
         }
         shapes.push(x);
     }
@@ -226,25 +177,13 @@ fn parse(input: &str) -> (HashMap<String, Vec<Rule>>, Vec<Shape>) {
     (rules_out, shapes)
 }
 
-impl Shape {
-    fn get(&self, field: &Field) -> u32 {
-        match field {
-            Field::X => self.x,
-            Field::M => self.m,
-            Field::A => self.a,
-            Field::S => self.s,
-        }
-    }
-}
-
-impl ShapeRange {
-    fn get_mut(&mut self, field: &Field) -> &mut (u32, u32) {
-        match field {
-            Field::X => &mut self.x,
-            Field::M => &mut self.m,
-            Field::A => &mut self.a,
-            Field::S => &mut self.s,
-        }
+fn field_idx(field: &str) -> usize {
+    match field {
+        "x" => 0,
+        "m" => 1,
+        "a" => 2,
+        "s" => 3,
+        _ => panic!(),
     }
 }
 
