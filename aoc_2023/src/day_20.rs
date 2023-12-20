@@ -2,8 +2,6 @@ use std::collections::{HashMap, VecDeque};
 
 use common::{Answer, Solution};
 
-const BASE: &str = "broadcaster";
-
 pub struct Day20;
 
 impl Solution for Day20 {
@@ -14,82 +12,17 @@ impl Solution for Day20 {
     fn part_a(&self, input: &str) -> Answer {
         let connections = parse_input(input);
 
-        let mut flop_memory = HashMap::new();
-        let mut conjunction_memory = HashMap::new();
-
-        for i in connections.values() {
-            match i.connection_type {
-                ConnectionType::FlipFlop => {
-                    flop_memory.insert(i.source, false);
-                }
-                ConnectionType::Conjunction => {
-                    let mut map = HashMap::new();
-                    // Add map of all items mapping to i
-                    for j in connections.values() {
-                        if j.target.contains(&i.source) {
-                            map.insert(j.source, Pulse::Low);
-                        }
-                    }
-                    conjunction_memory.insert(i.source, map);
-                }
-                _ => continue,
-            }
-        }
-
-        let mut low_pulse = 0;
+        let mut low_pulse = 999;
         let mut high_pulse = 0;
 
-        for _ in 0..1000 {
-            low_pulse += 1;
-            let mut next = VecDeque::new();
-            for i in connections[BASE].target.iter() {
-                next.push_back((BASE, i, Pulse::Low));
+        simulate(connections, |i, _source, _target, pulse| {
+            match pulse {
+                Pulse::Low => low_pulse += 1,
+                Pulse::High => high_pulse += 1,
             }
 
-            while let Some((source, target, pulse)) = next.pop_front() {
-                match pulse {
-                    Pulse::Low => low_pulse += 1,
-                    Pulse::High => high_pulse += 1,
-                }
-
-                let Some(connection) = connections.get(target) else {
-                    continue;
-                };
-
-                let pulse = match connection.connection_type {
-                    ConnectionType::Normal => continue,
-                    ConnectionType::FlipFlop => {
-                        if pulse == Pulse::High {
-                            continue;
-                        }
-
-                        let mem = flop_memory.get_mut(target).unwrap();
-                        *mem ^= true;
-
-                        if *mem {
-                            Pulse::High
-                        } else {
-                            Pulse::Low
-                        }
-                    }
-                    ConnectionType::Conjunction => {
-                        let mem = conjunction_memory.get_mut(target).unwrap();
-                        let this = mem.get_mut(source).unwrap();
-                        *this = pulse;
-
-                        if mem.values().all(|&l| l == Pulse::High) {
-                            Pulse::Low
-                        } else {
-                            Pulse::High
-                        }
-                    }
-                };
-
-                for i in connection.target.iter() {
-                    next.push_back((target, i, pulse));
-                }
-            }
-        }
+            i < 1000
+        });
 
         (low_pulse * high_pulse).into()
     }
@@ -97,101 +30,105 @@ impl Solution for Day20 {
     fn part_b(&self, input: &str) -> Answer {
         let connections = parse_input(input);
 
-        let mut flop_memory = HashMap::new();
-        let mut conjunction_memory = HashMap::new();
-
-        for i in connections.values() {
-            match i.connection_type {
-                ConnectionType::FlipFlop => {
-                    flop_memory.insert(i.source, false);
-                }
-                ConnectionType::Conjunction => {
-                    let mut map = HashMap::new();
-                    // Add map of all items mapping to i
-                    for j in connections.values() {
-                        if j.target.contains(&i.source) {
-                            map.insert(j.source, Pulse::Low);
-                        }
-                    }
-                    conjunction_memory.insert(i.source, map);
-                }
-                _ => continue,
-            }
-        }
-
-        let mut low_pulse = 0;
-        let mut high_pulse = 0;
-
         const IMPORTANT_CONNECTIONS: &[&str] = &["kd", "zf", "vg", "gs"];
         let mut last_cycle = [0; 4];
         let mut cycle_length = [0; 4];
 
-        for i in 0.. {
-            low_pulse += 1;
-            let mut next = VecDeque::new();
-            for i in connections[BASE].target.iter() {
-                next.push_back((BASE, i, Pulse::Low));
-            }
-
-            while let Some((source, target, pulse)) = next.pop_front() {
+        simulate(connections, |i, source, target, pulse| {
+            if target == "rg" && pulse == Pulse::High {
                 if let Some(idx) = IMPORTANT_CONNECTIONS.iter().position(|s| s == &source) {
-                    if target == &"rg" && pulse == Pulse::High {
-                        let last = last_cycle[idx];
-                        last_cycle[idx] = i;
-                        cycle_length[idx] = i - last + 1;
+                    let last = last_cycle[idx];
+                    last_cycle[idx] = i;
+                    cycle_length[idx] = (i - last + 1) as u64;
 
-                        if cycle_length.iter().all(|&i| i != 0) {
-                            dbg!(cycle_length.iter().product::<u64>());
-                            std::process::exit(0);
-                        }
+                    if cycle_length.iter().all(|&i| i != 0) {
+                        return false;
                     }
-                }
-
-                match pulse {
-                    Pulse::Low => low_pulse += 1,
-                    Pulse::High => high_pulse += 1,
-                }
-
-                let Some(connection) = connections.get(target) else {
-                    continue;
-                };
-
-                let pulse = match connection.connection_type {
-                    ConnectionType::Normal => continue,
-                    ConnectionType::FlipFlop => {
-                        if pulse == Pulse::High {
-                            continue;
-                        }
-
-                        let mem = flop_memory.get_mut(target).unwrap();
-                        *mem ^= true;
-
-                        if *mem {
-                            Pulse::High
-                        } else {
-                            Pulse::Low
-                        }
-                    }
-                    ConnectionType::Conjunction => {
-                        let mem = conjunction_memory.get_mut(target).unwrap();
-                        let this = mem.get_mut(source).unwrap();
-                        *this = pulse;
-
-                        if mem.values().all(|&l| l == Pulse::High) {
-                            Pulse::Low
-                        } else {
-                            Pulse::High
-                        }
-                    }
-                };
-
-                for i in connection.target.iter() {
-                    next.push_back((target, i, pulse));
                 }
             }
+
+            true
+        });
+
+        cycle_length.iter().product::<u64>().into()
+    }
+}
+
+fn simulate(
+    connections: HashMap<&str, Connection<'_>>,
+    mut hook: impl FnMut(u32, &str, &str, Pulse) -> bool,
+) {
+    let mut flop_memory = HashMap::new();
+    let mut conjunction_memory = HashMap::new();
+
+    for i in connections.values() {
+        match i.connection_type {
+            ConnectionType::FlipFlop => {
+                flop_memory.insert(i.source, false);
+            }
+            ConnectionType::Conjunction => {
+                let mut map = HashMap::new();
+                // Add map of all items mapping to i
+                for j in connections.values() {
+                    if j.target.contains(&i.source) {
+                        map.insert(j.source, Pulse::Low);
+                    }
+                }
+                conjunction_memory.insert(i.source, map);
+            }
+            _ => continue,
+        }
+    }
+
+    for i in 0.. {
+        let mut next = VecDeque::new();
+        const BASE: &str = "broadcaster";
+        for i in connections[BASE].target.iter() {
+            next.push_back((BASE, i, Pulse::Low));
         }
 
-        (low_pulse * high_pulse).into()
+        while let Some((source, target, pulse)) = next.pop_front() {
+            if !hook(i, source, target, pulse) {
+                return;
+            }
+
+            let Some(connection) = connections.get(target) else {
+                continue;
+            };
+
+            let pulse = match connection.connection_type {
+                ConnectionType::Normal => continue,
+                ConnectionType::FlipFlop => {
+                    if pulse == Pulse::High {
+                        continue;
+                    }
+
+                    let mem = flop_memory.get_mut(target).unwrap();
+                    *mem ^= true;
+
+                    if *mem {
+                        Pulse::High
+                    } else {
+                        Pulse::Low
+                    }
+                }
+                ConnectionType::Conjunction => {
+                    let mem = conjunction_memory.get_mut(target).unwrap();
+                    let this = mem.get_mut(source).unwrap();
+                    *this = pulse;
+
+                    if mem.values().all(|&l| l == Pulse::High) {
+                        Pulse::Low
+                    } else {
+                        Pulse::High
+                    }
+                }
+            };
+
+            for i in connection.target.iter() {
+                next.push_back((target, i, pulse));
+            }
+        }
     }
 }
 
@@ -204,15 +141,7 @@ enum Pulse {
 #[derive(Debug)]
 enum ConnectionType {
     Normal,
-    /// Flip-flop modules (prefix %) are either on or off; they are initially off.
-    /// If a flip-flop module receives a high pulse, it is ignored and nothing happens.
-    /// However, if a flip-flop module receives a low pulse, it flips between on and off.
-    /// If it was off, it turns on and sends a high pulse.
-    /// If it was on, it turns off and sends a low pulse.
     FlipFlop,
-    /// Conjunction modules (prefix &) remember the type of the most recent pulse received from each of their connected input modules;
-    /// they initially default to remembering a low pulse for each input. When a pulse is received, the conjunction module first updates its memory for that input.
-    /// Then, if it remembers high pulses for all inputs, it sends a low pulse; otherwise, it sends a high pulse.
     Conjunction,
 }
 
@@ -279,10 +208,5 @@ mod test {
     #[test]
     fn part_a_2() {
         assert_eq!(Day20.part_a(CASE_2), 11687500.into());
-    }
-
-    #[test]
-    fn part_b() {
-        assert_eq!(Day20.part_b(CASE), ().into());
     }
 }
