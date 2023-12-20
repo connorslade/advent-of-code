@@ -11,25 +11,44 @@ impl Solution for Day20 {
 
     fn part_a(&self, input: &str) -> Answer {
         let connections = parse_input(input);
-        dbg!(&connections);
 
         let mut flop_memory = HashMap::new();
         let mut conjunction_memory = HashMap::new();
+
+        for i in connections.values() {
+            match i.connection_type {
+                ConnectionType::FlipFlop => {
+                    flop_memory.insert(i.source, false);
+                }
+                ConnectionType::Conjunction => {
+                    let mut map = HashMap::new();
+                    // Add map of all items mapping to i
+                    for j in connections.values() {
+                        if j.target.contains(&i.source) {
+                            map.insert(j.source, Pulse::Low);
+                        }
+                    }
+                    conjunction_memory.insert(i.source, map);
+                }
+                _ => continue,
+            }
+        }
 
         let mut low_pulse = 0;
         let mut high_pulse = 0;
 
         for i in 0..1000 {
-            println!("Tick {}", i);
             let base = "broadcaster";
             let current = connections.get(base).unwrap();
             let mut next = VecDeque::new();
             low_pulse += 1;
             for i in current.target.iter() {
-                next.push_back((i, Pulse::Low));
+                next.push_back((base, i, Pulse::Low));
             }
 
-            while let Some((target, pulse)) = next.pop_front() {
+            while let Some((source, target, pulse)) = next.pop_front() {
+                // dbg!(&flop_memory, &conjunction_memory, low_pulse, high_pulse);
+
                 match pulse {
                     Pulse::Low => low_pulse += 1,
                     Pulse::High => high_pulse += 1,
@@ -38,17 +57,16 @@ impl Solution for Day20 {
                 let Some(connection) = connections.get(target) else {
                     continue;
                 };
-                let target = connection.source;
 
                 let pulse = match connection.connection_type {
-                    ConnectionType::Normal => pulse,
+                    ConnectionType::Normal => continue,
                     ConnectionType::FlipFlop => {
                         if pulse == Pulse::High {
                             continue;
                         }
 
-                        let mem = flop_memory.entry(target).or_insert(false);
-                        *mem = !*mem;
+                        let mem = flop_memory.get_mut(target).unwrap();
+                        *mem ^= true;
 
                         if *mem {
                             Pulse::High
@@ -57,10 +75,11 @@ impl Solution for Day20 {
                         }
                     }
                     ConnectionType::Conjunction => {
-                        let mem = conjunction_memory.entry(target).or_insert(Pulse::Low);
-                        *mem = pulse;
+                        let mem = conjunction_memory.get_mut(target).unwrap();
+                        let this = mem.get_mut(source).unwrap();
+                        *this = pulse;
 
-                        if conjunction_memory.values().all(|&p| p == Pulse::High) {
+                        if mem.values().all(|&l| l == Pulse::High) {
                             Pulse::Low
                         } else {
                             Pulse::High
@@ -69,12 +88,13 @@ impl Solution for Day20 {
                 };
 
                 for i in connection.target.iter() {
-                    next.push_back((i, pulse));
+                    println!("    {:?}", (target, i, pulse));
+                    next.push_back((target, i, pulse));
                 }
             }
         }
 
-        dbg!(low_pulse, high_pulse);
+        // dbg!(low_pulse, high_pulse);
 
         (low_pulse * high_pulse).into()
     }
@@ -152,9 +172,22 @@ mod test {
         &inv -> a
     "};
 
+    const CASE_2: &str = indoc! {"
+        broadcaster -> a
+        %a -> inv, con
+        &inv -> b
+        %b -> con
+        &con -> output
+    "};
+
     #[test]
     fn part_a() {
         assert_eq!(Day20.part_a(CASE), 32000000.into());
+    }
+
+    #[test]
+    fn part_a_2() {
+        assert_eq!(Day20.part_a(CASE_2), 11687500.into());
     }
 
     #[test]
