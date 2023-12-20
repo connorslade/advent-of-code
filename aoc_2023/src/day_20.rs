@@ -2,6 +2,8 @@ use std::collections::{HashMap, VecDeque};
 
 use common::{Answer, Solution};
 
+const BASE: &str = "broadcaster";
+
 pub struct Day20;
 
 impl Solution for Day20 {
@@ -37,17 +39,113 @@ impl Solution for Day20 {
         let mut low_pulse = 0;
         let mut high_pulse = 0;
 
-        for i in 0..1000 {
-            let base = "broadcaster";
-            let current = connections.get(base).unwrap();
-            let mut next = VecDeque::new();
+        for _ in 0..1000 {
             low_pulse += 1;
-            for i in current.target.iter() {
-                next.push_back((base, i, Pulse::Low));
+            let mut next = VecDeque::new();
+            for i in connections[BASE].target.iter() {
+                next.push_back((BASE, i, Pulse::Low));
             }
 
             while let Some((source, target, pulse)) = next.pop_front() {
-                // dbg!(&flop_memory, &conjunction_memory, low_pulse, high_pulse);
+                match pulse {
+                    Pulse::Low => low_pulse += 1,
+                    Pulse::High => high_pulse += 1,
+                }
+
+                let Some(connection) = connections.get(target) else {
+                    continue;
+                };
+
+                let pulse = match connection.connection_type {
+                    ConnectionType::Normal => continue,
+                    ConnectionType::FlipFlop => {
+                        if pulse == Pulse::High {
+                            continue;
+                        }
+
+                        let mem = flop_memory.get_mut(target).unwrap();
+                        *mem ^= true;
+
+                        if *mem {
+                            Pulse::High
+                        } else {
+                            Pulse::Low
+                        }
+                    }
+                    ConnectionType::Conjunction => {
+                        let mem = conjunction_memory.get_mut(target).unwrap();
+                        let this = mem.get_mut(source).unwrap();
+                        *this = pulse;
+
+                        if mem.values().all(|&l| l == Pulse::High) {
+                            Pulse::Low
+                        } else {
+                            Pulse::High
+                        }
+                    }
+                };
+
+                for i in connection.target.iter() {
+                    next.push_back((target, i, pulse));
+                }
+            }
+        }
+
+        (low_pulse * high_pulse).into()
+    }
+
+    fn part_b(&self, input: &str) -> Answer {
+        let connections = parse_input(input);
+
+        let mut flop_memory = HashMap::new();
+        let mut conjunction_memory = HashMap::new();
+
+        for i in connections.values() {
+            match i.connection_type {
+                ConnectionType::FlipFlop => {
+                    flop_memory.insert(i.source, false);
+                }
+                ConnectionType::Conjunction => {
+                    let mut map = HashMap::new();
+                    // Add map of all items mapping to i
+                    for j in connections.values() {
+                        if j.target.contains(&i.source) {
+                            map.insert(j.source, Pulse::Low);
+                        }
+                    }
+                    conjunction_memory.insert(i.source, map);
+                }
+                _ => continue,
+            }
+        }
+
+        let mut low_pulse = 0;
+        let mut high_pulse = 0;
+
+        const IMPORTANT_CONNECTIONS: &[&str] = &["kd", "zf", "vg", "gs"];
+        let mut last_cycle = [0; 4];
+        let mut cycle_length = [0; 4];
+
+        for i in 0.. {
+            low_pulse += 1;
+            let mut next = VecDeque::new();
+            for i in connections[BASE].target.iter() {
+                next.push_back((BASE, i, Pulse::Low));
+            }
+
+            while let Some((source, target, pulse)) = next.pop_front() {
+                if let Some(idx) = IMPORTANT_CONNECTIONS.iter().position(|s| s == &source) {
+                    if target == &"rg" && pulse == Pulse::High {
+                        let last = last_cycle[idx];
+                        last_cycle[idx] = i;
+                        cycle_length[idx] = i - last + 1;
+
+                        if cycle_length.iter().all(|&i| i != 0) {
+                            dbg!(cycle_length.iter().product::<u64>());
+                            std::process::exit(0);
+                        }
+                    }
+                }
 
                 match pulse {
                     Pulse::Low => low_pulse += 1,
@@ -88,19 +186,12 @@ impl Solution for Day20 {
                 };
 
                 for i in connection.target.iter() {
-                    println!("    {:?}", (target, i, pulse));
                     next.push_back((target, i, pulse));
                 }
             }
         }
 
-        // dbg!(low_pulse, high_pulse);
-
         (low_pulse * high_pulse).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        Answer::Unimplemented
     }
 }
 
