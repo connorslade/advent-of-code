@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
+use polynomial::Polynomial;
 
 use crate::aoc_lib::{direction::Direction, matrix::Matrix};
 
@@ -45,14 +46,15 @@ impl Solution for Day21 {
         let mut pos = HashSet::new();
         pos.insert(start);
 
-        for i in 0..100 {
+        let mut points = Vec::new();
+        for i in 0.. {
             let mut new_pos = HashSet::new();
 
             if i % size.x() == 65 {
-                println!("({i}, {})", pos.len());
-                // Pipe the first few values into wolfram alpha to get a formula then evaluate it with `26501365`
-                // You may have to bump the number of iterations from 100 to get enough data points
-                // Ex: curve fit (65, 3797), (196, 34009), (327, 94353)
+                points.push((i, pos.len()));
+                if points.len() >= 3 {
+                    break;
+                }
             }
 
             for p in pos {
@@ -68,9 +70,11 @@ impl Solution for Day21 {
             pos = new_pos;
         }
 
-        // pos.len().into()
+        let x = points.iter().map(|x| x.0 as f64).collect::<Vec<_>>();
+        let y = points.iter().map(|x| x.1 as f64).collect::<Vec<_>>();
+        let poly = Polynomial::lagrange(&x, &y).unwrap();
 
-        Answer::Unimplemented
+        poly.eval(26501365.0).round().into()
     }
 }
 
@@ -121,10 +125,5 @@ mod test {
     #[test]
     fn part_a() {
         assert_eq!(Day21.part_a(CASE), 4056.into());
-    }
-
-    #[test]
-    fn part_b() {
-        assert_eq!(Day21.part_b(CASE), ().into());
     }
 }

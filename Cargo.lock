@@ -145,6 +145,7 @@ dependencies = [
  "nd_vec 0.4.0",
  "num-traits",
  "once_cell",
+ "polynomial",
  "rayon",
  "regex",
 ]
@@ -915,6 +916,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "90fcb95eef784c2ac79119d1dd819e162b5da872ce6f3c3abe1e8ca1c082f72b"
 dependencies = [
  "siphasher",
+]
+
+[[package]]
+name = "polynomial"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "27abb6e4638dcecc65a92b50d7f1d87dd6dea987ba71db987b6bf881f4877e9d"
+dependencies = [
+ "num-traits",
 ]
 
 [[package]]
