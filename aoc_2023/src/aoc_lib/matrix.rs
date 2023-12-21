@@ -44,12 +44,12 @@ impl<T> Matrix<T> {
     }
 
     pub fn get(&self, pos: Vec2<usize>) -> Option<&T> {
-        (pos.x() >= self.size.x() || pos.y() >= self.size.y())
+        (pos.x() < self.size.x() && pos.y() < self.size.y())
             .then(|| &self.data[pos.y() * self.size.x() + pos.x()])
     }
 
     pub fn get_mut(&mut self, pos: Vec2<usize>) -> Option<&mut T> {
-        (pos.x() >= self.size.x() || pos.y() >= self.size.y())
+        (pos.x() < self.size.x() && pos.y() < self.size.y())
             .then(|| &mut self.data[pos.y() * self.size.x() + pos.x()])
     }
 
@@ -60,6 +60,16 @@ impl<T> Matrix<T> {
 
     pub fn size(&self) -> Vec2<usize> {
         self.size
+    }
+
+    pub fn find(&self, value: T) -> Option<Vec2<usize>>
+    where
+        T: PartialEq,
+    {
+        self.data
+            .iter()
+            .position(|x| x == &value)
+            .map(|x| vector!(x % self.size.x(), x / self.size.x()))
     }
 }
 
