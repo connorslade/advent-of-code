@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use common::{Answer, Solution};
-use nd_vec::vector;
+use nd_vec::{vector, Vec2};
 
 use crate::aoc_lib::{direction::Direction, matrix::Matrix};
 
@@ -39,39 +39,27 @@ impl Solution for Day21 {
 
     fn part_b(&self, input: &str) -> Answer {
         let map = parse(input);
-
+        let start = map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap();
         let size = map.size.num_cast::<i32>().unwrap();
-        let (sx, sy) = (size.x(), size.y());
 
         let mut pos = HashSet::new();
-        pos.insert(map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap());
+        pos.insert(start);
 
-        for i in 0..500 {
-            println!("{:.1}% done", i as f32 / 500.0 * 100.0);
-
+        for i in 0..100 {
             let mut new_pos = HashSet::new();
+
+            if i % size.x() == 65 {
+                println!("({i}, {})", pos.len());
+                // Pipe the first few values into wolfram alpha to get a formula then evaluate it with `26501365`
+                // You may have to bump the number of iterations from 100 to get enough data points
+                // Ex: curve fit (65, 3797), (196, 34009), (327, 94353)
+            }
 
             for p in pos {
                 for dir in Direction::ALL {
                     let new_p = dir.advance(p);
-                    if {
-                        let mut pos = new_p;
-
-                        if pos.x() < 0 {
-                            pos = vector!(sx + pos.x() % sx, pos.y());
-                        }
-
-                        if pos.y() < 0 {
-                            pos = vector!(pos.x(), sy + pos.y() % sy);
-                        }
-
-                        pos = vector!(pos.x() % sx, pos.y());
-                        pos = vector!(pos.x(), pos.y() % sy);
-
-                        let pos = pos.num_cast::<usize>().unwrap();
-                        *map.get(pos).unwrap()
-                    } != Tile::Wall
-                    {
+                    let mapped = map_pos(new_p, size);
+                    if *map.get(mapped).unwrap() != Tile::Wall {
                         new_pos.insert(new_p);
                     }
                 }
@@ -84,6 +72,13 @@ impl Solution for Day21 {
 
         Answer::Unimplemented
     }
+}
+
+fn map_pos(pos: Vec2<i32>, size: Vec2<i32>) -> Vec2<usize> {
+    let mut mapped = pos;
+    mapped = vector!((size.x() + mapped.x() % size.x()) % size.x(), mapped.y());
+    mapped = vector!(mapped.x(), (size.y() + mapped.y() % size.y()) % size.y());
+    mapped.num_cast().unwrap()
 }
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
