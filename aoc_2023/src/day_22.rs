@@ -1,45 +1,37 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, convert::identity};
 
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec3};
 
 pub struct Day22;
 
-// This could be (and will be in the future) updated to make use of the fact that elements can be sorted by their z value
 impl Solution for Day22 {
     fn name(&self) -> &'static str {
         "Sand Slabs"
     }
 
     fn part_a(&self, input: &str) -> Answer {
-        let mut map = parse(input);
-        while shift_down(&mut map, false) != 0 {}
-
-        let mut count = 0;
-        for i in 0..map.len() {
-            let mut map_clone = map.clone();
-            map_clone.remove(i);
-            if shift_down(&mut map_clone, false) == 0 {
-                count += 1;
-            }
-        }
-
-        count.into()
+        solve(parse(input), false, |x| (x == 0) as u32).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
-        let mut map = parse(input);
-        while shift_down(&mut map, false) != 0 {}
-
-        let mut count = 0;
-        for i in 0..map.len() {
-            let mut map_clone = map.clone();
-            map_clone.remove(i);
-            count += shift_down(&mut map_clone, true);
-        }
-
-        count.into()
+        solve(parse(input), true, identity).into()
     }
+}
+
+fn solve(mut map: Vec<Box>, exhaustive: bool, count: fn(u32) -> u32) -> u32 {
+    // Shift all boxes down as far as possible
+    while shift_down(&mut map, false) != 0 {}
+
+    // For each box, remove it and shift all other boxes down as far as possible
+    let mut out = 0;
+    for i in 0..map.len() {
+        let mut map_clone = map.clone();
+        map_clone.remove(i);
+        out += count(shift_down(&mut map_clone, exhaustive));
+    }
+
+    out
 }
 
 fn shift_down(map: &mut Vec<Box>, exhaustive: bool) -> u32 {
@@ -55,6 +47,8 @@ fn shift_down(map: &mut Vec<Box>, exhaustive: bool) -> u32 {
                     if item.a.z() == 1
                         || map
                             .iter()
+                            .take(i)
+                            .rev()
                             .any(|b| b.contains(vector!(x, y, item.a.z() - 1)))
                     {
                         continue 'outer;
@@ -106,6 +100,8 @@ fn parse(input: &str) -> Vec<Box> {
             b: a.max(&b),
         });
     }
+
+    out.sort_unstable_by_key(|b| b.a.z());
     out
 }
 
