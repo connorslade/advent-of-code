@@ -86,7 +86,7 @@ fn parse(input: &str) -> Vec<Box> {
     let mut out = Vec::new();
     for line in input.lines() {
         let parse = |s: &str| {
-            let a = s.split(",").collect::<Vec<_>>();
+            let a = s.split(',').collect::<Vec<_>>();
             vector!(
                 a[0].parse().unwrap(),
                 a[1].parse().unwrap(),

@@ -108,8 +108,8 @@ fn solve_b(rules: &HashMap<&str, Vec<Rule>>, mut range: [(u32, u32); 4], map: &s
 
 fn calc_size(ranges: &[(u32, u32); 4]) -> u64 {
     let mut out = 1;
-    for i in 0..4 {
-        out *= ranges[i].1 as u64 - ranges[i].0 as u64 + 1;
+    for range in ranges {
+        out *= range.1 as u64 - range.0 as u64 + 1;
     }
     out
 }
