@@ -26,6 +26,7 @@ impl Solution for Day23 {
     }
 }
 
+// Simple DFS to find the longest path for part A
 fn solve_a(map: &Matrix<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -> u32 {
     if pos == map.size() - vector!(2, 1) {
         return idx;
@@ -37,22 +38,8 @@ fn solve_a(map: &Matrix<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -
             continue;
         };
 
-        if map[new_pos] == '#' {
-            continue;
-        }
-
         let next = map[new_pos];
-        if !(match dir {
-            Direction::Up => next == '^',
-            Direction::Down => next == 'v',
-            Direction::Left => next == '<',
-            Direction::Right => next == '>',
-        } || next == '.')
-        {
-            continue;
-        }
-
-        if !visited.insert(pos) {
+        if next == '#' || !dir_matches(*dir, next) && next != '.' || !visited.insert(pos) {
             continue;
         }
 
@@ -63,38 +50,31 @@ fn solve_a(map: &Matrix<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -
     longest
 }
 
+// Convert the map into a graph and collapse it to find the longest path for part B
 fn solve_b(map: &Matrix<char>) -> u32 {
-    // Build graph
+    // == Build graph ==
     let mut graph = HashMap::new();
+    let mut add_edge = |a: Pos, b: Pos| {
+        graph.entry(a).or_insert_with(HashSet::new).insert((b, 1));
+        graph.entry(b).or_insert_with(HashSet::new).insert((a, 1));
+    };
+
     for y in 0..map.size().y() {
         for x in 0..map.size().x() {
             let pos = vector!(x, y);
-            let c = map[pos];
-            if !b".>v".contains(&(c as u8)) {
+            if map[pos] == '#' {
                 continue;
             }
 
-            for dir in Direction::ALL {
-                if let Some(new_pos) = dir.try_advance(pos) {
-                    if new_pos.x() < map.size.x()
-                        && new_pos.y() < map.size.y()
-                        && b".>v".contains(&(map[new_pos] as u8))
-                    {
-                        graph
-                            .entry(pos)
-                            .or_insert_with(HashSet::new)
-                            .insert((new_pos, 1));
-                        graph
-                            .entry(new_pos)
-                            .or_insert_with(HashSet::new)
-                            .insert((pos, 1));
-                    }
+            for new_pos in Direction::ALL.iter().filter_map(|dir| dir.try_advance(pos)) {
+                if map.contains(new_pos) && map[new_pos] != '#' {
+                    add_edge(pos, new_pos);
                 }
             }
         }
     }
 
-    // Collapse graph
+    // == Collapse graph ==
     let mut dirty = true;
     while dirty {
         dirty = false;
@@ -105,9 +85,7 @@ fn solve_b(map: &Matrix<char>) -> u32 {
 
             let ((a, a_score), (b, b_score)) = {
                 let mut iter = graph[&key].iter();
-                let a = iter.next().unwrap();
-                let b = iter.next().unwrap();
-                (*a, *b)
+                (*iter.next().unwrap(), *iter.next().unwrap())
             };
 
             let a_graph = graph.get_mut(&a).unwrap();
@@ -123,9 +101,8 @@ fn solve_b(map: &Matrix<char>) -> u32 {
         }
     }
 
-    // Find longest path
-
-    let mut queue = Vec::<(Pos, Option<u32>)>::new();
+    // == Find longest path ==
+    let mut queue = Vec::new();
     let mut visited = HashSet::new();
     let mut max = 0;
 
@@ -156,6 +133,15 @@ fn solve_b(map: &Matrix<char>) -> u32 {
 
 fn parse(input: &str) -> Matrix<char> {
     Matrix::new_chars(input, identity)
+}
+
+fn dir_matches(dir: Direction, chr: char) -> bool {
+    chr == match dir {
+        Direction::Up => '^',
+        Direction::Down => 'v',
+        Direction::Left => '<',
+        Direction::Right => '>',
+    }
 }
 
 #[cfg(test)]
