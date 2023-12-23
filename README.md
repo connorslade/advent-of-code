@@ -27,6 +27,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 20: Pulse Propagation](aoc_2023/src/day_20.rs)
 - [Day 21: Step Counter](aoc_2023/src/day_21.rs)
 - [Day 22: Sand Slabs](aoc_2023/src/day_22.rs)
+- [Day 23: A Long Walk](aoc_2023/src/day_23.rs)
 <!-- MARKER -->
 
 ## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
