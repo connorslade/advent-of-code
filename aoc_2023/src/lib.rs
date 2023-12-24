@@ -25,6 +25,7 @@ mod day_20;
 mod day_21;
 mod day_22;
 mod day_23;
+mod day_24;
 // [import_marker]
 
 #[rustfmt::skip]
@@ -52,5 +53,6 @@ pub const ALL: &[&dyn Solution] = &[
     &day_21::Day21,
     &day_22::Day22,
     &day_23::Day23,
+    &day_24::Day24,
     // [list_marker]
 ];
