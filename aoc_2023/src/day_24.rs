@@ -27,6 +27,17 @@ impl Solution for Day24 {
     }
 
     fn part_b(&self, input: &str) -> Answer {
+        let stones = parse(input);
+
+        // just pipe it into mathematica :')
+        // Solve[{ ... }]
+        for (i, stone) in stones.into_iter().enumerate().take(3) {
+            print!("{} + {} * t{i} == x + vx * t{i}, ", stone.pos.x(), stone.vel.x());
+            print!("{} + {} * t{i} == y + vy * t{i}, ", stone.pos.y(), stone.vel.y());
+            print!("{} + {} * t{i} == z + vz * t{i}, ", stone.pos.z(), stone.vel.z());
+        }
+        println!();
+
         Answer::Unimplemented
     }
 }
