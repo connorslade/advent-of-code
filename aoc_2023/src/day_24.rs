@@ -15,31 +15,37 @@ impl Solution for Day24 {
 
     fn part_a(&self, input: &str) -> Answer {
         let stones = parse(input);
-
-        const RANGE: RangeInclusive<f64> = 200000000000000.0..=400000000000000.0;
-        stones
-            .iter()
-            .tuple_combinations()
-            .filter_map(|(a, b)| a.collision(b))
-            .filter(|&pos| RANGE.contains(&pos.x()) && RANGE.contains(&pos.y()))
-            .count()
-            .into()
+        solve_a(&stones, 200000000000000.0..=400000000000000.0).into()
     }
 
     fn part_b(&self, input: &str) -> Answer {
         let stones = parse(input);
 
+        // Not a very satisfying solution, but it seems like everyone else is using z3.
         // just pipe it into mathematica :')
         // Solve[{ ... }]
         for (i, stone) in stones.into_iter().enumerate().take(3) {
-            print!("{} + {} * t{i} == x + vx * t{i}, ", stone.pos.x(), stone.vel.x());
-            print!("{} + {} * t{i} == y + vy * t{i}, ", stone.pos.y(), stone.vel.y());
-            print!("{} + {} * t{i} == z + vz * t{i}, ", stone.pos.z(), stone.vel.z());
+            print!("{}+{}*t{i}==x+vx*t{i}, ", stone.pos.x(), stone.vel.x());
+            print!("{}+{}*t{i}==y+vy*t{i}, ", stone.pos.y(), stone.vel.y());
+            print!("{}+{}*t{i}==z+vz*t{i}", stone.pos.z(), stone.vel.z());
+
+            if i < 2 {
+                print!(", ");
+            }
         }
         println!();
 
         Answer::Unimplemented
     }
+}
+
+fn solve_a(stones: &[HailStone], range: RangeInclusive<f64>) -> usize {
+    stones
+        .iter()
+        .tuple_combinations()
+        .filter_map(|(a, b)| a.collision(b))
+        .filter(|&pos| range.contains(&pos.x()) && range.contains(&pos.y()))
+        .count()
 }
 
 #[derive(Debug)]
@@ -91,10 +97,9 @@ fn parse(input: &str) -> Vec<HailStone> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
 
-    use super::Day24;
+    use super::{parse, solve_a};
 
     const CASE: &str = indoc! {"
         19, 13, 30 @ -2,  1, -2
@@ -106,11 +111,6 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day24.part_a(CASE), 0.into());
-    }
-
-    #[test]
-    fn part_b() {
-        assert_eq!(Day24.part_b(CASE), ().into());
+        assert_eq!(solve_a(&parse(CASE), 7.0..=37.0), 2);
     }
 }
