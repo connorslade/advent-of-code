@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 
 use common::{Answer, Solution};
-use rustworkx_core::{
-    connectivity::stoer_wagner_min_cut,
-    petgraph::{graph::UnGraph, Graph, Undirected},
-};
+use petgraph::{graph::UnGraph, stable_graph::NodeIndex, Graph, Undirected};
+use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
 pub struct Day25;
 
@@ -35,18 +33,25 @@ struct Wires<'a> {
 }
 
 fn parse(input: &str) -> Wires {
+    let mut nodes = HashMap::new();
     let mut wire = UnGraph::new_undirected();
 
-    let mut nodes = HashMap::new();
+    fn get_node<'a>(
+        nodes: &mut HashMap<&'a str, NodeIndex>,
+        wire: &mut Graph<&'a str, (), Undirected>,
+        name: &'a str,
+    ) -> NodeIndex {
+        *nodes.entry(name).or_insert_with(|| wire.add_node(name))
+    }
 
     for line in input.lines() {
         let mut parts = line.split(": ");
         let key = parts.next().unwrap();
         let values = parts.next().unwrap().split_whitespace();
 
-        let node = *nodes.entry(key).or_insert_with(|| wire.add_node(key));
+        let node = get_node(&mut nodes, &mut wire, key);
         for value in values {
-            let value = *nodes.entry(value).or_insert_with(|| wire.add_node(value));
+            let value = get_node(&mut nodes, &mut wire, value);
             wire.add_edge(node, value, ());
         }
     }

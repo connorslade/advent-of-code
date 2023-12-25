@@ -152,6 +152,7 @@ dependencies = [
  "nd_vec 0.4.0",
  "num-traits",
  "once_cell",
+ "petgraph",
  "polynomial",
  "rayon",
  "regex",
