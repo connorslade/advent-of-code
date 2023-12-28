@@ -1,9 +1,8 @@
 use std::{collections::HashMap, convert::identity, hash::Hash};
 
+use aoc_lib::matrix::Matrix;
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
-
-use crate::aoc_lib::matrix::Matrix;
 
 type Pos = Vec2<isize>;
 

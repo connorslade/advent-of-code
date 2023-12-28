@@ -1,10 +1,10 @@
 use std::collections::HashSet;
 
+use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
-use polynomial::Polynomial;
 
-use crate::aoc_lib::{direction::Direction, matrix::Matrix};
+use polynomial::Polynomial;
 
 pub struct Day21;
 

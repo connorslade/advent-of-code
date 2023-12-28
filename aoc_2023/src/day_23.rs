@@ -3,10 +3,9 @@ use std::{
     convert::identity,
 };
 
+use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{Answer, Solution};
 use nd_vec::{vector, Vec2};
-
-use crate::aoc_lib::{direction::Direction, matrix::Matrix};
 
 type Pos = Vec2<usize>;
 

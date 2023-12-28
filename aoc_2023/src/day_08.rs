@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
 use common::{Answer, Solution};
-
-use crate::aoc_lib::math::lcm;
+use aoc_lib::math::lcm;
 
 pub struct Day08;
 

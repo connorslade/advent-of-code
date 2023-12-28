@@ -1,7 +1,6 @@
+use aoc_lib::direction::Direction;
 use common::{Answer, Solution};
 use nd_vec::vector;
-
-use crate::aoc_lib::direction::Direction;
 
 pub struct Day18;
 

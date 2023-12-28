@@ -1,9 +1,18 @@
 use hashbrown::HashSet;
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
 
-type Point = aoc_lib::Point<usize>;
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct Point {
+    x: usize,
+    y: usize,
+}
+
+impl Point {
+    fn new(x: usize, y: usize) -> Self {
+        Self { x, y }
+    }
+}
 
 pub struct Day13;
 

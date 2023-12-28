@@ -2,9 +2,8 @@ use std::collections::HashSet;
 
 use nd_vec::{vector, Vec2};
 
+use aoc_lib::direction::Direction;
 use common::{Answer, Solution};
-
-use crate::aoc_lib::direction::Direction;
 
 type Pos = Vec2<usize>;
 

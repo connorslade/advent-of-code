@@ -145,6 +145,7 @@ dependencies = [
 name = "aoc_2023"
 version = "0.1.0"
 dependencies = [
+ "aoc_lib",
  "bitvec",
  "common",
  "indoc",
@@ -157,6 +158,16 @@ dependencies = [
  "rayon",
  "regex",
  "rustworkx-core",
+]
+
+[[package]]
+name = "aoc_lib"
+version = "0.1.0"
+dependencies = [
+ "nd_vec 0.4.0",
+ "num-traits",
+ "once_cell",
+ "regex",
 ]
 
 [[package]]

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use nd_vec::{vector, Vec2};
-
+use aoc_lib::regex;
 use common::{Answer, Solution};
+use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<usize>;
 

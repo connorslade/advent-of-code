@@ -1,7 +1,6 @@
 use common::DummySolution;
 pub use common::Solution;
 
-mod aoc_lib;
 mod day_01;
 mod day_02;
 mod day_03;
@@ -15,6 +14,7 @@ mod day_10;
 mod day_11;
 mod day_13;
 mod day_14;
+// [import_marker]
 
 pub const ALL: [&dyn Solution; 14] = [
     &day_01::Day01,
@@ -31,4 +31,5 @@ pub const ALL: [&dyn Solution; 14] = [
     &DummySolution,
     &day_13::Day13,
     &day_14::Day14,
+    // [list_marker]
 ];
