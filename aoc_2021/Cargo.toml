@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 common = { path = "../common" }
+aoc_lib = { path = "../aoc_lib" }
+
 hashbrown = "0.13.1"
 indoc = "2.0.4"
 nd_vec = "0.4.0"
