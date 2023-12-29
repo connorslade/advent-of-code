@@ -1,4 +1,3 @@
-use common::DummySolution;
 pub use common::Solution;
 
 mod day_01;
@@ -12,11 +11,12 @@ mod day_08;
 mod day_09;
 mod day_10;
 mod day_11;
+mod day_12;
 mod day_13;
 mod day_14;
 // [import_marker]
 
-pub const ALL: [&dyn Solution; 14] = [
+pub const ALL: &[&dyn Solution] = &[
     &day_01::Day01,
     &day_02::Day02,
     &day_03::Day03,
@@ -28,8 +28,9 @@ pub const ALL: [&dyn Solution; 14] = [
     &day_09::Day09,
     &day_10::Day10,
     &day_11::Day11,
-    &DummySolution,
+    &day_12::Day12,
     &day_13::Day13,
     &day_14::Day14,
+    &day_12::Day12,
     // [list_marker]
 ];
