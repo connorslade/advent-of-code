@@ -1,10 +1,10 @@
 use hashbrown::HashSet;
+use nd_vec::vector;
 use std::collections::VecDeque;
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
 
-type Point = aoc_lib::Point<isize>;
+type Point = nd_vec::Vec2<isize>;
 pub struct Day22;
 
 impl Solution for Day22 {
@@ -69,8 +69,8 @@ impl World {
                 }
 
                 match c {
-                    '#' => walls.insert(Point::new(x, y)),
-                    '.' => open.insert(Point::new(x, y)),
+                    '#' => walls.insert(vector!(x, y)),
+                    '.' => open.insert(vector!(x, y)),
                     ' ' => continue,
                     _ => panic!("Invalid character: {}", c),
                 };
@@ -79,8 +79,8 @@ impl World {
 
         let start = open
             .iter()
-            .filter(|p| p.y == 0)
-            .min_by_key(|p| p.x)
+            .filter(|p| p.y() == 0)
+            .min_by_key(|p| p.x())
             .unwrap();
 
         Self {
@@ -94,7 +94,7 @@ impl World {
     }
 
     fn password(&self) -> usize {
-        (1000 * (self.pos.y + 1) + 4 * (self.pos.x + 1) + self.dir as isize) as usize
+        (1000 * (self.pos.y() + 1) + 4 * (self.pos.x() + 1) + self.dir as isize) as usize
     }
 
     fn run(&mut self, wrap: fn(&Self, Point) -> Option<(Point, Direction)>) {
@@ -171,10 +171,10 @@ impl Direction {
 
     fn apply(&self, pos: Point) -> Point {
         match self {
-            Direction::Left => pos - Point::new(1, 0),
-            Direction::Right => pos + Point::new(1, 0),
-            Direction::Up => pos - Point::new(0, 1),
-            Direction::Down => pos + Point::new(0, 1),
+            Direction::Left => pos - vector!(1, 0),
+            Direction::Right => pos + vector!(1, 0),
+            Direction::Up => pos - vector!(0, 1),
+            Direction::Down => pos + vector!(0, 1),
         }
     }
 

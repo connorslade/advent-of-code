@@ -1,9 +1,9 @@
 use std::collections::VecDeque;
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
+use nd_vec::vector;
 
-type Point = aoc_lib::Point<usize>;
+type Point = nd_vec::Vec2<usize>;
 
 pub struct Day12;
 
@@ -25,7 +25,7 @@ impl Solution for Day12 {
         map.start = map.end;
         map.current = map.start;
 
-        run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y][c.x] == 0)
+        run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y()][c.x()] == 0)
             .expect("No path found!?")
             .into()
     }
@@ -46,8 +46,8 @@ fn run_path(
             return Some(history.len());
         }
 
-        let current_height = map.data[current.y][current.x];
-        let mut check_neighbour = |x: usize, y: usize| {
+        let current_height = map.data[current.y()][current.x()];
+        let mut check_neighbor = |x: usize, y: usize| {
             if x >= map.data[0].len()
                 || y >= map.data.len()
                 || visited[y][x]
@@ -59,13 +59,14 @@ fn run_path(
             visited[y][x] = true;
             let mut new_history = history.clone();
             new_history.push(current);
-            queue.push_back((Point::new(x, y), new_history));
+            queue.push_back((vector!(x, y), new_history));
         };
 
-        check_neighbour(current.x + 1, current.y);
-        check_neighbour(current.x, current.y + 1);
-        check_neighbour(current.x.wrapping_sub(1), current.y);
-        check_neighbour(current.x, current.y.wrapping_sub(1));
+        let (cx, cy) = (current.x(), current.y());
+        check_neighbor(cx + 1, cy);
+        check_neighbor(cx, cy + 1);
+        check_neighbor(cx.wrapping_sub(1), cy);
+        check_neighbor(cx, cy.wrapping_sub(1));
     }
 
     None
@@ -82,8 +83,8 @@ struct HeightMap {
 
 fn parse(raw: &str) -> HeightMap {
     let mut out = Vec::new();
-    let mut start = Point::new(0, 0);
-    let mut end = Point::new(0, 0);
+    let mut start = vector!(0, 0);
+    let mut end = vector!(0, 0);
 
     for i in raw.lines() {
         let mut row = Vec::new();
@@ -92,11 +93,11 @@ fn parse(raw: &str) -> HeightMap {
             match j {
                 'S' => {
                     row.push(0);
-                    start = Point::new(row.len() - 1, out.len());
+                    start = vector!(row.len() - 1, out.len());
                 }
                 'E' => {
                     row.push(25);
-                    end = Point::new(row.len() - 1, out.len());
+                    end = vector!(row.len() - 1, out.len());
                 }
                 _ => row.push(j as u8 - 97),
             }

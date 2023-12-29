@@ -1,9 +1,9 @@
-use crate::aoc_lib;
 use common::{Answer, Solution};
 
+use nd_vec::vector;
 use rayon::prelude::*;
 
-type Point = aoc_lib::Point<isize>;
+type Point = nd_vec::Vec2<isize>;
 
 pub struct Day15;
 
@@ -16,9 +16,9 @@ impl Solution for Day15 {
         let world = World::parse(input);
         let y_level = 2000000; // 10 for example
 
-        let blocked = (world.bounds.0.x..=world.bounds.1.x)
+        let blocked = (world.bounds.0.x()..=world.bounds.1.x())
             .into_par_iter()
-            .map(|x| Point::new(x, y_level))
+            .map(|x| vector!(x, y_level))
             .filter(|x| world.is_sensed(*x))
             .count();
 
@@ -30,7 +30,7 @@ impl Solution for Day15 {
         let bounds = 4000000;
 
         let distress = world.search(bounds).expect("No distress beacon found");
-        (distress.x * 4000000 + distress.y).into()
+        (distress.x() * 4000000 + distress.y()).into()
     }
 }
 
@@ -52,10 +52,8 @@ impl World {
 
         for i in raw.lines() {
             let sensor = Sensor::parse(i);
-            min_bound.x = min_bound.x.min(sensor.pos.x - sensor.distance);
-            min_bound.y = min_bound.y.min(sensor.pos.y - sensor.distance);
-            max_bound.x = max_bound.x.max(sensor.pos.x + sensor.distance);
-            max_bound.y = max_bound.y.max(sensor.pos.y + sensor.distance);
+            min_bound = min_bound.min(&(sensor.pos - sensor.distance));
+            max_bound = max_bound.max(&(sensor.pos + sensor.distance));
             sensors.push(sensor);
         }
 
@@ -68,15 +66,15 @@ impl World {
     fn search(&self, bounds: isize) -> Option<Point> {
         (0..=bounds).into_par_iter().find_map_any(|y| {
             for s in &self.sensors {
-                let x1 = s.pos.x - (s.distance - (s.pos.y - y).abs()) - 1;
-                let x2 = s.pos.x + (s.distance - (s.pos.y - y).abs()) + 1;
+                let x1 = s.pos.x() - (s.distance - (s.pos.y() - y).abs()) - 1;
+                let x2 = s.pos.x() + (s.distance - (s.pos.y() - y).abs()) + 1;
 
-                if x1 > 0 && x1 < bounds && !self.is_sensed(Point::new(x1, y)) {
-                    return Some(Point::new(x1, y));
+                if x1 > 0 && x1 < bounds && !self.is_sensed(vector!(x1, y)) {
+                    return Some(vector!(x1, y));
                 }
 
-                if x2 > 0 && x2 < bounds && !self.is_sensed(Point::new(x2, y)) {
-                    return Some(Point::new(x2, y));
+                if x2 > 0 && x2 < bounds && !self.is_sensed(vector!(x2, y)) {
+                    return Some(vector!(x2, y));
                 }
             }
 
@@ -87,7 +85,7 @@ impl World {
     fn is_sensed(&self, point: Point) -> bool {
         self.sensors
             .iter()
-            .any(|x| manhattan_distance(x.pos, point) <= x.distance)
+            .any(|x| x.pos.manhattan_distance(&point) <= x.distance)
     }
 }
 
@@ -96,7 +94,7 @@ impl Sensor {
         let parts = raw.split("at ").collect::<Vec<_>>();
         let parse_pos = |pos: &str| {
             let parts = pos.split(", ").collect::<Vec<_>>();
-            Point::new(
+            vector!(
                 parts[0].trim_start_matches("x=").parse().unwrap(),
                 parts[1]
                     .trim_start_matches("y=")
@@ -104,7 +102,7 @@ impl Sensor {
                     .next()
                     .unwrap()
                     .parse()
-                    .unwrap(),
+                    .unwrap()
             )
         };
 
@@ -113,11 +111,7 @@ impl Sensor {
 
         Self {
             pos,
-            distance: manhattan_distance(pos, beacon),
+            distance: pos.manhattan_distance(&beacon),
         }
     }
-}
-
-fn manhattan_distance(a: Point, b: Point) -> isize {
-    (a.x - b.x).abs() + (a.y - b.y).abs()
 }

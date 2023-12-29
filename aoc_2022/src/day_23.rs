@@ -1,9 +1,9 @@
 use hashbrown::{hash_map::Entry, HashMap, HashSet};
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
+use nd_vec::vector;
 
-type Point = aoc_lib::Point<isize>;
+type Point = nd_vec::Vec2<isize>;
 
 pub struct Day23;
 
@@ -35,11 +35,12 @@ impl Solution for Day23 {
 }
 
 // [North, South, West, East]
+#[rustfmt::skip]
 const LOOKUP: [[Point; 3]; 4] = [
-    [Point::new(0, -1), Point::new(-1, -1), Point::new(1, -1)],
-    [Point::new(0, 1), Point::new(-1, 1), Point::new(1, 1)],
-    [Point::new(-1, 0), Point::new(-1, -1), Point::new(-1, 1)],
-    [Point::new(1, 0), Point::new(1, -1), Point::new(1, 1)],
+    [vector!(0, -1), vector!(-1, -1), vector!(1, -1)],
+    [vector!(0, 1),  vector!(-1, 1),  vector!(1, 1)],
+    [vector!(-1, 0), vector!(-1, -1), vector!(-1, 1)],
+    [vector!(1, 0),  vector!(1, -1),  vector!(1, 1)],
 ];
 
 #[derive(Debug)]
@@ -55,7 +56,7 @@ impl World {
         for (y, line) in raw.lines().enumerate() {
             for (x, c) in line.char_indices() {
                 if c == '#' {
-                    elves.insert(Point::new(x as isize, y as isize));
+                    elves.insert(vector!(x as isize, y as isize));
                 }
             }
         }
@@ -105,9 +106,9 @@ impl World {
         let (min, max) = self.bounds();
         let mut ground = 0;
 
-        for y in min.y..=max.y {
-            for x in min.x..=max.x {
-                if self.elves.contains(&Point::new(x, y)) {
+        for y in min.y()..=max.y() {
+            for x in min.x()..=max.x() {
+                if self.elves.contains(&vector!(x, y)) {
                     continue;
                 }
                 ground += 1;
@@ -136,8 +137,8 @@ impl World {
     }
 
     fn bounds(&self) -> (Point, Point) {
-        let mut min = Point::new(isize::MAX, isize::MAX);
-        let mut max = Point::new(isize::MIN, isize::MIN);
+        let mut min = vector!(isize::MAX, isize::MAX);
+        let mut max = vector!(isize::MIN, isize::MIN);
 
         for i in self.elves.iter() {
             min = min.min(i);

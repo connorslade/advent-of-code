@@ -2,10 +2,10 @@ use std::vec;
 
 use hashbrown::HashSet;
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
+use nd_vec::vector;
 
-type Point = aoc_lib::Point<i32>;
+type Point = nd_vec::Vec2<i32>;
 
 pub struct Day09;
 
@@ -26,7 +26,7 @@ impl Solution for Day09 {
 fn process(raw: &str, count: usize) -> usize {
     let orders = raw.lines().map(from_line).collect::<Vec<_>>();
     let mut tail_pios = HashSet::new();
-    let mut knots = vec![Point::new(0, 0); count + 1];
+    let mut knots = vec![vector!(0, 0); count + 1];
 
     tail_pios.insert(*knots.last().unwrap());
     for (dir, count) in orders {
@@ -35,11 +35,11 @@ fn process(raw: &str, count: usize) -> usize {
 
             for i in 1..knots.len() {
                 let diff = knots[i - 1] - knots[i];
-                if diff.abs().max_value() <= 1 {
+                if diff.abs().max_component() <= 1 {
                     continue;
                 }
 
-                knots[i] += diff.normalize();
+                knots[i] += diff.signum();
             }
             tail_pios.insert(*knots.last().unwrap());
         }
@@ -54,10 +54,10 @@ fn from_line(imp: &str) -> (Point, u32) {
     let count = count.parse::<i32>().unwrap();
 
     let out = match direction {
-        "R" => Point::new(1, 0),
-        "L" => Point::new(-1, 0),
-        "U" => Point::new(0, -1),
-        "D" => Point::new(0, 1),
+        "R" => vector!(1, 0),
+        "L" => vector!(-1, 0),
+        "U" => vector!(0, -1),
+        "D" => vector!(0, 1),
         _ => panic!("Invalid direction"),
     };
 

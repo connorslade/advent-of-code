@@ -1,7 +1,9 @@
 use hashbrown::HashSet;
 
-use crate::aoc_lib::Point3;
 use common::{Answer, Solution};
+use nd_vec::{vector, Vector};
+
+type Pos = nd_vec::Vec3<i32>;
 
 pub struct Day18;
 
@@ -25,7 +27,7 @@ impl Solution for Day18 {
     fn part_b(&self, input: &str) -> Answer {
         let world = World::parse(input);
 
-        let outside = world.flood_fill(Point3::new(0, 0, 0));
+        let outside = world.flood_fill(Vector::default());
         let mut out = 0;
         for i in &world.points {
             for j in NEIGHBORS {
@@ -41,16 +43,16 @@ impl Solution for Day18 {
 }
 
 struct World {
-    points: HashSet<Point3>,
+    points: HashSet<Pos>,
 }
 
-const NEIGHBORS: [Point3; 6] = [
-    Point3::new(1, 0, 0),
-    Point3::new(-1, 0, 0),
-    Point3::new(0, 1, 0),
-    Point3::new(0, -1, 0),
-    Point3::new(0, 0, 1),
-    Point3::new(0, 0, -1),
+const NEIGHBORS: [Pos; 6] = [
+    vector!(1, 0, 0),
+    vector!(-1, 0, 0),
+    vector!(0, 1, 0),
+    vector!(0, -1, 0),
+    vector!(0, 0, 1),
+    vector!(0, 0, -1),
 ];
 
 impl World {
@@ -60,7 +62,7 @@ impl World {
         }
     }
 
-    fn neighbors(&self, point: &Point3) -> usize {
+    fn neighbors(&self, point: &Pos) -> usize {
         let mut out = 0;
 
         for i in NEIGHBORS {
@@ -70,9 +72,9 @@ impl World {
         out
     }
 
-    fn bounds(&self) -> (Point3, Point3) {
-        let mut min = Point3::new(i32::MAX, i32::MAX, i32::MAX);
-        let mut max = Point3::new(i32::MIN, i32::MIN, i32::MIN);
+    fn bounds(&self) -> (Pos, Pos) {
+        let mut min = vector!(i32::MAX, i32::MAX, i32::MAX);
+        let mut max = vector!(i32::MIN, i32::MIN, i32::MIN);
 
         for i in &self.points {
             min = min.min(i);
@@ -82,7 +84,7 @@ impl World {
         (min, max)
     }
 
-    fn flood_fill(&self, start: Point3) -> HashSet<Point3> {
+    fn flood_fill(&self, start: Pos) -> HashSet<Pos> {
         let bounds = self.bounds();
         let mut steam = HashSet::new();
         let mut new = vec![start];
@@ -91,18 +93,20 @@ impl World {
             steam.insert(s);
             for n in NEIGHBORS {
                 let n = s + n;
-                if n.x > bounds.1.x + 1 || n.x < bounds.0.x - 1 {
+                if n.x() > bounds.1.x() + 1
+                    || n.x() < bounds.0.x() - 1
+                    || n.y() > bounds.1.y() + 1
+                    || n.y() < bounds.0.y() - 1
+                    || n.z() > bounds.1.z() + 1
+                    || n.z() < bounds.0.z() - 1
+                    || self.points.contains(&n)
+                    || steam.contains(&n)
+                    || new.contains(&n)
+                {
                     continue;
                 }
-                if n.y > bounds.1.y + 1 || n.y < bounds.0.y - 1 {
-                    continue;
-                }
-                if n.z > bounds.1.z + 1 || n.z < bounds.0.z - 1 {
-                    continue;
-                }
-                if !self.points.contains(&n) && !steam.contains(&n) && !new.contains(&n) {
-                    new.push(n);
-                }
+
+                new.push(n);
             }
         }
 
@@ -110,15 +114,15 @@ impl World {
     }
 }
 
-fn parse(raw: &str) -> Vec<Point3> {
+fn parse(raw: &str) -> Vec<Pos> {
     let mut out = Vec::new();
 
     for i in raw.lines() {
         let mut parts = i.split(',');
-        out.push(Point3::new(
+        out.push(vector!(
             parts.next().unwrap().parse().unwrap(),
             parts.next().unwrap().parse().unwrap(),
-            parts.next().unwrap().parse().unwrap(),
+            parts.next().unwrap().parse().unwrap()
         ));
     }
 

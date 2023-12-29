@@ -1,9 +1,9 @@
 use hashbrown::{hash_map::Entry, HashMap};
 
-use crate::aoc_lib;
 use common::{Answer, Solution};
+use nd_vec::vector;
 
-type Point = aoc_lib::Point<i64>;
+type Point = nd_vec::Vec2<i64>;
 
 pub struct Day17;
 
@@ -24,38 +24,39 @@ impl Solution for Day17 {
 }
 
 const WIDTH: usize = 7;
+#[rustfmt::skip]
 const ROCKS: [&[Point]; 5] = [
     &[
-        Point::new(0, 0),
-        Point::new(1, 0),
-        Point::new(2, 0),
-        Point::new(3, 0),
+        vector!(0, 0),
+        vector!(1, 0),
+        vector!(2, 0),
+        vector!(3, 0),
     ],
     &[
-        Point::new(1, 0),
-        Point::new(0, 1),
-        Point::new(1, 1),
-        Point::new(2, 1),
-        Point::new(1, 2),
+        vector!(1, 0),
+        vector!(0, 1),
+        vector!(1, 1),
+        vector!(2, 1),
+        vector!(1, 2),
     ],
     &[
-        Point::new(2, 2),
-        Point::new(2, 1),
-        Point::new(0, 0),
-        Point::new(1, 0),
-        Point::new(2, 0),
+        vector!(2, 2),
+        vector!(2, 1),
+        vector!(0, 0),
+        vector!(1, 0),
+        vector!(2, 0),
     ],
     &[
-        Point::new(0, 0),
-        Point::new(0, 1),
-        Point::new(0, 2),
-        Point::new(0, 3),
+        vector!(0, 0),
+        vector!(0, 1),
+        vector!(0, 2),
+        vector!(0, 3),
     ],
     &[
-        Point::new(0, 0),
-        Point::new(1, 0),
-        Point::new(0, 1),
-        Point::new(1, 1),
+        vector!(0, 0),
+        vector!(1, 0),
+        vector!(0, 1),
+        vector!(1, 1),
     ],
 ];
 
@@ -120,7 +121,7 @@ impl World {
         let mut world = vec![[false; WIDTH]; self.max_height as usize + 1];
         for rock in &self.rocks {
             for point in rock.points() {
-                world[point.y as usize][point.x as usize] = true;
+                world[point.y() as usize][point.x() as usize] = true;
             }
         }
 
@@ -141,14 +142,14 @@ impl World {
 
         self.rocks.push(Rock {
             rock_id: next_rock,
-            pos: Point::new(2, self.max_height + 3),
+            pos: vector!(2, self.max_height + 3),
         });
 
         let rock_index = self.rocks.len() - 1;
         loop {
             let next_flow = self.next_flow();
             self.try_move_rock(rock_index, next_flow);
-            let gravity = self.try_move_rock(rock_index, Point::new(0, -1));
+            let gravity = self.try_move_rock(rock_index, vector!(0, -1));
             if !gravity {
                 break;
             }
@@ -157,7 +158,7 @@ impl World {
             self.rocks[rock_index]
                 .points()
                 .iter()
-                .map(|x| x.y)
+                .map(|x| x.y())
                 .max()
                 .unwrap()
                 + 1,
@@ -172,7 +173,7 @@ impl World {
         // Check if rock in new position is valid, meaning it doesn't collide with any other rock or the wall.
         for point in ROCKS[rock.rock_id] {
             let new_pos = rock.pos + *point;
-            if new_pos.x < 0 || new_pos.x >= WIDTH as i64 || new_pos.y < 0 {
+            if new_pos.x() < 0 || new_pos.x() >= WIDTH as i64 || new_pos.y() < 0 {
                 return false;
             }
 
@@ -195,8 +196,8 @@ impl World {
         self.flow_index = (self.flow_index + 1) % self.airflow.len();
 
         match flow {
-            '>' => Point::new(1, 0),
-            '<' => Point::new(-1, 0),
+            '>' => vector!(1, 0),
+            '<' => vector!(-1, 0),
             _ => panic!("Invalid flow: {}", flow),
         }
     }
