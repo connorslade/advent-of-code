@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 common = { path = "../common" }
 hashbrown = "0.13.1"
+nd_vec = "0.4.0"

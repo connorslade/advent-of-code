@@ -1,18 +1,9 @@
 use hashbrown::HashSet;
 
 use common::{Answer, Solution};
+use nd_vec::vector;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct Point {
-    x: usize,
-    y: usize,
-}
-
-impl Point {
-    fn new(x: usize, y: usize) -> Self {
-        Self { x, y }
-    }
-}
+type Point = nd_vec::Vec2<usize>;
 
 pub struct Day13;
 
@@ -69,23 +60,23 @@ impl Paper {
 
         match ins.direction {
             Direction::Horizontal => {
-                for i in self.data.clone().iter().filter(|x| x.x > ins.position) {
+                for i in self.data.clone().iter().filter(|x| x.x() > ins.position) {
                     self.data.remove(i);
-                    self.data.insert(Point::new(ins.position * 2 - i.x, i.y));
+                    self.data.insert(vector!(ins.position * 2 - i.x(), i.y()));
                 }
             }
             Direction::Vertical => {
-                for i in self.data.clone().iter().filter(|x| x.y > ins.position) {
+                for i in self.data.clone().iter().filter(|x| x.y() > ins.position) {
                     self.data.remove(i);
-                    self.data.insert(Point::new(i.x, ins.position * 2 - i.y));
+                    self.data.insert(vector!(i.x(), ins.position * 2 - i.y()));
                 }
             }
         }
     }
 
     fn bounds(&self) -> (usize, usize) {
-        let x = self.data.iter().map(|x| x.x).max().unwrap();
-        let y = self.data.iter().map(|x| x.y).max().unwrap();
+        let x = self.data.iter().map(|x| x.x()).max().unwrap();
+        let y = self.data.iter().map(|x| x.y()).max().unwrap();
         (x, y)
     }
 
@@ -95,7 +86,7 @@ impl Paper {
 
         for y in 0..=my {
             for x in 0..=mx {
-                let point = Point::new(x, y);
+                let point = vector!(x, y);
                 if self.data.contains(&point) {
                     out.push('#');
                 } else {
@@ -113,7 +104,7 @@ fn parse_point(raw: &str) -> Point {
     let parts = raw.split_once(',').unwrap();
     let x = parts.0.parse().unwrap();
     let y = parts.1.parse().unwrap();
-    Point::new(x, y)
+    vector!(x, y)
 }
 
 fn parse_fold(raw: &str) -> Fold {

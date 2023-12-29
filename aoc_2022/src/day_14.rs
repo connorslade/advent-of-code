@@ -4,6 +4,7 @@ use nd_vec::vector;
 type Point = nd_vec::Vec2<usize>;
 
 const NEW_POINT: Point = vector!(500, 0);
+
 pub struct Day14;
 
 impl Solution for Day14 {
@@ -47,7 +48,7 @@ impl Solution for Day14 {
 
 #[derive(Debug)]
 struct World {
-    data: Matrix<Element>,
+    data: Vec<Vec<Element>>,
     working: Point,
 
     x_adjust: usize,
@@ -61,12 +62,6 @@ enum Element {
     Sand,
     #[default]
     Air,
-}
-
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
-pub struct Matrix<T> {
-    data: Vec<T>,
-    width: usize,
 }
 
 #[derive(Debug)]
@@ -89,11 +84,12 @@ impl World {
         }
 
         let x_adjust = min_x - max_y;
-        let mut out = Matrix::new_filled(max_x - min_x + max_x + 1, max_y + 3, Element::Air);
+        let mut out = vec![vec![Element::Air; max_x - min_x + max_x + 1]; max_y + 3];
+
         lines
             .iter()
             .flat_map(|x| x.points())
-            .for_each(|x| out.set(x.x() - x_adjust, x.y(), Element::Wall));
+            .for_each(|x| out[x.y()][x.x() - x_adjust] = Element::Wall);
 
         Self {
             data: out,
@@ -125,48 +121,18 @@ impl World {
 
     fn count_sand(&self) -> usize {
         self.data
-            .raw()
             .iter()
+            .flat_map(|x| x.iter())
             .filter(|x| **x == Element::Sand)
             .count()
     }
 
     fn get(&self, x: usize, y: usize) -> &Element {
-        self.data.get(x - self.x_adjust, y)
+        &self.data[y][x - self.x_adjust]
     }
 
     fn get_mut(&mut self, x: usize, y: usize) -> &mut Element {
-        self.data.get_mut(x - self.x_adjust, y)
-    }
-}
-
-impl<T> Matrix<T> {
-    fn new_filled(width: usize, height: usize, val: T) -> Self
-    where
-        T: Clone,
-    {
-        Self {
-            data: vec![val; width * height],
-            width,
-        }
-    }
-
-    fn raw(&self) -> &Vec<T> {
-        &self.data
-    }
-
-    fn set(&mut self, x: usize, y: usize, data: T) {
-        self.data[y * self.width + x] = data;
-    }
-
-    fn get(&self, x: usize, y: usize) -> &T {
-        debug_assert!(x < self.width, "x out of bounds");
-        &self.data[y * self.width + x]
-    }
-
-    fn get_mut(&mut self, x: usize, y: usize) -> &mut T {
-        debug_assert!(x < self.width, "x out of bounds");
-        &mut self.data[y * self.width + x]
+        &mut self.data[y][x - self.x_adjust]
     }
 }
 

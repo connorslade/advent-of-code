@@ -124,6 +124,7 @@ version = "0.1.0"
 dependencies = [
  "common",
  "hashbrown 0.13.2",
+ "nd_vec 0.4.0",
 ]
 
 [[package]]
