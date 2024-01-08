@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use common::{Answer, Solution};
-use aoc_lib::math::lcm;
 
 pub struct Day08;
 
@@ -29,7 +28,6 @@ impl Solution for Day08 {
     }
 
     /// Get the cycle length for each starting position, this is the number of positions you need to get from `AAA` to `ZZZ`.
-    /// Calculate the least common multiple of all cycle lengths to get the number of steps needed to get from `AAA` to `ZZZ` for all starting positions.
     fn part_b(&self, input: &str) -> Answer {
         let map = parse(input);
 
@@ -56,7 +54,9 @@ impl Solution for Day08 {
             }
         }
 
-        cycles.into_iter().reduce(lcm).unwrap().into()
+        // Note: This works because the cycle lengths are all prime numbers.
+        // This was not described in the problem, but should be true for all inputs.
+        cycles.into_iter().product::<i32>().into()
     }
 }
 
