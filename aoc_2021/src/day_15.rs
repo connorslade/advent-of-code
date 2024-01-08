@@ -1,11 +1,7 @@
-use std::collections::VecDeque;
-
 use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{Answer, Solution};
 use hashbrown::HashMap;
 use nd_vec::vector;
-
-type Pos = nd_vec::Vec2<usize>;
 
 pub struct Day15;
 
@@ -19,10 +15,10 @@ impl Solution for Day15 {
 
         let mut out = usize::MAX;
         let mut visited = HashMap::new();
-        let mut queue = VecDeque::new();
-        queue.push_back((vector!(0, 0), 0));
+        let mut queue = Vec::new();
+        queue.push((vector!(0, 0), 0));
 
-        while let Some((pos, cost)) = queue.pop_front() {
+        while let Some((pos, cost)) = queue.pop() {
             if pos == matrix.size - vector!(1, 1) {
                 out = out.min(cost);
                 continue;
@@ -40,7 +36,7 @@ impl Solution for Day15 {
                         }
                     }
 
-                    queue.push_back((next, new_cost));
+                    queue.push((next, new_cost));
                 }
             }
         }
@@ -48,7 +44,7 @@ impl Solution for Day15 {
         out.into()
     }
 
-    fn part_b(&self, input: &str) -> Answer {
+    fn part_b(&self, _input: &str) -> Answer {
         Answer::Unimplemented
     }
 }
