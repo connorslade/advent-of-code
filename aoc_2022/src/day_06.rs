@@ -1,10 +1,10 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day06;
 
-impl Solution for Day06 {
+impl ISolution for Day06 {
     fn name(&self) -> &'static str {
         "Tuning Trouble"
     }

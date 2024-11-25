@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use nd_vec::{vector, Vec2};
 
 use aoc_lib::direction::Direction;
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 type Pos = Vec2<usize>;
 
@@ -16,7 +16,7 @@ const START_PIECES: [(char, [Direction; 2]); 4] = [
 
 pub struct Day10;
 
-impl Solution for Day10 {
+impl ISolution for Day10 {
     fn name(&self) -> &'static str {
         "Pipe Maze"
     }
@@ -178,7 +178,7 @@ fn turn(facing: Direction, tile: char) -> TurnResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day10;

@@ -1,12 +1,12 @@
 use std::collections::VecDeque;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 use hashbrown::HashMap;
 
 pub struct Day16;
 
-impl Solution for Day16 {
+impl ISolution for Day16 {
     fn name(&self) -> &'static str {
         "Proboscidea Volcanium"
     }
@@ -158,7 +158,7 @@ fn parse(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day16;

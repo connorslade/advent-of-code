@@ -1,4 +1,4 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use hashbrown::HashSet;
 use nd_vec::{vector, Vec2};
 use pathfinding::directed::bfs::bfs;
@@ -7,7 +7,7 @@ type Pos = Vec2<usize>;
 
 pub struct Day24;
 
-impl Solution for Day24 {
+impl ISolution for Day24 {
     fn name(&self) -> &'static str {
         "Blizzard Basin"
     }
@@ -237,7 +237,7 @@ impl Tile {
 mod test {
     use indoc::indoc;
 
-    use common::Solution;
+    use common::ISolution;
 
     use super::{Basin, Day24};
 

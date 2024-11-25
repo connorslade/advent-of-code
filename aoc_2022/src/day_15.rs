@@ -1,4 +1,4 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 use nd_vec::vector;
 use rayon::prelude::*;
@@ -7,7 +7,7 @@ type Point = nd_vec::Vec2<isize>;
 
 pub struct Day15;
 
-impl Solution for Day15 {
+impl ISolution for Day15 {
     fn name(&self) -> &'static str {
         "Beacon Exclusion Zone"
     }

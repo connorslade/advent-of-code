@@ -1,10 +1,10 @@
 use std::cmp::Ordering;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day13;
 
-impl Solution for Day13 {
+impl ISolution for Day13 {
     fn name(&self) -> &'static str {
         "Distress Signal"
     }

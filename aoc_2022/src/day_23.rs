@@ -1,13 +1,13 @@
 use hashbrown::{hash_map::Entry, HashMap, HashSet};
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<isize>;
 
 pub struct Day23;
 
-impl Solution for Day23 {
+impl ISolution for Day23 {
     fn name(&self) -> &'static str {
         "Unstable Diffusion"
     }
@@ -151,7 +151,7 @@ impl World {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::{Day23, World};

@@ -1,4 +1,4 @@
-use common::Solution;
+use common::ISolution;
 
 mod day_01;
 mod day_02;
@@ -26,7 +26,7 @@ mod day_23;
 mod day_24;
 mod day_25;
 
-pub const ALL: [&dyn Solution; 25] = [
+pub const ALL: [&dyn ISolution; 25] = [
     &day_01::Day01,
     &day_02::Day02,
     &day_03::Day03,

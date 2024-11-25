@@ -1,38 +1,40 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution, Solution};
 
 pub struct Day02;
 
 // 12 red cubes, 13 green cubes, and 14 blue cubes
 const MAX_CUBES: [u32; 3] = [12, 13, 14];
 
-impl Solution for Day02 {
-    fn name(&self) -> &'static str {
-        "Cube Conundrum"
-    }
+pub const SOLUTION: Solution = Solution {
+    name: "Cube Conundrum",
+    date: (2023, 02),
 
-    fn part_a(&self, input: &str) -> Answer {
-        parse(input)
-            .iter()
-            .enumerate()
-            .filter(|(_, games)| games.iter().all(|game| game.is_possible()))
-            .map(|x| x.0 + 1)
-            .sum::<usize>()
-            .into()
-    }
+    part_a,
+    part_b,
+};
 
-    fn part_b(&self, input: &str) -> Answer {
-        parse(input)
-            .iter()
-            .map(|games| {
-                let mut max = CubeSet::default();
-                for game in games {
-                    max = max.max(game);
-                }
-                max.red * max.green * max.blue
-            })
-            .sum::<u32>()
-            .into()
-    }
+fn part_a(input: &str) -> Answer {
+    parse(input)
+        .iter()
+        .enumerate()
+        .filter(|(_, games)| games.iter().all(|game| game.is_possible()))
+        .map(|x| x.0 + 1)
+        .sum::<usize>()
+        .into()
+}
+
+fn part_b(input: &str) -> Answer {
+    parse(input)
+        .iter()
+        .map(|games| {
+            let mut max = CubeSet::default();
+            for game in games {
+                max = max.max(game);
+            }
+            max.red * max.green * max.blue
+        })
+        .sum::<u32>()
+        .into()
 }
 
 fn parse(input: &str) -> Vec<Vec<CubeSet>> {
@@ -87,10 +89,8 @@ impl CubeSet {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day02;
 
     const CASE: &str = indoc! {"
         Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
@@ -102,11 +102,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day02.part_a(CASE), 8.into());
+        assert_eq!(super::part_a(CASE), 8.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day02.part_b(CASE), 2286.into());
+        assert_eq!(super::part_b(CASE), 2286.into());
     }
 }

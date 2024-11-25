@@ -2,14 +2,14 @@ use std::vec;
 
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<i32>;
 
 pub struct Day09;
 
-impl Solution for Day09 {
+impl ISolution for Day09 {
     fn name(&self) -> &'static str {
         "Rope Bridge"
     }

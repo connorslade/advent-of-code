@@ -1,9 +1,9 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use rayon::{iter::ParallelIterator, slice::ParallelSlice};
 
 pub struct Day05;
 
-impl Solution for Day05 {
+impl ISolution for Day05 {
     fn name(&self) -> &'static str {
         "If You Give A Seed A Fertilizer"
     }
@@ -117,7 +117,7 @@ impl Map {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day05;

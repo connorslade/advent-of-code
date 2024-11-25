@@ -1,11 +1,11 @@
 use std::{collections::HashSet, convert::identity};
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::{vector, Vec3};
 
 pub struct Day22;
 
-impl Solution for Day22 {
+impl ISolution for Day22 {
     fn name(&self) -> &'static str {
         "Sand Slabs"
     }
@@ -107,7 +107,7 @@ fn parse(input: &str) -> Vec<Box> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day22;

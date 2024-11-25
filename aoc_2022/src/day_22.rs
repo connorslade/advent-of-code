@@ -2,12 +2,12 @@ use hashbrown::HashSet;
 use nd_vec::vector;
 use std::collections::VecDeque;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 type Point = nd_vec::Vec2<isize>;
 pub struct Day22;
 
-impl Solution for Day22 {
+impl ISolution for Day22 {
     fn name(&self) -> &'static str {
         "Monkey Map"
     }
@@ -217,7 +217,7 @@ fn wrap_3d(world: &World, mut _pos: Point) -> Option<(Point, Direction)> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day22;

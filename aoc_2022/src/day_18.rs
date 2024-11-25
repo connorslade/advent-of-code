@@ -1,13 +1,13 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::{vector, Vector};
 
 type Pos = nd_vec::Vec3<i32>;
 
 pub struct Day18;
 
-impl Solution for Day18 {
+impl ISolution for Day18 {
     fn name(&self) -> &'static str {
         "Boiling Boulders"
     }

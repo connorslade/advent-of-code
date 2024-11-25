@@ -1,10 +1,10 @@
 use aoc_lib::direction::Direction;
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 pub struct Day18;
 
-impl Solution for Day18 {
+impl ISolution for Day18 {
     fn name(&self) -> &'static str {
         "Lavaduct Lagoon"
     }
@@ -84,7 +84,7 @@ fn parse_a(input: &str) -> Vec<(Direction, u32)> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day18;

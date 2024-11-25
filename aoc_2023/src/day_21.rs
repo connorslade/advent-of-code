@@ -1,14 +1,14 @@
 use std::collections::HashSet;
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::{vector, Vec2};
 
 use polynomial::Polynomial;
 
 pub struct Day21;
 
-impl Solution for Day21 {
+impl ISolution for Day21 {
     fn name(&self) -> &'static str {
         "Step Counter"
     }
@@ -103,7 +103,7 @@ fn parse(input: &str) -> Matrix<Tile> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day21;

@@ -2,13 +2,13 @@ use bitvec::{bitvec, vec::BitVec};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2};
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 type Pos = Vec2<usize>;
 
 pub struct Day11;
 
-impl Solution for Day11 {
+impl ISolution for Day11 {
     fn name(&self) -> &'static str {
         "Cosmic Expansion"
     }
@@ -85,7 +85,7 @@ impl Galaxies {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day11;

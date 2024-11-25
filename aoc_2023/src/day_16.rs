@@ -1,14 +1,14 @@
 use std::collections::HashSet;
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<isize>;
 
 pub struct Day16;
 
-impl Solution for Day16 {
+impl ISolution for Day16 {
     fn name(&self) -> &'static str {
         "The Floor Will Be Lava"
     }
@@ -124,7 +124,7 @@ impl Tile {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day16;

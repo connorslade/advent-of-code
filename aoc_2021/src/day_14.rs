@@ -1,10 +1,10 @@
 use hashbrown::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day14;
 
-impl Solution for Day14 {
+impl ISolution for Day14 {
     fn name(&self) -> &'static str {
         "Extended Polymerization"
     }

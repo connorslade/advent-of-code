@@ -1,4 +1,4 @@
-pub use common::Solution;
+pub use common::ISolution;
 
 mod day_01;
 mod day_02;
@@ -17,7 +17,7 @@ mod day_14;
 mod day_15;
 // [import_marker]
 
-pub const ALL: &[&dyn Solution] = &[
+pub const ALL: &[&dyn ISolution] = &[
     &day_01::Day01,
     &day_02::Day02,
     &day_03::Day03,

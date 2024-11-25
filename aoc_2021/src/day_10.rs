@@ -1,10 +1,10 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
 pub struct Day10;
 
-impl Solution for Day10 {
+impl ISolution for Day10 {
     fn name(&self) -> &'static str {
         "Syntax Scoring"
     }

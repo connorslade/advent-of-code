@@ -1,13 +1,13 @@
 use std::collections::VecDeque;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
 pub struct Day12;
 
-impl Solution for Day12 {
+impl ISolution for Day12 {
     fn name(&self) -> &'static str {
         "Hill Climbing Algorithm"
     }

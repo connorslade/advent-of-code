@@ -1,13 +1,13 @@
 use hashbrown::{hash_map::Entry, HashMap};
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<i64>;
 
 pub struct Day17;
 
-impl Solution for Day17 {
+impl ISolution for Day17 {
     fn name(&self) -> &'static str {
         "Pyroclastic Flow"
     }

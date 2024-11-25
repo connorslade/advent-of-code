@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Parser;
 
 use args::{Args, Commands};
-use common::Solution;
+use common::ISolution;
 mod args;
 mod commands;
 
@@ -17,7 +17,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_year(year: u16) -> &'static [&'static dyn Solution] {
+fn get_year(year: u16) -> &'static [&'static dyn ISolution] {
     match year {
         2021 => aoc_2021::ALL,
         2022 => &aoc_2022::ALL,

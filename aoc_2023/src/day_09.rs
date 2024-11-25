@@ -1,8 +1,8 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day09;
 
-impl Solution for Day09 {
+impl ISolution for Day09 {
     fn name(&self) -> &'static str {
         "Mirage Maintenance"
     }
@@ -72,7 +72,7 @@ impl Sequence {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day09;

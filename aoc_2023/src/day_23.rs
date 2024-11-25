@@ -4,14 +4,14 @@ use std::{
 };
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<usize>;
 
 pub struct Day23;
 
-impl Solution for Day23 {
+impl ISolution for Day23 {
     fn name(&self) -> &'static str {
         "A Long Walk"
     }
@@ -145,7 +145,7 @@ fn dir_matches(dir: Direction, chr: char) -> bool {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day23;

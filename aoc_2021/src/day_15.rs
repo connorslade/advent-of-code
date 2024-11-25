@@ -1,11 +1,11 @@
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use hashbrown::HashMap;
 use nd_vec::vector;
 
 pub struct Day15;
 
-impl Solution for Day15 {
+impl ISolution for Day15 {
     fn name(&self) -> &'static str {
         "Chiton"
     }
@@ -51,7 +51,7 @@ impl Solution for Day15 {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day15;

@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day12;
 
-impl Solution for Day12 {
+impl ISolution for Day12 {
     fn name(&self) -> &'static str {
         "Hot Springs"
     }
@@ -102,7 +102,7 @@ impl Spring {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day12;

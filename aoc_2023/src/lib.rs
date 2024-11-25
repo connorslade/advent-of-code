@@ -1,4 +1,4 @@
-use common::Solution;
+use common::ISolution;
 
 mod day_01;
 mod day_02;
@@ -28,10 +28,7 @@ mod day_25;
 // [import_marker]
 
 #[rustfmt::skip]
-pub const ALL: &[&dyn Solution] = &[
-    &day_01::Day01,
-    &day_02::Day02,
-    &day_03::Day03,
+pub const ALL: &[&dyn ISolution] = &[
     &day_04::Day04,
     &day_05::Day05,
     &day_06::Day06,

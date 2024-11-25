@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day08;
 
-impl Solution for Day08 {
+impl ISolution for Day08 {
     fn name(&self) -> &'static str {
         "Haunted Wasteland"
     }
@@ -101,7 +101,7 @@ fn parse(input: &str) -> Map {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day08;

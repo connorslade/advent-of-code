@@ -1,10 +1,10 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day03;
 
-impl Solution for Day03 {
+impl ISolution for Day03 {
     fn name(&self) -> &'static str {
         "Rucksack Reorganization"
     }

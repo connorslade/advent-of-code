@@ -1,9 +1,9 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use hashbrown::HashMap;
 
 pub struct Day19;
 
-impl Solution for Day19 {
+impl ISolution for Day19 {
     fn name(&self) -> &'static str {
         "Not Enough Minerals "
     }
@@ -198,7 +198,7 @@ mod test {
     use indoc::indoc;
 
     use super::Day19;
-    use common::Solution;
+    use common::ISolution;
 
     const CASE: &str = indoc! {"
         Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.

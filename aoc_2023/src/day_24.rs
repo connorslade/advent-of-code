@@ -1,13 +1,13 @@
 use std::{fmt::Display, ops::RangeInclusive};
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2, Vec3};
 use num_traits::Num;
 
 pub struct Day24;
 
-impl Solution for Day24 {
+impl ISolution for Day24 {
     fn name(&self) -> &'static str {
         "Never Tell Me The Odds"
     }

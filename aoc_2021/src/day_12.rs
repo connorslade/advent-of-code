@@ -1,10 +1,10 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use hashbrown::{HashMap, HashSet};
 use petgraph::graph::{NodeIndex, UnGraph};
 
 pub struct Day12;
 
-impl Solution for Day12 {
+impl ISolution for Day12 {
     fn name(&self) -> &'static str {
         "Passage Pathing"
     }
@@ -103,7 +103,7 @@ fn parse(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day12;

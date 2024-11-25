@@ -1,9 +1,9 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use itertools::Itertools;
 
 pub struct Day06;
 
-impl Solution for Day06 {
+impl ISolution for Day06 {
     fn name(&self) -> &'static str {
         "Wait For It"
     }
@@ -69,7 +69,7 @@ impl Race {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day06;

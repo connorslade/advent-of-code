@@ -1,9 +1,9 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use itertools::Itertools;
 
 pub struct Day15;
 
-impl Solution for Day15 {
+impl ISolution for Day15 {
     fn name(&self) -> &'static str {
         "Lens Library"
     }
@@ -70,7 +70,7 @@ fn hash(input: &str) -> u8 {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day15;

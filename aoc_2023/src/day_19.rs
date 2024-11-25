@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day19;
 
-impl Solution for Day19 {
+impl ISolution for Day19 {
     fn name(&self) -> &'static str {
         "Aplenty"
     }
@@ -189,7 +189,7 @@ fn field_idx(field: &str) -> usize {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day19;

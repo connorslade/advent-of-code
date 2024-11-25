@@ -1,8 +1,8 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day25;
 
-impl Solution for Day25 {
+impl ISolution for Day25 {
     fn name(&self) -> &'static str {
         "Full of Hot Air"
     }
@@ -53,7 +53,7 @@ mod test {
     use indoc::indoc;
 
     use super::Day25;
-    use common::Solution;
+    use common::ISolution;
 
     const CASE: &str = indoc! {r"
         1=-0-2

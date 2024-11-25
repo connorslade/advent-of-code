@@ -1,4 +1,4 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
@@ -7,7 +7,7 @@ const NEW_POINT: Point = vector!(500, 0);
 
 pub struct Day14;
 
-impl Solution for Day14 {
+impl ISolution for Day14 {
     fn name(&self) -> &'static str {
         "Regolith Reservoir"
     }

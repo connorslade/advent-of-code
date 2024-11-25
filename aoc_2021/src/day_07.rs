@@ -1,8 +1,8 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day07;
 
-impl Solution for Day07 {
+impl ISolution for Day07 {
     fn name(&self) -> &'static str {
         "The Treachery of Whales"
     }

@@ -1,8 +1,8 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day13;
 
-impl Solution for Day13 {
+impl ISolution for Day13 {
     fn name(&self) -> &'static str {
         "Point of Incidence"
     }
@@ -93,7 +93,7 @@ impl Valley {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day13;

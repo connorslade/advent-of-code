@@ -1,13 +1,13 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
 pub struct Day13;
 
-impl Solution for Day13 {
+impl ISolution for Day13 {
     fn name(&self) -> &'static str {
         "Transparent Origami"
     }

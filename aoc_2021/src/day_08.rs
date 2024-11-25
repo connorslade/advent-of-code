@@ -1,4 +1,4 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 use hashbrown::HashMap;
 
@@ -10,7 +10,7 @@ const DIGITS: [&str; 10] = [
 
 pub struct Day08;
 
-impl Solution for Day08 {
+impl ISolution for Day08 {
     fn name(&self) -> &'static str {
         "Seven Segment Search"
     }

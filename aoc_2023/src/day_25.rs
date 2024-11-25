@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 use petgraph::{graph::UnGraph, stable_graph::NodeIndex, Graph, Undirected};
 use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
 pub struct Day25;
 
-impl Solution for Day25 {
+impl ISolution for Day25 {
     fn name(&self) -> &'static str {
         "Snowverload"
     }
@@ -60,7 +60,7 @@ fn parse(input: &str) -> Wires {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day25;

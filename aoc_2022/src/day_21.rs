@@ -1,10 +1,10 @@
 use hashbrown::HashMap;
 
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day21;
 
-impl Solution for Day21 {
+impl ISolution for Day21 {
     fn name(&self) -> &'static str {
         "Monkey Math"
     }

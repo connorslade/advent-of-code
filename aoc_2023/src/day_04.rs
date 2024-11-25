@@ -1,8 +1,8 @@
-use common::{Answer, Solution};
+use common::{Answer, ISolution};
 
 pub struct Day04;
 
-impl Solution for Day04 {
+impl ISolution for Day04 {
     fn name(&self) -> &'static str {
         "Scratchcards"
     }
@@ -67,7 +67,7 @@ fn parse(input: &str) -> Vec<Card> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
+    use common::ISolution;
     use indoc::indoc;
 
     use super::Day04;
