@@ -173,7 +173,7 @@ fn parse_input(input: &str) -> HashMap<&str, Connection<'_>> {
             _ => ConnectionType::Normal,
         };
 
-        let source = source.trim_start_matches(|c| c == '%' || c == '&');
+        let source = source.trim_start_matches(['%', '&']);
         out.insert(
             source,
             Connection {

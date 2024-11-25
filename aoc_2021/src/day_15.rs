@@ -45,7 +45,6 @@ fn part_b(_input: &str) -> Answer {
 
 #[cfg(test)]
 mod test {
-    use common::solution;
     use indoc::indoc;
 
     const CASE: &str = indoc! {"

@@ -212,7 +212,6 @@ fn wrap_3d(world: &World, mut _pos: Point) -> Option<(Point, Direction)> {
 
 #[cfg(test)]
 mod test {
-    use common::solution;
     use indoc::indoc;
 
     const CASE: &str = indoc! {"

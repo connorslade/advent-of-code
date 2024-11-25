@@ -82,7 +82,7 @@ fn tick_octopi(octopi: &mut Vec<Vec<Octopus>>, x: usize, y: usize) {
     }
 }
 
-fn octo_neighbors(octopi: &Vec<Vec<Octopus>>, x: usize, y: usize) -> Vec<(usize, usize)> {
+fn octo_neighbors(octopi: &[Vec<Octopus>], x: usize, y: usize) -> Vec<(usize, usize)> {
     let mut out = Vec::new();
     let (lenx, leny) = (octopi[0].len() as isize, octopi.len() as isize);
     let (x, y) = (x as isize, y as isize);

@@ -121,10 +121,7 @@ fn parse(inp: &str) -> Vec<(Vec<String>, Vec<String>)> {
 }
 
 // Modified from https://stackoverflow.com/a/59939809/12471934
-fn permutations<T: Clone>(items: Vec<T>) -> Vec<Vec<T>>
-where
-    T: Ord,
-{
+fn permutations<T: Clone + Ord>(items: Vec<T>) -> Vec<Vec<T>> {
     if items.len() == 1 {
         return vec![items];
     }

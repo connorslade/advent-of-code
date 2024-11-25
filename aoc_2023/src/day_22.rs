@@ -28,7 +28,7 @@ fn solve(mut map: Vec<Box>, exhaustive: bool, count: fn(u32) -> u32) -> u32 {
     out
 }
 
-fn shift_down(map: &mut Vec<Box>, exhaustive: bool) -> u32 {
+fn shift_down(map: &mut [Box], exhaustive: bool) -> u32 {
     let mut moved = HashSet::new();
     let mut dirty = true;
     while dirty {

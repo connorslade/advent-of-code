@@ -97,7 +97,6 @@ fn parse(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod test {
-    use common::solution;
     use indoc::indoc;
 
     const CASE: &str = indoc! {"
