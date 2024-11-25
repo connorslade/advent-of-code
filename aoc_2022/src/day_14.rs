@@ -1,49 +1,43 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
 const NEW_POINT: Point = vector!(500, 0);
 
-pub struct Day14;
+solution!("Regolith Reservoir", (2022, 00));
 
-impl ISolution for Day14 {
-    fn name(&self) -> &'static str {
-        "Regolith Reservoir"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut world = World::parse(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
+    'o: loop {
+        world.working = NEW_POINT;
+        *world.get_mut(NEW_POINT.x(), NEW_POINT.y()) = Element::Sand;
 
-        'o: loop {
-            world.working = NEW_POINT;
-            *world.get_mut(NEW_POINT.x(), NEW_POINT.y()) = Element::Sand;
-
-            while world.tick(false) {
-                if world.working.y() >= world.bounds {
-                    break 'o;
-                }
+        while world.tick(false) {
+            if world.working.y() >= world.bounds {
+                break 'o;
             }
         }
-
-        (world.count_sand() - 1).into()
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
+    (world.count_sand() - 1).into()
+}
 
-        loop {
-            if world.working.y() == 0 {
-                break;
-            }
+fn part_b(input: &str) -> Answer {
+    let mut world = World::parse(input);
 
-            world.working = NEW_POINT;
-            *world.get_mut(NEW_POINT.x(), NEW_POINT.y()) = Element::Sand;
-            while world.tick(true) {}
+    loop {
+        if world.working.y() == 0 {
+            break;
         }
 
-        world.count_sand().into()
+        world.working = NEW_POINT;
+        *world.get_mut(NEW_POINT.x(), NEW_POINT.y()) = Element::Sand;
+        while world.tick(true) {}
     }
+
+    world.count_sand().into()
 }
 
 #[derive(Debug)]

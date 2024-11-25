@@ -1,25 +1,19 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day04;
+solution!("Giant Squid", (2022, 00));
 
-impl ISolution for Day04 {
-    fn name(&self) -> &'static str {
-        "Giant Squid"
-    }
+fn part_a(input: &str) -> Answer {
+    let bingo = Bingo::parse_input(input);
+    let winning = bingo.solve();
 
-    fn part_a(&self, input: &str) -> Answer {
-        let bingo = Bingo::parse_input(input);
-        let winning = bingo.solve();
+    winning.0[winning.1].final_out(winning.2).into()
+}
 
-        winning.0[winning.1].final_out(winning.2).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let bingo = Bingo::parse_input(input);
+    let loseing = bingo.loseing_solve();
 
-    fn part_b(&self, input: &str) -> Answer {
-        let bingo = Bingo::parse_input(input);
-        let loseing = bingo.loseing_solve();
-
-        loseing.0[loseing.1].final_out(loseing.2).into()
-    }
+    loseing.0[loseing.1].final_out(loseing.2).into()
 }
 
 #[derive(Debug, Clone)]

@@ -1,26 +1,20 @@
 use hashbrown::{hash_map::Entry, HashMap};
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<i64>;
 
-pub struct Day17;
+solution!("Pyroclastic Flow", (2022, 00));
 
-impl ISolution for Day17 {
-    fn name(&self) -> &'static str {
-        "Pyroclastic Flow"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut world = World::new(input);
+    process(&mut world, 2022).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut world = World::new(input);
-        process(&mut world, 2022).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let mut world = World::new(input);
-        process(&mut world, 1000000000000).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut world = World::new(input);
+    process(&mut world, 1000000000000).into()
 }
 
 const WIDTH: usize = 7;

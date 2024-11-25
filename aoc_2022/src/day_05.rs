@@ -1,19 +1,13 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day05;
+solution!("Supply Stacks", (2022, 00));
 
-impl ISolution for Day05 {
-    fn name(&self) -> &'static str {
-        "Supply Stacks"
-    }
+fn part_a(input: &str) -> Answer {
+    process(input, true).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        process(input, true).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        process(input, false).into()
-    }
+fn part_b(input: &str) -> Answer {
+    process(input, false).into()
 }
 
 fn process(raw: &str, part: bool) -> String {

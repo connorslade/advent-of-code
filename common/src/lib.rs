@@ -1,6 +1,7 @@
 mod answer;
 mod misc;
 mod part;
+#[macro_use]
 mod solution;
 
 pub use answer::Answer;

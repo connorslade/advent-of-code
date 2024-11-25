@@ -1,6 +1,4 @@
-use common::{Answer, ISolution, Solution};
-
-pub struct Day02;
+use common::{Answer, Solution};
 
 // 12 red cubes, 13 green cubes, and 14 blue cubes
 const MAX_CUBES: [u32; 3] = [12, 13, 14];
@@ -89,7 +87,6 @@ impl CubeSet {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
 
     const CASE: &str = indoc! {"

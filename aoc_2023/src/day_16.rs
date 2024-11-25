@@ -1,39 +1,33 @@
 use std::collections::HashSet;
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<isize>;
 
-pub struct Day16;
+solution!("The Floor Will Be Lava", (2023, 04));
 
-impl ISolution for Day16 {
-    fn name(&self) -> &'static str {
-        "The Floor Will Be Lava"
+fn part_a(input: &str) -> Answer {
+    lazer(&parse(input), vector!(-1, 0), Direction::Right).into()
+}
+
+fn part_b(input: &str) -> Answer {
+    let tiles = parse(input);
+    let mut max = 0;
+
+    let size = tiles.size.num_cast::<isize>().unwrap();
+    for y in 0..size.y() {
+        max = max.max(lazer(&tiles, vector!(-1, y), Direction::Right));
+        max = max.max(lazer(&tiles, vector!(size.x(), y), Direction::Left));
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        lazer(&parse(input), vector!(-1, 0), Direction::Right).into()
+    for x in 0..size.x() {
+        max = max.max(lazer(&tiles, vector!(x, -1), Direction::Down));
+        max = max.max(lazer(&tiles, vector!(x, size.y()), Direction::Up));
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let tiles = parse(input);
-        let mut max = 0;
-
-        let size = tiles.size.num_cast::<isize>().unwrap();
-        for y in 0..size.y() {
-            max = max.max(lazer(&tiles, vector!(-1, y), Direction::Right));
-            max = max.max(lazer(&tiles, vector!(size.x(), y), Direction::Left));
-        }
-
-        for x in 0..size.x() {
-            max = max.max(lazer(&tiles, vector!(x, -1), Direction::Down));
-            max = max.max(lazer(&tiles, vector!(x, size.y()), Direction::Up));
-        }
-
-        max.into()
-    }
+    max.into()
 }
 
 fn parse(input: &str) -> Matrix<Tile> {
@@ -124,10 +118,7 @@ impl Tile {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day16;
 
     const CASE: &str = indoc! {r"
         .|...\....
@@ -144,11 +135,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day16.part_a(CASE), 46.into());
+        assert_eq!(super::part_a(CASE), 46.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day16.part_b(CASE), 51.into());
+        assert_eq!(super::part_b(CASE), 51.into());
     }
 }

@@ -1,23 +1,17 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day01;
+solution!("Calorie Counting", (2022, 00));
 
-impl ISolution for Day01 {
-    fn name(&self) -> &'static str {
-        "Calorie Counting"
-    }
+fn part_a(input: &str) -> Answer {
+    let elfs = get_elfs(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let elfs = get_elfs(input);
+    (*elfs.last().unwrap()).into()
+}
 
-        (*elfs.last().unwrap()).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let elfs = get_elfs(input);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let elfs = get_elfs(input);
-
-        elfs.iter().rev().take(3).sum::<u32>().into()
-    }
+    elfs.iter().rev().take(3).sum::<u32>().into()
 }
 
 fn get_elfs(data: &str) -> Vec<u32> {

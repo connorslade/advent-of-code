@@ -1,57 +1,51 @@
 use std::collections::{HashMap, VecDeque};
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day20;
+solution!("Pulse Propagation", (2023, 04));
 
-impl ISolution for Day20 {
-    fn name(&self) -> &'static str {
-        "Pulse Propagation"
-    }
+fn part_a(input: &str) -> Answer {
+    let connections = parse_input(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let connections = parse_input(input);
+    let mut low_pulse = 999;
+    let mut high_pulse = 0;
 
-        let mut low_pulse = 999;
-        let mut high_pulse = 0;
+    simulate(&connections, |i, _source, _target, pulse| {
+        match pulse {
+            Pulse::Low => low_pulse += 1,
+            Pulse::High => high_pulse += 1,
+        }
 
-        simulate(&connections, |i, _source, _target, pulse| {
-            match pulse {
-                Pulse::Low => low_pulse += 1,
-                Pulse::High => high_pulse += 1,
-            }
+        i < 1000
+    });
 
-            i < 1000
-        });
+    (low_pulse * high_pulse).into()
+}
 
-        (low_pulse * high_pulse).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let connections = parse_input(input);
+    let important_connections = important_connections(&connections);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let connections = parse_input(input);
-        let important_connections = important_connections(&connections);
+    let mut last_cycle = [0; 4];
+    let mut cycle_length = [0; 4];
 
-        let mut last_cycle = [0; 4];
-        let mut cycle_length = [0; 4];
+    simulate(&connections, |i, source, target, pulse| {
+        if target == "rg" && pulse == Pulse::High {
+            if let Some(idx) = important_connections.iter().position(|s| s == &source) {
+                let last = last_cycle[idx];
+                last_cycle[idx] = i;
+                cycle_length[idx] = (i - last + 1) as u64;
 
-        simulate(&connections, |i, source, target, pulse| {
-            if target == "rg" && pulse == Pulse::High {
-                if let Some(idx) = important_connections.iter().position(|s| s == &source) {
-                    let last = last_cycle[idx];
-                    last_cycle[idx] = i;
-                    cycle_length[idx] = (i - last + 1) as u64;
-
-                    if cycle_length.iter().all(|&i| i != 0) {
-                        return false;
-                    }
+                if cycle_length.iter().all(|&i| i != 0) {
+                    return false;
                 }
             }
+        }
 
-            true
-        });
+        true
+    });
 
-        cycle_length.iter().product::<u64>().into()
-    }
+    cycle_length.iter().product::<u64>().into()
 }
 
 fn simulate(
@@ -195,10 +189,7 @@ fn parse_input(input: &str) -> HashMap<&str, Connection<'_>> {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day20;
 
     const CASE: &str = indoc! {"
         broadcaster -> a, b, c
@@ -218,11 +209,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day20.part_a(CASE), 32000000.into());
+        assert_eq!(super::part_a(CASE), 32000000.into());
     }
 
     #[test]
     fn part_a_2() {
-        assert_eq!(Day20.part_a(CASE_2), 11687500.into());
+        assert_eq!(super::part_a(CASE_2), 11687500.into());
     }
 }

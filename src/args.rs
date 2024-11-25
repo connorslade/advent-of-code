@@ -25,7 +25,7 @@ pub enum Commands {
 #[derive(Parser)]
 pub struct RunArgs {
     /// The day to run
-    pub day: u32,
+    pub day: u8,
     /// The part to run, a or b
     pub part: Part,
     /// The year to run

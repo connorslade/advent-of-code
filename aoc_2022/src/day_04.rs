@@ -1,31 +1,25 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day04;
+solution!("Camp Cleanup", (2022, 00));
 
-impl ISolution for Day04 {
-    fn name(&self) -> &'static str {
-        "Camp Cleanup"
+fn part_a(input: &str) -> Answer {
+    let mut out = 0;
+
+    for (p1, p2) in assignment_loop(input) {
+        out += ((p1.0 >= p2.0 && p1.1 <= p2.1) || (p2.0 >= p1.0 && p2.1 <= p1.1)) as usize;
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut out = 0;
+    out.into()
+}
 
-        for (p1, p2) in assignment_loop(input) {
-            out += ((p1.0 >= p2.0 && p1.1 <= p2.1) || (p2.0 >= p1.0 && p2.1 <= p1.1)) as usize;
-        }
+fn part_b(input: &str) -> Answer {
+    let mut out = 0;
 
-        out.into()
+    for (p1, p2) in assignment_loop(input) {
+        out += (p1.0.max(p2.0) <= p1.1.min(p2.1)) as usize;
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut out = 0;
-
-        for (p1, p2) in assignment_loop(input) {
-            out += (p1.0.max(p2.0) <= p1.1.min(p2.1)) as usize;
-        }
-
-        out.into()
-    }
+    out.into()
 }
 
 fn assignment_loop(raw: &str) -> Vec<((u32, u32), (u32, u32))> {

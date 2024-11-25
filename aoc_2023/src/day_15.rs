@@ -1,51 +1,45 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use itertools::Itertools;
 
-pub struct Day15;
+solution!("Lens Library", (2023, 04));
 
-impl ISolution for Day15 {
-    fn name(&self) -> &'static str {
-        "Lens Library"
-    }
+fn part_a(input: &str) -> Answer {
+    input
+        .trim()
+        .split(',')
+        .map(|x| hash(x) as u32)
+        .sum::<u32>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        input
-            .trim()
-            .split(',')
-            .map(|x| hash(x) as u32)
-            .sum::<u32>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let input = parse(input);
+    let mut boxes = vec![Vec::new(); 256];
 
-    fn part_b(&self, input: &str) -> Answer {
-        let input = parse(input);
-        let mut boxes = vec![Vec::new(); 256];
-
-        for (label, focal_len) in input {
-            let key = hash(label) as usize;
-            if let Some(focal_len) = focal_len {
-                if let Some((_, e)) = boxes[key]
-                    .iter_mut()
-                    .find(|x: &&mut (&str, u32)| x.0 == label)
-                {
-                    *e = focal_len;
-                } else {
-                    boxes[key].push((label, focal_len));
-                }
+    for (label, focal_len) in input {
+        let key = hash(label) as usize;
+        if let Some(focal_len) = focal_len {
+            if let Some((_, e)) = boxes[key]
+                .iter_mut()
+                .find(|x: &&mut (&str, u32)| x.0 == label)
+            {
+                *e = focal_len;
             } else {
-                boxes[key].retain(|x| x.0 != label);
+                boxes[key].push((label, focal_len));
             }
+        } else {
+            boxes[key].retain(|x| x.0 != label);
         }
-
-        let mut acc = 0;
-        for (i, e) in boxes.iter().enumerate() {
-            for (j, f) in e.iter().enumerate() {
-                acc += (i + 1) * (j + 1) * f.1 as usize;
-            }
-        }
-
-        acc.into()
     }
+
+    let mut acc = 0;
+    for (i, e) in boxes.iter().enumerate() {
+        for (j, f) in e.iter().enumerate() {
+            acc += (i + 1) * (j + 1) * f.1 as usize;
+        }
+    }
+
+    acc.into()
 }
 
 fn parse(input: &str) -> Vec<(&str, Option<u32>)> {
@@ -70,10 +64,7 @@ fn hash(input: &str) -> u8 {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day15;
 
     const CASE: &str = indoc! {"
         rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7
@@ -81,11 +72,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day15.part_a(CASE), 1320.into());
+        assert_eq!(super::part_a(CASE), 1320.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day15.part_b(CASE), 145.into());
+        assert_eq!(super::part_b(CASE), 145.into());
     }
 }

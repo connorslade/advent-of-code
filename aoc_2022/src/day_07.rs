@@ -1,38 +1,32 @@
 use hashbrown::HashSet;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day07;
+solution!("No Space Left On Device", (2022, 00));
 
-impl ISolution for Day07 {
-    fn name(&self) -> &'static str {
-        "No Space Left On Device"
-    }
+fn part_a(input: &str) -> Answer {
+    process(input)
+        .get_all_children()
+        .iter()
+        .filter(|x| x.is_dir && x.size <= 100000)
+        .fold(0, |a, x| a + x.size)
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        process(input)
-            .get_all_children()
-            .iter()
-            .filter(|x| x.is_dir && x.size <= 100000)
-            .fold(0, |a, x| a + x.size)
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let folders = process(input);
+    let needed_space = 30000000 - (70000000 - folders.size);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let folders = process(input);
-        let needed_space = 30000000 - (70000000 - folders.size);
+    let folder_vec = folders.get_all_children();
+    let mut folder_vec = folder_vec.iter().collect::<Vec<_>>();
+    folder_vec.sort_by(|a, b| a.size.cmp(&b.size));
 
-        let folder_vec = folders.get_all_children();
-        let mut folder_vec = folder_vec.iter().collect::<Vec<_>>();
-        folder_vec.sort_by(|a, b| a.size.cmp(&b.size));
-
-        folder_vec
-            .iter()
-            .find(|x| x.is_dir && x.size > needed_space)
-            .unwrap()
-            .size
-            .into()
-    }
+    folder_vec
+        .iter()
+        .find(|x| x.is_dir && x.size > needed_space)
+        .unwrap()
+        .size
+        .into()
 }
 
 fn process(raw: &str) -> File {

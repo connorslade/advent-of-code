@@ -1,37 +1,31 @@
 use hashbrown::{hash_map::Entry, HashMap, HashSet};
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<isize>;
 
-pub struct Day23;
+solution!("Unstable Diffusion", (2022, 00));
 
-impl ISolution for Day23 {
-    fn name(&self) -> &'static str {
-        "Unstable Diffusion"
+fn part_a(input: &str) -> Answer {
+    let mut world = World::parse(input);
+
+    for _ in 0..10 {
+        world.tick();
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
+    world.count_blank().into()
+}
 
-        for _ in 0..10 {
-            world.tick();
-        }
+fn part_b(input: &str) -> Answer {
+    let mut world = World::parse(input);
+    let mut iters = 1;
 
-        world.count_blank().into()
+    while world.tick() {
+        iters += 1;
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
-        let mut iters = 1;
-
-        while world.tick() {
-            iters += 1;
-        }
-
-        iters.into()
-    }
+    iters.into()
 }
 
 // [North, South, West, East]
@@ -151,10 +145,9 @@ impl World {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
 
-    use super::{Day23, World};
+    use super::World;
 
     const CASE: &str = indoc! {"
         ..............
@@ -190,11 +183,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day23.part_a(CASE), 110.into());
+        assert_eq!(super::part_a(CASE), 110.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day23.part_b(CASE), 20.into());
+        assert_eq!(super::part_b(CASE), 20.into());
     }
 }

@@ -1,37 +1,31 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
 use nd_vec::vector;
 use rayon::prelude::*;
 
 type Point = nd_vec::Vec2<isize>;
 
-pub struct Day15;
+solution!("Beacon Exclusion Zone", (2022, 00));
 
-impl ISolution for Day15 {
-    fn name(&self) -> &'static str {
-        "Beacon Exclusion Zone"
-    }
+fn part_a(input: &str) -> Answer {
+    let world = World::parse(input);
+    let y_level = 2000000; // 10 for example
 
-    fn part_a(&self, input: &str) -> Answer {
-        let world = World::parse(input);
-        let y_level = 2000000; // 10 for example
+    let blocked = (world.bounds.0.x()..=world.bounds.1.x())
+        .into_par_iter()
+        .map(|x| vector!(x, y_level))
+        .filter(|x| world.is_sensed(*x))
+        .count();
 
-        let blocked = (world.bounds.0.x()..=world.bounds.1.x())
-            .into_par_iter()
-            .map(|x| vector!(x, y_level))
-            .filter(|x| world.is_sensed(*x))
-            .count();
+    (blocked - 1).into()
+}
 
-        (blocked - 1).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let world = World::parse(input);
+    let bounds = 4000000;
 
-    fn part_b(&self, input: &str) -> Answer {
-        let world = World::parse(input);
-        let bounds = 4000000;
-
-        let distress = world.search(bounds).expect("No distress beacon found");
-        (distress.x() * 4000000 + distress.y()).into()
-    }
+    let distress = world.search(bounds).expect("No distress beacon found");
+    (distress.x() * 4000000 + distress.y()).into()
 }
 
 struct World {

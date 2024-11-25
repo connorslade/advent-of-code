@@ -1,4 +1,4 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
 use hashbrown::HashMap;
 
@@ -8,94 +8,88 @@ const DIGITS: [&str; 10] = [
     "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
 ];
 
-pub struct Day08;
+solution!("Seven Segment Search", (2022, 00));
 
-impl ISolution for Day08 {
-    fn name(&self) -> &'static str {
-        "Seven Segment Search"
+fn part_a(input: &str) -> Answer {
+    let data = parse(input);
+    let mut inc = 0;
+
+    for i in data {
+        inc +=
+            i.1.iter()
+                .filter(|x| [2, 3, 4, 7].contains(&x.len()))
+                .count();
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let data = parse(input);
-        let mut inc = 0;
+    inc.into()
+}
 
-        for i in data {
-            inc +=
-                i.1.iter()
-                    .filter(|x| [2, 3, 4, 7].contains(&x.len()))
-                    .count();
-        }
+fn part_b(input: &str) -> Answer {
+    let data = parse(input);
+    let mut inc = 0;
 
-        inc.into()
-    }
+    let perms = permutations(CHARS.to_vec());
+    let mut sort_digits = DIGITS.to_vec();
+    sort_digits.sort_unstable();
 
-    fn part_b(&self, input: &str) -> Answer {
-        let data = parse(input);
-        let mut inc = 0;
+    for i in data {
+        for p in &perms {
+            let mut wires = HashMap::new();
 
-        let perms = permutations(CHARS.to_vec());
-        let mut sort_digits = DIGITS.to_vec();
-        sort_digits.sort_unstable();
+            for j in CHARS {
+                let pos = CHARS.iter().position(|x| *x == j).unwrap();
+                *wires.entry(j).or_insert(p[pos]) = p[pos];
+            }
 
-        for i in data {
-            for p in &perms {
-                let mut wires = HashMap::new();
-
-                for j in CHARS {
-                    let pos = CHARS.iter().position(|x| *x == j).unwrap();
-                    *wires.entry(j).or_insert(p[pos]) = p[pos];
+            let mut new_clues = Vec::new();
+            for clue in &i.0 {
+                let mut x = String::new();
+                for char in clue.chars() {
+                    x.push(*wires.get(&char).unwrap());
                 }
+                let mut to_sort = x.chars().collect::<Vec<char>>();
+                to_sort.sort_unstable();
+                new_clues.push(
+                    to_sort
+                        .iter()
+                        .map(|x| x.to_string())
+                        .collect::<Vec<String>>()
+                        .join(""),
+                );
+            }
+            new_clues.sort();
 
-                let mut new_clues = Vec::new();
-                for clue in &i.0 {
+            if new_clues == sort_digits {
+                let mut n = Vec::new();
+                for d in &i.1 {
                     let mut x = String::new();
-                    for char in clue.chars() {
+                    for char in d.chars() {
                         x.push(*wires.get(&char).unwrap());
                     }
                     let mut to_sort = x.chars().collect::<Vec<char>>();
                     to_sort.sort_unstable();
-                    new_clues.push(
-                        to_sort
-                            .iter()
-                            .map(|x| x.to_string())
-                            .collect::<Vec<String>>()
-                            .join(""),
-                    );
-                }
-                new_clues.sort();
-
-                if new_clues == sort_digits {
-                    let mut n = Vec::new();
-                    for d in &i.1 {
-                        let mut x = String::new();
-                        for char in d.chars() {
-                            x.push(*wires.get(&char).unwrap());
-                        }
-                        let mut to_sort = x.chars().collect::<Vec<char>>();
-                        to_sort.sort_unstable();
-                        x = to_sort
-                            .iter()
-                            .map(|x| x.to_string())
-                            .collect::<Vec<String>>()
-                            .join("");
-
-                        n.push(DIGITS.iter().position(|i| **i == x).unwrap());
-                    }
-
-                    inc += n
+                    x = to_sort
                         .iter()
                         .map(|x| x.to_string())
                         .collect::<Vec<String>>()
-                        .join("")
-                        .parse::<u32>()
-                        .unwrap();
-                    break;
+                        .join("");
+
+                    n.push(DIGITS.iter().position(|i| **i == x).unwrap());
                 }
+
+                inc += n
+                    .iter()
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>()
+                    .join("")
+                    .parse::<u32>()
+                    .unwrap();
+                break;
             }
         }
-
-        inc.into()
     }
+
+    inc.into()
 }
 
 fn parse(inp: &str) -> Vec<(Vec<String>, Vec<String>)> {

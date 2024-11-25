@@ -1,30 +1,24 @@
 use hashbrown::HashSet;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
-pub struct Day13;
+solution!("Transparent Origami", (2022, 00));
 
-impl ISolution for Day13 {
-    fn name(&self) -> &'static str {
-        "Transparent Origami"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut paper = Paper::parse(input);
+    paper.fold(0);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut paper = Paper::parse(input);
-        paper.fold(0);
+    paper.data.len().into()
+}
 
-        paper.data.len().into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut paper = Paper::parse(input);
+    (0..paper.folds.len()).for_each(|x| paper.fold(x));
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut paper = Paper::parse(input);
-        (0..paper.folds.len()).for_each(|x| paper.fold(x));
-
-        paper.print().into()
-    }
+    paper.print().into()
 }
 
 #[derive(Debug)]

@@ -8,12 +8,13 @@ use crate::{args::RunArgs, get_year};
 pub fn run(cmd: &RunArgs) -> Result<()> {
     let solutions = get_year(cmd.year);
     let solution = solutions
-        .get(cmd.day.saturating_sub(1) as usize)
+        .iter()
+        .find(|x| x.date.1 == cmd.day)
         .with_context(|| format!("No solution for day {} in year {}", cmd.day, cmd.year))?;
 
     println!(
         "[*] Running: {} ({})",
-        solution.name(),
+        solution.name,
         cmd.part.to_string().to_uppercase()
     );
 
@@ -32,8 +33,8 @@ pub fn run(cmd: &RunArgs) -> Result<()> {
 
     let start = Instant::now();
     let out = match cmd.part {
-        Part::A => solution.part_a(&input),
-        Part::B => solution.part_b(&input),
+        Part::A => (solution.part_a)(&input),
+        Part::B => (solution.part_b)(&input),
     };
 
     if cmd.raw {

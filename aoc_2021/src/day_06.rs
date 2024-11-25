@@ -1,25 +1,19 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
 use std::hash::Hash;
 
 use hashbrown::HashMap;
 
-pub struct Day06;
+solution!("Lanternfish", (2022, 00));
 
-impl ISolution for Day06 {
-    fn name(&self) -> &'static str {
-        "Lanternfish"
-    }
+fn part_a(input: &str) -> Answer {
+    let data = Fish::parse_inp(input);
+    Fish::sim(data, 80).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let data = Fish::parse_inp(input);
-        Fish::sim(data, 80).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let data = Fish::parse_inp(input);
-        Fish::sim(data, 256).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let data = Fish::parse_inp(input);
+    Fish::sim(data, 256).into()
 }
 
 #[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]

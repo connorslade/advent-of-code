@@ -1,63 +1,57 @@
 use std::collections::HashMap;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day08;
+solution!("Haunted Wasteland", (2023, 04));
 
-impl ISolution for Day08 {
-    fn name(&self) -> &'static str {
-        "Haunted Wasteland"
+/// Just start at `AAA` and follow the instructions until you reach `ZZZ`.
+fn part_a(input: &str) -> Answer {
+    let map = parse(input);
+
+    let mut i = 0;
+    let mut pos = "AAA";
+    loop {
+        pos = map.get(pos, i);
+        i += 1;
+
+        if pos == "ZZZ" {
+            break;
+        }
     }
 
-    /// Just start at `AAA` and follow the instructions until you reach `ZZZ`.
-    fn part_a(&self, input: &str) -> Answer {
-        let map = parse(input);
+    i.into()
+}
 
+/// Get the cycle length for each starting position, this is the number of positions you need to get from `AAA` to `ZZZ`.
+fn part_b(input: &str) -> Answer {
+    let map = parse(input);
+
+    let mut pos = Vec::new();
+    for &id in map.nodes.keys() {
+        if id.ends_with('A') {
+            pos.push(id);
+        }
+    }
+
+    let mut cycles = Vec::new();
+    for mut pos in pos {
+        let mut cycle_len = 0;
         let mut i = 0;
-        let mut pos = "AAA";
         loop {
             pos = map.get(pos, i);
             i += 1;
 
-            if pos == "ZZZ" {
+            cycle_len += 1;
+            if pos.ends_with('Z') {
+                cycles.push(cycle_len);
                 break;
             }
         }
-
-        i.into()
     }
 
-    /// Get the cycle length for each starting position, this is the number of positions you need to get from `AAA` to `ZZZ`.
-    fn part_b(&self, input: &str) -> Answer {
-        let map = parse(input);
-
-        let mut pos = Vec::new();
-        for &id in map.nodes.keys() {
-            if id.ends_with('A') {
-                pos.push(id);
-            }
-        }
-
-        let mut cycles = Vec::new();
-        for mut pos in pos {
-            let mut cycle_len = 0;
-            let mut i = 0;
-            loop {
-                pos = map.get(pos, i);
-                i += 1;
-
-                cycle_len += 1;
-                if pos.ends_with('Z') {
-                    cycles.push(cycle_len);
-                    break;
-                }
-            }
-        }
-
-        // Note: This works because the cycle lengths are all prime numbers.
-        // This was not described in the problem, but should be true for all inputs.
-        cycles.into_iter().product::<i32>().into()
-    }
+    // Note: This works because the cycle lengths are all prime numbers.
+    // This was not described in the problem, but should be true for all inputs.
+    cycles.into_iter().product::<i32>().into()
 }
 
 #[derive(Debug)]
@@ -101,10 +95,7 @@ fn parse(input: &str) -> Map {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day08;
 
     const CASE_A: &str = indoc! {"
         LLR
@@ -129,11 +120,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day08.part_a(CASE_A), 6.into());
+        assert_eq!(super::part_a(CASE_A), 6.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day08.part_b(CASE_B), 6.into());
+        assert_eq!(super::part_b(CASE_B), 6.into());
     }
 }

@@ -2,27 +2,22 @@ use hashbrown::HashSet;
 use nd_vec::vector;
 use std::collections::VecDeque;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
 type Point = nd_vec::Vec2<isize>;
-pub struct Day22;
 
-impl ISolution for Day22 {
-    fn name(&self) -> &'static str {
-        "Monkey Map"
-    }
+solution!("Monkey Map", (2022, 00));
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
-        world.run(wrap_2d);
-        world.password().into()
-    }
+fn part_a(input: &str) -> Answer {
+    let mut world = World::parse(input);
+    world.run(wrap_2d);
+    world.password().into()
+}
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut world = World::parse(input);
-        world.run(wrap_3d);
-        world.password().into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut world = World::parse(input);
+    world.run(wrap_3d);
+    world.password().into()
 }
 
 #[derive(Debug)]
@@ -217,10 +212,8 @@ fn wrap_3d(world: &World, mut _pos: Point) -> Option<(Point, Direction)> {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
+    use common::solution;
     use indoc::indoc;
-
-    use super::Day22;
 
     const CASE: &str = indoc! {"
                 ...#
@@ -241,12 +234,12 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day22.part_a(CASE), 6032.into());
+        assert_eq!(super::part_a(CASE), 6032.into());
     }
 
     // #[test]
     // fn part_b() {
-    //     assert_eq!(Day22.part_b(CASE), 5031.into());
+    //     assert_eq!(super::part_b(CASE), 5031.into());
     // }
 }
 

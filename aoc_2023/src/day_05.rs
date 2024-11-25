@@ -1,50 +1,44 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use rayon::{iter::ParallelIterator, slice::ParallelSlice};
 
-pub struct Day05;
+solution!("If You Give A Seed A Fertilizer", (2023, 05));
 
-impl ISolution for Day05 {
-    fn name(&self) -> &'static str {
-        "If You Give A Seed A Fertilizer"
-    }
+fn part_a(input: &str) -> Answer {
+    let seeds = parse(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let seeds = parse(input);
-
-        let mut min = u32::MAX;
-        for mut seed in seeds.seeds {
-            for map in &seeds.maps {
-                seed = map.map(seed);
-            }
-            min = min.min(seed);
+    let mut min = u32::MAX;
+    for mut seed in seeds.seeds {
+        for map in &seeds.maps {
+            seed = map.map(seed);
         }
-
-        min.into()
+        min = min.min(seed);
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let seeds = parse(input);
+    min.into()
+}
 
-        // eh its fast enough
-        // ~1min on my machine
-        seeds
-            .seeds
-            .par_chunks_exact(2)
-            .map(|seed| {
-                let mut min = u32::MAX;
-                for mut seed in seed[0]..=seed[0] + seed[1] {
-                    for map in &seeds.maps {
-                        seed = map.map(seed);
-                    }
+fn part_b(input: &str) -> Answer {
+    let seeds = parse(input);
 
-                    min = min.min(seed);
+    // eh its fast enough
+    // ~1min on my machine
+    seeds
+        .seeds
+        .par_chunks_exact(2)
+        .map(|seed| {
+            let mut min = u32::MAX;
+            for mut seed in seed[0]..=seed[0] + seed[1] {
+                for map in &seeds.maps {
+                    seed = map.map(seed);
                 }
-                min
-            })
-            .min()
-            .unwrap()
-            .into()
-    }
+
+                min = min.min(seed);
+            }
+            min
+        })
+        .min()
+        .unwrap()
+        .into()
 }
 
 #[derive(Debug)]
@@ -117,10 +111,7 @@ impl Map {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day05;
 
     const CASE: &str = indoc! {"
         seeds: 79 14 55 13
@@ -161,11 +152,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day05.part_a(CASE), 35.into());
+        assert_eq!(super::part_a(CASE), 35.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day05.part_b(CASE), 46.into());
+        assert_eq!(super::part_b(CASE), 46.into());
     }
 }

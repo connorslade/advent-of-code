@@ -1,4 +1,5 @@
-pub use common::ISolution;
+pub use common::solution;
+use common::Solution;
 
 mod day_01;
 mod day_02;
@@ -17,21 +18,21 @@ mod day_14;
 mod day_15;
 // [import_marker]
 
-pub const ALL: &[&dyn ISolution] = &[
-    &day_01::Day01,
-    &day_02::Day02,
-    &day_03::Day03,
-    &day_04::Day04,
-    &day_05::Day05,
-    &day_06::Day06,
-    &day_07::Day07,
-    &day_08::Day08,
-    &day_09::Day09,
-    &day_10::Day10,
-    &day_11::Day11,
-    &day_12::Day12,
-    &day_13::Day13,
-    &day_14::Day14,
-    &day_15::Day15,
+pub const SOLUTIONS: &[Solution] = &[
+    day_01::SOLUTION,
+    day_02::SOLUTION,
+    day_03::SOLUTION,
+    day_04::SOLUTION,
+    day_05::SOLUTION,
+    day_06::SOLUTION,
+    day_07::SOLUTION,
+    day_08::SOLUTION,
+    day_09::SOLUTION,
+    day_10::SOLUTION,
+    day_11::SOLUTION,
+    day_12::SOLUTION,
+    day_13::SOLUTION,
+    day_14::SOLUTION,
+    day_15::SOLUTION,
     // [list_marker]
 ];

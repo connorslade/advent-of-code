@@ -1,27 +1,21 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day09;
+solution!("Mirage Maintenance", (2023, 04));
 
-impl ISolution for Day09 {
-    fn name(&self) -> &'static str {
-        "Mirage Maintenance"
-    }
+fn part_a(input: &str) -> Answer {
+    parse(input)
+        .iter()
+        .map(Sequence::predict)
+        .sum::<i64>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        parse(input)
-            .iter()
-            .map(Sequence::predict)
-            .sum::<i64>()
-            .into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        parse(input)
-            .into_iter()
-            .map(|x| x.reverse().predict())
-            .sum::<i64>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    parse(input)
+        .into_iter()
+        .map(|x| x.reverse().predict())
+        .sum::<i64>()
+        .into()
 }
 
 struct Sequence {
@@ -72,10 +66,7 @@ impl Sequence {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day09;
 
     const CASE: &str = indoc! {"
         0 3 6 9 12 15
@@ -85,11 +76,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day09.part_a(CASE), 114.into());
+        assert_eq!(super::part_a(CASE), 114.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day09.part_b(CASE), 2.into());
+        assert_eq!(super::part_b(CASE), 2.into());
     }
 }

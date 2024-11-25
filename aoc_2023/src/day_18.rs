@@ -1,21 +1,15 @@
 use aoc_lib::direction::Direction;
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
-pub struct Day18;
+solution!("Lavaduct Lagoon", (2023, 04));
 
-impl ISolution for Day18 {
-    fn name(&self) -> &'static str {
-        "Lavaduct Lagoon"
-    }
+fn part_a(input: &str) -> Answer {
+    solve(parse_a(input)).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        solve(parse_a(input)).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        solve(parse_b(input)).into()
-    }
+fn part_b(input: &str) -> Answer {
+    solve(parse_b(input)).into()
 }
 
 fn solve(instructions: Vec<(Direction, u32)>) -> i64 {
@@ -84,10 +78,7 @@ fn parse_a(input: &str) -> Vec<(Direction, u32)> {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day18;
 
     const CASE: &str = indoc! {"
         R 6 (#70c710)
@@ -108,11 +99,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day18.part_a(CASE), 62.into());
+        assert_eq!(super::part_a(CASE), 62.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day18.part_b(CASE), 952408144115i64.into());
+        assert_eq!(super::part_b(CASE), 952408144115i64.into());
     }
 }

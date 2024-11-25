@@ -1,34 +1,28 @@
 use std::collections::VecDeque;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
-pub struct Day12;
+solution!("Hill Climbing Algorithm", (2022, 00));
 
-impl ISolution for Day12 {
-    fn name(&self) -> &'static str {
-        "Hill Climbing Algorithm"
-    }
+fn part_a(input: &str) -> Answer {
+    let map = parse(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let map = parse(input);
+    run_path(&map, |a, b| a <= b + 1, |c| c == map.end)
+        .unwrap()
+        .into()
+}
 
-        run_path(&map, |a, b| a <= b + 1, |c| c == map.end)
-            .unwrap()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut map = parse(input);
+    map.start = map.end;
+    map.current = map.start;
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut map = parse(input);
-        map.start = map.end;
-        map.current = map.start;
-
-        run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y()][c.x()] == 0)
-            .expect("No path found!?")
-            .into()
-    }
+    run_path(&map, |a, b| b <= a + 1, |c| map.data[c.y()][c.x()] == 0)
+        .expect("No path found!?")
+        .into()
 }
 
 fn run_path(

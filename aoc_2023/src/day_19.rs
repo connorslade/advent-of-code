@@ -1,65 +1,59 @@
 use std::collections::HashMap;
 
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day19;
+solution!("Aplenty", (2023, 04));
 
-impl ISolution for Day19 {
-    fn name(&self) -> &'static str {
-        "Aplenty"
-    }
+fn part_a(input: &str) -> Answer {
+    let (rules, shapes) = parse(input);
+    let mut out = 0;
 
-    fn part_a(&self, input: &str) -> Answer {
-        let (rules, shapes) = parse(input);
-        let mut out = 0;
+    for shape in shapes {
+        let mut workflow = "in";
 
-        for shape in shapes {
-            let mut workflow = "in";
-
-            loop {
-                let current_workflow = rules.get(workflow).unwrap();
-                for rule in current_workflow {
-                    match rule {
-                        Rule::Comparison {
-                            field,
-                            comparison,
-                            value,
-                            destination,
-                        } => {
-                            let val = shape[*field];
-                            if match comparison {
-                                Comparison::LessThan => val < *value,
-                                Comparison::GreaterThan => val > *value,
-                            } {
-                                workflow = destination;
-                                break;
-                            }
-                        }
-                        Rule::Default { destination } => {
+        loop {
+            let current_workflow = rules.get(workflow).unwrap();
+            for rule in current_workflow {
+                match rule {
+                    Rule::Comparison {
+                        field,
+                        comparison,
+                        value,
+                        destination,
+                    } => {
+                        let val = shape[*field];
+                        if match comparison {
+                            Comparison::LessThan => val < *value,
+                            Comparison::GreaterThan => val > *value,
+                        } {
                             workflow = destination;
                             break;
                         }
                     }
-                }
-
-                if workflow == "A" {
-                    out += shape.iter().sum::<u32>();
-                    break;
-                } else if workflow == "R" {
-                    break;
+                    Rule::Default { destination } => {
+                        workflow = destination;
+                        break;
+                    }
                 }
             }
+
+            if workflow == "A" {
+                out += shape.iter().sum::<u32>();
+                break;
+            } else if workflow == "R" {
+                break;
+            }
         }
-
-        out.into()
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let (rules, _) = parse(input);
+    out.into()
+}
 
-        let range = [(1, 4000); 4];
-        solve_b(&rules, range, "in").into()
-    }
+fn part_b(input: &str) -> Answer {
+    let (rules, _) = parse(input);
+
+    let range = [(1, 4000); 4];
+    solve_b(&rules, range, "in").into()
 }
 
 fn solve_b(rules: &HashMap<&str, Vec<Rule>>, mut range: [(u32, u32); 4], map: &str) -> u64 {
@@ -189,10 +183,7 @@ fn field_idx(field: &str) -> usize {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day19;
 
     const CASE: &str = indoc! {"
         px{a<2006:qkq,m>2090:A,rfg}
@@ -216,11 +207,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day19.part_a(CASE), 19114.into());
+        assert_eq!(super::part_a(CASE), 19114.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day19.part_b(CASE), 167409079868000_u64.into());
+        assert_eq!(super::part_b(CASE), 167409079868000_u64.into());
     }
 }

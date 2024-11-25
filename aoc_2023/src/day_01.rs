@@ -1,12 +1,6 @@
-use common::{Answer, ISolution, Solution};
+use common::{solution, Answer};
 
-pub const SOLUTION: Solution = Solution {
-    name: "Trebuchet?!",
-    date: (2023, 01),
-
-    part_a,
-    part_b,
-};
+solution!("Trebuchet?!", (2023, 01));
 
 const DIGITS: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
@@ -61,7 +55,6 @@ fn digits(i: &str) -> [u32; 2] {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
 
     const CASE_A: &str = indoc! {"

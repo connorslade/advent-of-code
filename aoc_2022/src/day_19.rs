@@ -1,39 +1,33 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use hashbrown::HashMap;
 
-pub struct Day19;
+solution!("Not Enough Minerals ", (2022, 00));
 
-impl ISolution for Day19 {
-    fn name(&self) -> &'static str {
-        "Not Enough Minerals "
+fn part_a(input: &str) -> Answer {
+    let robots = parse(input);
+
+    let mut geodes = Vec::new();
+    for i in robots.into_iter() {
+        geodes.push(simulate(State::new(), 24, i, &mut HashMap::new(), &mut 0));
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let robots = parse(input);
+    geodes
+        .iter()
+        .enumerate()
+        .map(|(i, &e)| e as u32 * (1 + i as u32))
+        .sum::<u32>()
+        .into()
+}
 
-        let mut geodes = Vec::new();
-        for i in robots.into_iter() {
-            geodes.push(simulate(State::new(), 24, i, &mut HashMap::new(), &mut 0));
-        }
+fn part_b(input: &str) -> Answer {
+    let robots = parse(input);
 
-        geodes
-            .iter()
-            .enumerate()
-            .map(|(i, &e)| e as u32 * (1 + i as u32))
-            .sum::<u32>()
-            .into()
+    let mut result = 1;
+    for i in robots.into_iter().take(3) {
+        result *= simulate(State::new(), 32, i, &mut HashMap::new(), &mut 0) as u32;
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let robots = parse(input);
-
-        let mut result = 1;
-        for i in robots.into_iter().take(3) {
-            result *= simulate(State::new(), 32, i, &mut HashMap::new(), &mut 0) as u32;
-        }
-
-        result.into()
-    }
+    result.into()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -197,8 +191,7 @@ impl RobotType {
 mod test {
     use indoc::indoc;
 
-    use super::Day19;
-    use common::ISolution;
+    use common::solution;
 
     const CASE: &str = indoc! {"
         Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
@@ -207,6 +200,6 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day19.part_a(CASE), 33.into());
+        assert_eq!(super::part_a(CASE), 33.into());
     }
 }

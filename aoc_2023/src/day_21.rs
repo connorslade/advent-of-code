@@ -1,81 +1,75 @@
 use std::collections::HashSet;
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
 use polynomial::Polynomial;
 
-pub struct Day21;
+solution!("Step Counter", (2023, 04));
 
-impl ISolution for Day21 {
-    fn name(&self) -> &'static str {
-        "Step Counter"
-    }
+fn part_a(input: &str) -> Answer {
+    let map = parse(input);
+    let mut pos = HashSet::new();
+    pos.insert(map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap());
 
-    fn part_a(&self, input: &str) -> Answer {
-        let map = parse(input);
-        let mut pos = HashSet::new();
-        pos.insert(map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap());
+    for _ in 0..64 {
+        let mut new_pos = HashSet::new();
 
-        for _ in 0..64 {
-            let mut new_pos = HashSet::new();
-
-            for p in pos {
-                for dir in Direction::ALL {
-                    let new_p = dir.advance(p);
-                    if !map.contains(new_p)
-                        || *map.get(new_p.num_cast().unwrap()).unwrap() != Tile::Wall
-                    {
-                        new_pos.insert(new_p);
-                    }
+        for p in pos {
+            for dir in Direction::ALL {
+                let new_p = dir.advance(p);
+                if !map.contains(new_p)
+                    || *map.get(new_p.num_cast().unwrap()).unwrap() != Tile::Wall
+                {
+                    new_pos.insert(new_p);
                 }
             }
-
-            pos = new_pos;
         }
 
-        pos.len().into()
+        pos = new_pos;
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let map = parse(input);
-        let start = map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap();
-        let size = map.size.num_cast::<i32>().unwrap();
+    pos.len().into()
+}
 
-        let mut pos = HashSet::new();
-        pos.insert(start);
+fn part_b(input: &str) -> Answer {
+    let map = parse(input);
+    let start = map.find(Tile::Start).unwrap().num_cast::<i32>().unwrap();
+    let size = map.size.num_cast::<i32>().unwrap();
 
-        let mut points = Vec::new();
-        for i in 0.. {
-            let mut new_pos = HashSet::new();
+    let mut pos = HashSet::new();
+    pos.insert(start);
 
-            if i % size.x() == 65 {
-                points.push((i, pos.len()));
-                if points.len() >= 3 {
-                    break;
-                }
+    let mut points = Vec::new();
+    for i in 0.. {
+        let mut new_pos = HashSet::new();
+
+        if i % size.x() == 65 {
+            points.push((i, pos.len()));
+            if points.len() >= 3 {
+                break;
             }
-
-            for p in pos {
-                for dir in Direction::ALL {
-                    let new_p = dir.advance(p);
-                    let mapped = map_pos(new_p, size);
-                    if *map.get(mapped).unwrap() != Tile::Wall {
-                        new_pos.insert(new_p);
-                    }
-                }
-            }
-
-            pos = new_pos;
         }
 
-        let x = points.iter().map(|x| x.0 as f64).collect::<Vec<_>>();
-        let y = points.iter().map(|x| x.1 as f64).collect::<Vec<_>>();
-        let poly = Polynomial::lagrange(&x, &y).unwrap();
+        for p in pos {
+            for dir in Direction::ALL {
+                let new_p = dir.advance(p);
+                let mapped = map_pos(new_p, size);
+                if *map.get(mapped).unwrap() != Tile::Wall {
+                    new_pos.insert(new_p);
+                }
+            }
+        }
 
-        poly.eval(26501365.0).round().into()
+        pos = new_pos;
     }
+
+    let x = points.iter().map(|x| x.0 as f64).collect::<Vec<_>>();
+    let y = points.iter().map(|x| x.1 as f64).collect::<Vec<_>>();
+    let poly = Polynomial::lagrange(&x, &y).unwrap();
+
+    poly.eval(26501365.0).round().into()
 }
 
 fn map_pos(pos: Vec2<i32>, size: Vec2<i32>) -> Vec2<usize> {
@@ -103,10 +97,7 @@ fn parse(input: &str) -> Matrix<Tile> {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
-
-    use super::Day21;
 
     const CASE: &str = indoc! {"
         ...........
@@ -124,6 +115,6 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day21.part_a(CASE), 4056.into());
+        assert_eq!(super::part_a(CASE), 4056.into());
     }
 }

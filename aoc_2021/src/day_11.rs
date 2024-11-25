@@ -1,37 +1,31 @@
-use common::{Answer, ISolution};
+use common::{solution, Answer};
 
-pub struct Day11;
+solution!("Dumbo Octopus", (2022, 00));
 
-impl ISolution for Day11 {
-    fn name(&self) -> &'static str {
-        "Dumbo Octopus"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut octopi = parse(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut octopi = parse(input);
+    (0..100)
+        .map(|_| step_octopi(&mut octopi))
+        .sum::<usize>()
+        .into()
+}
 
-        (0..100)
-            .map(|_| step_octopi(&mut octopi))
-            .sum::<usize>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut octopi = parse(input);
+    let octopi_count = octopi.len() * octopi[0].len();
+    let mut i = 0;
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut octopi = parse(input);
-        let octopi_count = octopi.len() * octopi[0].len();
-        let mut i = 0;
+    loop {
+        i += 1;
 
-        loop {
-            i += 1;
-
-            let flash = step_octopi(&mut octopi);
-            if flash == octopi_count {
-                break;
-            }
+        let flash = step_octopi(&mut octopi);
+        if flash == octopi_count {
+            break;
         }
-
-        i.into()
     }
+
+    i.into()
 }
 
 struct Octopus {

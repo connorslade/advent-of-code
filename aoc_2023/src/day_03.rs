@@ -1,18 +1,12 @@
 use std::collections::HashMap;
 
 use aoc_lib::regex;
-use common::{Answer, ISolution, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<usize>;
 
-pub const SOLUTION: Solution = Solution {
-    name: "Gear Ratios",
-    date: (2023, 03),
-
-    part_a,
-    part_b,
-};
+solution!("Gear Ratios", (2023, 03));
 
 fn part_a(input: &str) -> Answer {
     parse(input)
@@ -83,7 +77,6 @@ struct Gear {
 
 #[cfg(test)]
 mod test {
-    use common::ISolution;
     use indoc::indoc;
 
     const CASE: &str = indoc! {"
