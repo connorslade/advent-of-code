@@ -1,0 +1,21 @@
+name: aoc_2024
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "common/**"
+      - "aoc_2024/**"
+
+env:
+  CRATE: aoc_2024
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cargo build -p ${{ env.CRATE }}
+      - name: Test
+        run: cargo test -p ${{ env.CRATE }}

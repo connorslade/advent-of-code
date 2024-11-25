@@ -1,9 +1,13 @@
-# 🎄 Advent-Of-Code [![bin](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/bin.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/bin.yml) ![GitHub last commit](https://img.shields.io/github/last-commit/Basicprogrammer10/advent-of-code)
+# 🎄 Advent-Of-Code [![bin](https://github.com/connorslade/advent-of-code/actions/workflows/bin.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/bin.yml) ![GitHub last commit](https://img.shields.io/github/last-commit/connorslade/advent-of-code)
 
 My Rusty solutions to [Advent Of Code](https://adventofcode.com)!
 Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly event!
 
-## [2023](https://adventofcode.com/2022) [![aoc_2023](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2023.yml)
+## [2024](https://adventofcode.com/2024) [![aoc_2024](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml)
+
+<!-- MARKER -->
+
+## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
 
 - [Day 01: Trebuchet?!](aoc_2023/src/day_01.rs)
 - [Day 02: Cube Conundrum](aoc_2023/src/day_02.rs)
@@ -30,9 +34,8 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 23: A Long Walk](aoc_2023/src/day_23.rs)
 - [Day 24: Never Tell Me The Odds](aoc_2023/src/day_24.rs)
 - [Day 25: Snowverload](aoc_2023/src/day_25.rs)
-<!-- MARKER -->
 
-## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2022.yml)
+## [2022](https://adventofcode.com/2022) [![aoc_2022](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2022.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2022.yml)
 
 - [Day 01: Calorie Counting](aoc_2022/src/day_01.rs)
 - [Day 02: Rock Paper Scissors](aoc_2022/src/day_02.rs)
@@ -60,7 +63,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 24: Blizzard Basin](aoc_2022/src/day_24.rs)
 - [Day 25: Monkey Math](aoc_2022/src/day_25.rs)
 
-## [2021](https://adventofcode.com/2021) [![aoc_2021](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2021.yml/badge.svg)](https://github.com/Basicprogrammer10/advent-of-code/actions/workflows/aoc_2021.yml)
+## [2021](https://adventofcode.com/2021) [![aoc_2021](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2021.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2021.yml)
 
 - [Day 01: Sonar Sweep](aoc_2021/src/day_01.rs)
 - [Day 02: Dive!](aoc_2021/src/day_02.rs)
