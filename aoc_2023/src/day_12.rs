@@ -1,29 +1,23 @@
 use std::collections::HashMap;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day12;
+solution!("Hot Springs", 12);
 
-impl Solution for Day12 {
-    fn name(&self) -> &'static str {
-        "Hot Springs"
-    }
+fn part_a(input: &str) -> Answer {
+    parse(input)
+        .iter()
+        .map(|s| s.arrangements())
+        .sum::<usize>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        parse(input)
-            .iter()
-            .map(|s| s.arrangements())
-            .sum::<usize>()
-            .into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        parse(input)
-            .iter()
-            .map(|s| s.expand().arrangements())
-            .sum::<usize>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    parse(input)
+        .iter()
+        .map(|s| s.expand().arrangements())
+        .sum::<usize>()
+        .into()
 }
 
 #[derive(Debug, Clone)]
@@ -102,10 +96,7 @@ impl Spring {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day12;
 
     const CASE: &str = indoc! {"
         ???.### 1,1,3
@@ -118,11 +109,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day12.part_a(CASE), 21.into());
+        assert_eq!(super::part_a(CASE), 21.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day12.part_b(CASE), 525152.into());
+        assert_eq!(super::part_b(CASE), 525152.into());
     }
 }

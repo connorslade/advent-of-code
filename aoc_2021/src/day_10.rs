@@ -1,81 +1,75 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
-pub struct Day10;
+solution!("Syntax Scoring", 10);
 
-impl Solution for Day10 {
-    fn name(&self) -> &'static str {
-        "Syntax Scoring"
+fn part_a(input: &str) -> Answer {
+    let data = parse(input);
+
+    let mut total = 0;
+    for i in data {
+        let mut closeing = Vec::new();
+        for j in i.chars() {
+            if char_contains_key(j) {
+                closeing.push(char_for_char(j));
+                continue;
+            }
+
+            if closeing.is_empty() || j != closeing.pop().unwrap() {
+                total += match j {
+                    ')' => 3,
+                    ']' => 57,
+                    '}' => 1197,
+                    '>' => 25137,
+                    _ => unreachable!(),
+                };
+                break;
+            }
+        }
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let data = parse(input);
+    total.into()
+}
 
-        let mut total = 0;
-        for i in data {
-            let mut closeing = Vec::new();
-            for j in i.chars() {
-                if char_contains_key(j) {
-                    closeing.push(char_for_char(j));
-                    continue;
-                }
+fn part_b(input: &str) -> Answer {
+    let data = parse(input);
 
-                if closeing.is_empty() || j != closeing.pop().unwrap() {
-                    total += match j {
-                        ')' => 3,
-                        ']' => 57,
-                        '}' => 1197,
-                        '>' => 25137,
+    let mut scores = Vec::new();
+    for i in data {
+        let mut queue = Vec::new();
+        let mut is_corrupted = false;
+        for j in i.chars() {
+            if char_contains_key(j) {
+                queue.push(char_for_char(j));
+                continue;
+            }
+
+            if queue.is_empty() || j != queue.pop().unwrap() {
+                is_corrupted = true;
+                break;
+            }
+        }
+
+        if !is_corrupted {
+            let mut score = 0;
+            while let Some(ch) = queue.pop() {
+                score = 5 * score
+                    + match ch {
+                        ')' => 1,
+                        ']' => 2,
+                        '}' => 3,
+                        '>' => 4,
                         _ => unreachable!(),
                     };
-                    break;
-                }
             }
+            scores.push(score);
         }
-
-        total.into()
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let data = parse(input);
-
-        let mut scores = Vec::new();
-        for i in data {
-            let mut queue = Vec::new();
-            let mut is_corrupted = false;
-            for j in i.chars() {
-                if char_contains_key(j) {
-                    queue.push(char_for_char(j));
-                    continue;
-                }
-
-                if queue.is_empty() || j != queue.pop().unwrap() {
-                    is_corrupted = true;
-                    break;
-                }
-            }
-
-            if !is_corrupted {
-                let mut score = 0;
-                while let Some(ch) = queue.pop() {
-                    score = 5 * score
-                        + match ch {
-                            ')' => 1,
-                            ']' => 2,
-                            '}' => 3,
-                            '>' => 4,
-                            _ => unreachable!(),
-                        };
-                }
-                scores.push(score);
-            }
-        }
-
-        scores.sort_unstable();
-        let mid = scores.len() / 2;
-        scores[mid].into()
-    }
+    scores.sort_unstable();
+    let mid = scores.len() / 2;
+    scores[mid].into()
 }
 
 fn parse(lines: &str) -> Vec<String> {

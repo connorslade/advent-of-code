@@ -4,25 +4,19 @@ use std::{
 };
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
+
+solution!("A Long Walk", 23);
 
 type Pos = Vec2<usize>;
 
-pub struct Day23;
+fn part_a(input: &str) -> Answer {
+    solve_a(&parse(input), &mut HashSet::new(), vector!(1, 0), 0).into()
+}
 
-impl Solution for Day23 {
-    fn name(&self) -> &'static str {
-        "A Long Walk"
-    }
-
-    fn part_a(&self, input: &str) -> Answer {
-        solve_a(&parse(input), &mut HashSet::new(), vector!(1, 0), 0).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        solve_b(&parse(input)).into()
-    }
+fn part_b(input: &str) -> Answer {
+    solve_b(&parse(input)).into()
 }
 
 // Simple DFS to find the longest path for part A
@@ -145,10 +139,7 @@ fn dir_matches(dir: Direction, chr: char) -> bool {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day23;
 
     const CASE: &str = indoc! {"
         #.#####################
@@ -178,11 +169,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day23.part_a(CASE), 94.into());
+        assert_eq!(super::part_a(CASE), 94.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day23.part_b(CASE), 154.into());
+        assert_eq!(super::part_b(CASE), 154.into());
     }
 }

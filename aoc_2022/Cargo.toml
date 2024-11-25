@@ -9,7 +9,7 @@ derive_more = "0.99.17"
 hashbrown = "0.13.1"
 indoc = "2.0.4"
 # nd_vec = "0.4.0"
-nd_vec = { git = "https://github.com/Basicprogrammer10/nd-vec" }
+nd_vec = { git = "https://github.com/connorslade/nd-vec" }
 num-traits = "0.2.15"
 pathfinding = "4.3.3"
 petgraph = "0.6.2"

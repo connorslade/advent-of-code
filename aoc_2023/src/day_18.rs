@@ -1,21 +1,15 @@
 use aoc_lib::direction::Direction;
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
-pub struct Day18;
+solution!("Lavaduct Lagoon", 18);
 
-impl Solution for Day18 {
-    fn name(&self) -> &'static str {
-        "Lavaduct Lagoon"
-    }
+fn part_a(input: &str) -> Answer {
+    solve(parse_a(input)).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        solve(parse_a(input)).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        solve(parse_b(input)).into()
-    }
+fn part_b(input: &str) -> Answer {
+    solve(parse_b(input)).into()
 }
 
 fn solve(instructions: Vec<(Direction, u32)>) -> i64 {
@@ -23,14 +17,26 @@ fn solve(instructions: Vec<(Direction, u32)>) -> i64 {
     let mut perimeter = 0;
     let mut area = 0;
 
+    // Shoelace formula (Trapezoid formula) to get area of polygon.
+    // (The perimeter is also calculated here by just adding all the side lengths)
     for (dir, steps) in instructions.into_iter() {
-        let cng = dir.as_vector() * (steps as i64);
-        pos += cng;
-
+        // Update the perimeter.
         perimeter += steps as i64;
+
+        // Get the change in position from the direction and steps.
+        let cng = dir.as_vector() * (steps as i64);
+        // Update the position.
+        pos += cng;
+        // Update the area using the new x coordinate and the change in y.
         area += pos.x() * cng.y();
     }
 
+    // Uses Pick's theorem to calculate the area of the polygon.
+    // This is because we are looking for the number of cube segments the lagoon can hold rather than the volume.
+    //
+    // area = inner + perimeter / 2 - 1
+    // inner = area - perimeter / 2 + 1
+    // inner + perimeter = area + perimeter / 2 + 1
     area + perimeter / 2 + 1
 }
 
@@ -72,10 +78,7 @@ fn parse_a(input: &str) -> Vec<(Direction, u32)> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day18;
 
     const CASE: &str = indoc! {"
         R 6 (#70c710)
@@ -96,11 +99,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day18.part_a(CASE), 62.into());
+        assert_eq!(super::part_a(CASE), 62.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day18.part_b(CASE), 952408144115i64.into());
+        assert_eq!(super::part_b(CASE), 952408144115i64.into());
     }
 }

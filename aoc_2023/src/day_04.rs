@@ -1,43 +1,37 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day04;
+solution!("Scratchcards", 4);
 
-impl Solution for Day04 {
-    fn name(&self) -> &'static str {
-        "Scratchcards"
-    }
+fn part_a(input: &str) -> Answer {
+    let cards = parse(input);
+    cards
+        .iter()
+        .filter(|x| x.wins > 0)
+        .map(|x| 2u32.pow(x.wins.saturating_sub(1) as u32))
+        .sum::<u32>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let cards = parse(input);
-        cards
-            .iter()
-            .filter(|x| x.wins > 0)
-            .map(|x| 2u32.pow(x.wins.saturating_sub(1) as u32))
-            .sum::<u32>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let cards = parse(input);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let cards = parse(input);
+    let mut queue = (0..cards.len()).collect::<Vec<_>>();
+    let mut visited = 0;
 
-        let mut queue = (0..cards.len()).collect::<Vec<_>>();
-        let mut visited = 0;
+    while let Some(i) = queue.pop() {
+        visited += 1;
 
-        while let Some(i) = queue.pop() {
-            visited += 1;
-
-            let card = &cards[i];
-            if card.wins == 0 {
-                continue;
-            }
-
-            for j in 0..card.wins as usize {
-                queue.push(j + i + 1);
-            }
+        let card = &cards[i];
+        if card.wins == 0 {
+            continue;
         }
 
-        visited.into()
+        for j in 0..card.wins as usize {
+            queue.push(j + i + 1);
+        }
     }
+
+    visited.into()
 }
 
 struct Card {
@@ -67,10 +61,7 @@ fn parse(input: &str) -> Vec<Card> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day04;
 
     const CASE: &str = indoc! {"
         Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
@@ -83,11 +74,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day04.part_a(CASE), 13.into());
+        assert_eq!(super::part_a(CASE), 13.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day04.part_b(CASE), 30.into());
+        assert_eq!(super::part_b(CASE), 30.into());
     }
 }

@@ -1,44 +1,38 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day03;
+solution!("Rucksack Reorganization", 3);
 
-impl Solution for Day03 {
-    fn name(&self) -> &'static str {
-        "Rucksack Reorganization"
+fn part_a(input: &str) -> Answer {
+    let mut out = 0;
+
+    for i in input.trim().lines() {
+        let mut both = i[0..i.len() / 2].chars().collect::<Vec<_>>();
+        let pocket_2 = i[i.len() / 2..].chars().collect::<Vec<_>>();
+        both.retain(|x| pocket_2.contains(x));
+        both.dedup();
+
+        debug_assert!(both.len() == 1);
+        out += score_item(both[0]) as usize;
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut out = 0;
+    out.into()
+}
 
-        for i in input.trim().lines() {
-            let mut bolth = i[0..i.len() / 2].chars().collect::<Vec<_>>();
-            let pocket_2 = i[i.len() / 2..].chars().collect::<Vec<_>>();
-            bolth.retain(|x| pocket_2.contains(x));
-            bolth.dedup();
+fn part_b(input: &str) -> Answer {
+    let mut out = 0;
 
-            debug_assert!(bolth.len() == 1);
-            out += score_item(bolth[0]) as usize;
-        }
+    for i in input.trim().lines().collect::<Vec<_>>().chunks(3) {
+        let mut all = HashSet::new();
+        i.iter().for_each(|x| all.extend(x.chars()));
+        i.iter().for_each(|x| all.retain(|y| x.contains(*y)));
 
-        out.into()
+        debug_assert!(all.len() == 1);
+        out += score_item(*all.iter().next().unwrap()) as usize;
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut out = 0;
-
-        for i in input.trim().lines().collect::<Vec<_>>().chunks(3) {
-            let mut all = HashSet::new();
-            i.iter().for_each(|x| all.extend(x.chars()));
-            i.iter().for_each(|x| all.retain(|y| x.contains(*y)));
-
-            debug_assert!(all.len() == 1);
-            out += score_item(*all.iter().next().unwrap()) as usize;
-        }
-
-        out.into()
-    }
+    out.into()
 }
 
 fn score_item(char_: char) -> u8 {

@@ -1,23 +1,17 @@
 use hashbrown::HashMap;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day21;
+solution!("Monkey Math", 21);
 
-impl Solution for Day21 {
-    fn name(&self) -> &'static str {
-        "Monkey Math"
-    }
+fn part_a(input: &str) -> Answer {
+    let monkeys = MonkeyBusiness::new(input);
+    monkeys.evaluate("root").into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let monkeys = MonkeyBusiness::new(input);
-        monkeys.evaluate("root").into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let monkeys = MonkeyBusiness::new(input).root_eq();
-        monkeys.solve("root").into()
-    }
+fn part_b(input: &str) -> Answer {
+    let monkeys = MonkeyBusiness::new(input).root_eq();
+    monkeys.solve("root").into()
 }
 
 #[derive(Debug, Clone)]

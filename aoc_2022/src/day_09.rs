@@ -2,25 +2,19 @@ use std::vec;
 
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::vector;
 
 type Point = nd_vec::Vec2<i32>;
 
-pub struct Day09;
+solution!("Rope Bridge", 9);
 
-impl Solution for Day09 {
-    fn name(&self) -> &'static str {
-        "Rope Bridge"
-    }
+fn part_a(input: &str) -> Answer {
+    process(input, 1).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        process(input, 1).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        process(input, 9).into()
-    }
+fn part_b(input: &str) -> Answer {
+    process(input, 9).into()
 }
 
 fn process(raw: &str, count: usize) -> usize {

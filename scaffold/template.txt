@@ -7,18 +7,17 @@ impl Solution for Day{{day:pad(2)}} {
         "{{problem_name}}"
     }
 
-    fn part_a(&self, input: &str) -> Answer {
+    fn part_a(input: &str) -> Answer {
         Answer::Unimplemented
     }
 
-    fn part_b(&self, input: &str) -> Answer {
+    fn part_b(input: &str) -> Answer {
         Answer::Unimplemented
     }
 }
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
 
     use super::Day{{day:pad(2)}};

@@ -1,22 +1,16 @@
 use std::{collections::HashSet, convert::identity};
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec3};
 
-pub struct Day22;
+solution!("Sand Slabs", 22);
 
-impl Solution for Day22 {
-    fn name(&self) -> &'static str {
-        "Sand Slabs"
-    }
+fn part_a(input: &str) -> Answer {
+    solve(parse(input), false, |x| (x == 0) as u32).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        solve(parse(input), false, |x| (x == 0) as u32).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        solve(parse(input), true, identity).into()
-    }
+fn part_b(input: &str) -> Answer {
+    solve(parse(input), true, identity).into()
 }
 
 fn solve(mut map: Vec<Box>, exhaustive: bool, count: fn(u32) -> u32) -> u32 {
@@ -34,7 +28,7 @@ fn solve(mut map: Vec<Box>, exhaustive: bool, count: fn(u32) -> u32) -> u32 {
     out
 }
 
-fn shift_down(map: &mut Vec<Box>, exhaustive: bool) -> u32 {
+fn shift_down(map: &mut [Box], exhaustive: bool) -> u32 {
     let mut moved = HashSet::new();
     let mut dirty = true;
     while dirty {
@@ -107,10 +101,7 @@ fn parse(input: &str) -> Vec<Box> {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day22;
 
     const CASE: &str = indoc! {"
         1,0,1~1,2,1
@@ -124,11 +115,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day22.part_a(CASE), 5.into());
+        assert_eq!(super::part_a(CASE), 5.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day22.part_b(CASE), 7.into());
+        assert_eq!(super::part_b(CASE), 7.into());
     }
 }

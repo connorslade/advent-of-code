@@ -1,23 +1,17 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day20;
+solution!("Grove Positioning System", 20);
 
-impl Solution for Day20 {
-    fn name(&self) -> &'static str {
-        "Grove Positioning System"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut file = File::new(input);
+    file.mix();
+    file.coordinates().into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut file = File::new(input);
-        file.mix();
-        file.coordinates().into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let mut file = File::new(input).multiply(811589153);
-        (0..10).for_each(|_| file.mix());
-        file.coordinates().into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut file = File::new(input).multiply(811589153);
+    (0..10).for_each(|_| file.mix());
+    file.coordinates().into()
 }
 
 #[derive(Debug)]

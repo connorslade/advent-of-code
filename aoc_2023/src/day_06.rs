@@ -1,24 +1,18 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use itertools::Itertools;
 
-pub struct Day06;
+solution!("Wait For It", 6);
 
-impl Solution for Day06 {
-    fn name(&self) -> &'static str {
-        "Wait For It"
-    }
+fn part_a(input: &str) -> Answer {
+    parse_a(input)
+        .iter()
+        .map(Race::ways_to_win)
+        .product::<u64>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        parse_a(input)
-            .iter()
-            .map(Race::ways_to_win)
-            .product::<u64>()
-            .into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        parse_b(input).ways_to_win().into()
-    }
+fn part_b(input: &str) -> Answer {
+    parse_b(input).ways_to_win().into()
 }
 
 #[derive(Debug)]
@@ -69,10 +63,7 @@ impl Race {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day06;
 
     const CASE: &str = indoc! {"
         Time:      7  15   30
@@ -81,11 +72,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day06.part_a(CASE), 288.into());
+        assert_eq!(super::part_a(CASE), 288.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day06.part_b(CASE), 71503.into());
+        assert_eq!(super::part_b(CASE), 71503.into());
     }
 }

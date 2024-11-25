@@ -1,40 +1,34 @@
 use std::cmp::Ordering;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day13;
+solution!("Distress Signal", 13);
 
-impl Solution for Day13 {
-    fn name(&self) -> &'static str {
-        "Distress Signal"
-    }
+fn part_a(input: &str) -> Answer {
+    let signals = parse(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let signals = parse(input);
+    signals
+        .chunks(2)
+        .enumerate()
+        .filter(|x| x.1[0].cmp(&x.1[1]) == Ordering::Less)
+        .map(|x| 1 + x.0)
+        .sum::<usize>()
+        .into()
+}
 
-        signals
-            .chunks(2)
-            .enumerate()
-            .filter(|x| x.1[0].cmp(&x.1[1]) == Ordering::Less)
-            .map(|x| 1 + x.0)
-            .sum::<usize>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut signals = parse(input);
+    let div = [Token::Number(6), Token::Number(2)];
+    signals.extend(div.clone());
+    signals.sort();
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut signals = parse(input);
-        let div = [Token::Number(6), Token::Number(2)];
-        signals.extend(div.clone());
-        signals.sort();
-
-        signals
-            .iter()
-            .enumerate()
-            .filter(|x| div.contains(x.1))
-            .map(|x| x.0 + 1)
-            .product::<usize>()
-            .into()
-    }
+    signals
+        .iter()
+        .enumerate()
+        .filter(|x| div.contains(x.1))
+        .map(|x| x.0 + 1)
+        .product::<usize>()
+        .into()
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

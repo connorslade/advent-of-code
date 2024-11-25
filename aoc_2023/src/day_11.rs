@@ -2,28 +2,22 @@ use bitvec::{bitvec, vec::BitVec};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2};
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
 type Pos = Vec2<usize>;
 
-pub struct Day11;
+solution!("Cosmic Expansion", 11);
 
-impl Solution for Day11 {
-    fn name(&self) -> &'static str {
-        "Cosmic Expansion"
-    }
+fn part_a(input: &str) -> Answer {
+    let mut galaxies = parse(input);
+    galaxies.expand(2);
+    galaxies.total_distance().into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut galaxies = parse(input);
-        galaxies.expand(2);
-        galaxies.total_distance().into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let mut galaxies = parse(input);
-        galaxies.expand(1000000);
-        galaxies.total_distance().into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut galaxies = parse(input);
+    galaxies.expand(1000000);
+    galaxies.total_distance().into()
 }
 
 struct Galaxies {
@@ -85,10 +79,7 @@ impl Galaxies {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day11;
 
     const CASE: &str = indoc! {"
         ...#......
@@ -105,11 +96,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day11.part_a(CASE), 374.into());
+        assert_eq!(super::part_a(CASE), 374.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day11.part_b(CASE), 82000210.into());
+        assert_eq!(super::part_b(CASE), 82000210.into());
     }
 }

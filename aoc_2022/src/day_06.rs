@@ -1,21 +1,15 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day06;
+solution!("Tuning Trouble", 6);
 
-impl Solution for Day06 {
-    fn name(&self) -> &'static str {
-        "Tuning Trouble"
-    }
+fn part_a(input: &str) -> Answer {
+    process(input, 4).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        process(input, 4).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        process(input, 14).into()
-    }
+fn part_b(input: &str) -> Answer {
+    process(input, 14).into()
 }
 
 fn process(input: &str, size: usize) -> usize {

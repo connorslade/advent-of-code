@@ -1,52 +1,46 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day02;
+solution!("Rock Paper Scissors", 2);
 
-impl Solution for Day02 {
-    fn name(&self) -> &'static str {
-        "Rock Paper Scissors"
+fn part_a(input: &str) -> Answer {
+    let mut score = 0;
+
+    for (other, self_) in input
+        .lines()
+        .filter(|x| !x.is_empty())
+        .map(|x| x.split_once(' ').unwrap())
+    {
+        let other_move = Move::from_str(other);
+        let self_move = Move::from_str(self_);
+
+        score += self_move as u32 + 1;
+        score += score_round(other_move, self_move).to_score();
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let mut score = 0;
+    score.into()
+}
 
-        for (other, self_) in input
-            .lines()
-            .filter(|x| !x.is_empty())
-            .map(|x| x.split_once(' ').unwrap())
-        {
-            let other_move = Move::from_str(other);
-            let self_move = Move::from_str(self_);
+fn part_b(input: &str) -> Answer {
+    let mut score = 0;
 
-            score += self_move as u32 + 1;
-            score += score_round(other_move, self_move).to_score();
-        }
+    for (other, self_) in input
+        .lines()
+        .filter(|x| !x.is_empty())
+        .map(|x| x.split_once(' ').unwrap())
+    {
+        let other_move = Move::from_str(other);
+        let self_move = match self_ {
+            "X" => other_move.derive(false),
+            "Y" => other_move,
+            "Z" => other_move.derive(true),
+            _ => unreachable!(),
+        };
 
-        score.into()
+        score += self_move as u32 + 1;
+        score += score_round(other_move, self_move).to_score();
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut score = 0;
-
-        for (other, self_) in input
-            .lines()
-            .filter(|x| !x.is_empty())
-            .map(|x| x.split_once(' ').unwrap())
-        {
-            let other_move = Move::from_str(other);
-            let self_move = match self_ {
-                "X" => other_move.derive(false),
-                "Y" => other_move,
-                "Z" => other_move.derive(true),
-                _ => unreachable!(),
-            };
-
-            score += self_move as u32 + 1;
-            score += score_round(other_move, self_move).to_score();
-        }
-
-        score.into()
-    }
+    score.into()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]

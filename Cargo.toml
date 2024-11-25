@@ -4,13 +4,22 @@ name = "advent_of_code"
 version = "0.1.0"
 
 [workspace]
-members = ["scaffold", "common", "aoc_lib", "aoc_2021", "aoc_2022", "aoc_2023"]
+members = [
+    "scaffold",
+    "common",
+    "aoc_lib",
+    "aoc_2021",
+    "aoc_2022",
+    "aoc_2023",
+    "aoc_2024",
+]
 
 [dependencies]
 common = { path = "common" }
 aoc_2021 = { path = "aoc_2021" }
 aoc_2022 = { path = "aoc_2022" }
 aoc_2023 = { path = "aoc_2023" }
+aoc_2024 = { path = "aoc_2024" }
 
 clap = { version = "4.0.29", features = ["derive"] }
 chrono = "0.4.31"

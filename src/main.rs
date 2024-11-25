@@ -17,11 +17,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn get_year(year: u16) -> &'static [&'static dyn Solution] {
+fn get_year(year: u16) -> &'static [Solution] {
     match year {
-        2021 => aoc_2021::ALL,
-        2022 => &aoc_2022::ALL,
-        2023 => aoc_2023::ALL,
+        2021 => aoc_2021::SOLUTIONS,
+        2022 => aoc_2022::SOLUTIONS,
+        2023 => aoc_2023::SOLUTIONS,
+        2024 => aoc_2024::SOLUTIONS,
         _ => &[],
     }
 }

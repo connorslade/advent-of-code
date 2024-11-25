@@ -1,31 +1,22 @@
 use crate::Answer;
 
-pub trait Solution {
-    fn name(&self) -> &'static str;
-    fn part_a(&self, input: &str) -> Answer;
-    fn part_b(&self, input: &str) -> Answer;
+pub struct Solution {
+    pub name: &'static str,
+    pub day: u8,
 
-    fn is_dummy(&self) -> bool {
-        false
-    }
+    pub part_a: fn(&str) -> Answer,
+    pub part_b: fn(&str) -> Answer,
 }
 
-pub struct DummySolution;
+#[macro_export]
+macro_rules! solution {
+    ($name:expr, $day:expr) => {
+        pub const SOLUTION: $crate::Solution = $crate::Solution {
+            name: $name,
+            day: $day,
 
-impl Solution for DummySolution {
-    fn name(&self) -> &'static str {
-        unreachable!()
-    }
-
-    fn part_a(&self, _input: &str) -> Answer {
-        unreachable!()
-    }
-
-    fn part_b(&self, _input: &str) -> Answer {
-        unreachable!()
-    }
-
-    fn is_dummy(&self) -> bool {
-        true
-    }
+            part_a,
+            part_b,
+        };
+    };
 }

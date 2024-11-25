@@ -1,37 +1,31 @@
 use std::collections::HashMap;
 
 use aoc_lib::regex;
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<usize>;
 
-pub struct Day03;
+solution!("Gear Ratios", 3);
 
-impl Solution for Day03 {
-    fn name(&self) -> &'static str {
-        "Gear Ratios"
-    }
+fn part_a(input: &str) -> Answer {
+    parse(input)
+        .gears
+        .iter()
+        .filter(|x| x.part_number)
+        .map(|x| x.value)
+        .sum::<u32>()
+        .into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        parse(input)
-            .gears
-            .iter()
-            .filter(|x| x.part_number)
-            .map(|x| x.value)
-            .sum::<u32>()
-            .into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        parse(input)
-            .ratios
-            .iter()
-            .filter(|(_, vals)| vals.len() == 2)
-            .map(|(_, vals)| vals[0] * vals[1])
-            .sum::<u32>()
-            .into()
-    }
+fn part_b(input: &str) -> Answer {
+    parse(input)
+        .ratios
+        .iter()
+        .filter(|(_, vals)| vals.len() == 2)
+        .map(|(_, vals)| vals[0] * vals[1])
+        .sum::<u32>()
+        .into()
 }
 
 struct ParseResult {
@@ -83,10 +77,7 @@ struct Gear {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day03;
 
     const CASE: &str = indoc! {"
         467..114..
@@ -103,11 +94,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day03.part_a(CASE), 4361.into());
+        assert_eq!(super::part_a(CASE), 4361.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day03.part_b(CASE), 467835.into());
+        assert_eq!(super::part_b(CASE), 467835.into());
     }
 }

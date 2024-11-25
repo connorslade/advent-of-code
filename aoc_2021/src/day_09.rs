@@ -1,25 +1,19 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day09;
+solution!("Smoke Basin", 9);
 
-impl Solution for Day09 {
-    fn name(&self) -> &'static str {
-        "Smoke Basin"
-    }
+fn part_a(input: &str) -> Answer {
+    let data = parse(input);
+    let low = lowest(data);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let data = parse(input);
-        let low = lowest(data);
+    low.iter().map(|x| *x + 1).sum::<u32>().into()
+}
 
-        low.iter().map(|x| *x + 1).sum::<u32>().into()
-    }
+fn part_b(input: &str) -> Answer {
+    let data = parse(input);
+    let basins = basins(data);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let data = parse(input);
-        let basins = basins(data);
-
-        basins.iter().rev().take(3).product::<u32>().into()
-    }
+    basins.iter().rev().take(3).product::<u32>().into()
 }
 
 fn parse(inp: &str) -> Vec<Vec<u32>> {

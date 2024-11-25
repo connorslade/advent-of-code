@@ -1,26 +1,20 @@
 use std::collections::VecDeque;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day11;
+solution!("Monkey in the Middle", 11);
 
-impl Solution for Day11 {
-    fn name(&self) -> &'static str {
-        "Monkey in the Middle"
-    }
+fn part_a(input: &str) -> Answer {
+    let monkeys = parse_monkeys(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let monkeys = parse_monkeys(input);
+    process(monkeys, 20, |x| x / 3).into()
+}
 
-        process(monkeys, 20, |x| x / 3).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let monkeys = parse_monkeys(input);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let monkeys = parse_monkeys(input);
-
-        let magic = monkeys.iter().map(|x| x.test.divisor).product::<u64>();
-        process(monkeys, 10000, |x| x % magic).into()
-    }
+    let magic = monkeys.iter().map(|x| x.test.divisor).product::<u64>();
+    process(monkeys, 10000, |x| x % magic).into()
 }
 
 struct Monkey {

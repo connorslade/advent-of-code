@@ -1,25 +1,19 @@
 use std::collections::{HashMap, VecDeque};
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
+
+solution!("Clumsy Crucible", 17);
 
 type Pos = Vec2<usize>;
 
-pub struct Day17;
+fn part_a(input: &str) -> Answer {
+    pathfind(parse(input), 1, 3).into()
+}
 
-impl Solution for Day17 {
-    fn name(&self) -> &'static str {
-        "Clumsy Crucible"
-    }
-
-    fn part_a(&self, input: &str) -> Answer {
-        pathfind(parse(input), 1, 3).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        pathfind(parse(input), 4, 10).into()
-    }
+fn part_b(input: &str) -> Answer {
+    pathfind(parse(input), 4, 10).into()
 }
 
 fn parse(input: &str) -> Matrix<u8> {
@@ -91,10 +85,7 @@ impl State {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day17;
 
     const CASE: &str = indoc! {"
         2413432311323
@@ -114,11 +105,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day17.part_a(CASE), 102.into());
+        assert_eq!(super::part_a(CASE), 102.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day17.part_b(CASE), 94.into());
+        assert_eq!(super::part_b(CASE), 94.into());
     }
 }

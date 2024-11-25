@@ -1,45 +1,39 @@
 use hashbrown::HashSet;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use nd_vec::{vector, Vector};
+
+solution!("Boiling Boulders", 18);
 
 type Pos = nd_vec::Vec3<i32>;
 
-pub struct Day18;
+fn part_a(input: &str) -> Answer {
+    let world = World::parse(input);
 
-impl Solution for Day18 {
-    fn name(&self) -> &'static str {
-        "Boiling Boulders"
+    let mut open_faces = 0;
+
+    for i in &world.points {
+        open_faces += 6 - world.neighbors(i);
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let world = World::parse(input);
+    open_faces.into()
+}
 
-        let mut open_faces = 0;
+fn part_b(input: &str) -> Answer {
+    let world = World::parse(input);
 
-        for i in &world.points {
-            open_faces += 6 - world.neighbors(i);
-        }
-
-        open_faces.into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let world = World::parse(input);
-
-        let outside = world.flood_fill(Vector::default());
-        let mut out = 0;
-        for i in &world.points {
-            for j in NEIGHBORS {
-                let n = *i + j;
-                if !world.points.contains(&n) && outside.contains(&n) {
-                    out += 1;
-                }
+    let outside = world.flood_fill(Vector::default());
+    let mut out = 0;
+    for i in &world.points {
+        for j in NEIGHBORS {
+            let n = *i + j;
+            if !world.points.contains(&n) && outside.contains(&n) {
+                out += 1;
             }
         }
-
-        out.into()
     }
+
+    out.into()
 }
 
 struct World {

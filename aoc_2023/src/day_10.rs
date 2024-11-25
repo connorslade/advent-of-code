@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use nd_vec::{vector, Vec2};
 
 use aoc_lib::direction::Direction;
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
 type Pos = Vec2<usize>;
 
@@ -14,61 +14,55 @@ const START_PIECES: [(char, [Direction; 2]); 4] = [
     ('L', [Direction::Up, Direction::Right]),
 ];
 
-pub struct Day10;
+solution!("Pipe Maze", 10);
 
-impl Solution for Day10 {
-    fn name(&self) -> &'static str {
-        "Pipe Maze"
-    }
+fn part_a(input: &str) -> Answer {
+    let maze = parse(input);
+    (maze.walls().walls.len() / 2).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let maze = parse(input);
-        (maze.walls().walls.len() / 2).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let mut maze = parse(input);
+    let walls = maze.walls();
 
-    fn part_b(&self, input: &str) -> Answer {
-        let mut maze = parse(input);
-        let walls = maze.walls();
+    maze.remove_garbage(&walls.walls);
+    maze.segments[maze.start.y()][maze.start.x()] = walls.start_piece;
 
-        maze.remove_garbage(&walls.walls);
-        maze.segments[maze.start.y()][maze.start.x()] = walls.start_piece;
+    let mut inside = 0;
+    for y in 0..maze.segments.len() {
+        for x in 0..maze.segments[y].len() {
+            if maze.segments[y][x] != '.' {
+                continue;
+            }
 
-        let mut inside = 0;
-        for y in 0..maze.segments.len() {
-            for x in 0..maze.segments[y].len() {
-                if maze.segments[y][x] != '.' {
-                    continue;
-                }
-
-                let mut within = false;
-                let mut riding = Riding::None;
-                for x in (0..x).rev() {
-                    if let Some(wall) = walls.walls.get(&vector!(x, y)) {
-                        let chr = maze.segments[wall.y()][wall.x()];
-                        if chr == '|' {
+            let mut within = false;
+            let mut riding = Riding::None;
+            for x in (0..x).rev() {
+                if let Some(wall) = walls.walls.get(&vector!(x, y)) {
+                    let chr = maze.segments[wall.y()][wall.x()];
+                    if chr == '|' {
+                        within ^= true;
+                    } else if chr == '7' {
+                        riding = Riding::Down;
+                    } else if chr == 'J' {
+                        riding = Riding::Up;
+                    } else if chr == 'F' || chr == 'L' {
+                        if (riding == Riding::Up && chr != 'L')
+                            || (riding == Riding::Down && chr != 'F')
+                        {
                             within ^= true;
-                        } else if chr == '7' {
-                            riding = Riding::Down;
-                        } else if chr == 'J' {
-                            riding = Riding::Up;
-                        } else if chr == 'F' || chr == 'L' {
-                            if (riding == Riding::Up && chr != 'L')
-                                || (riding == Riding::Down && chr != 'F')
-                            {
-                                within ^= true;
-                            }
-
-                            riding = Riding::None;
                         }
+
+                        riding = Riding::None;
                     }
                 }
-
-                inside += within as usize;
             }
-        }
 
-        inside.into()
+            inside += within as usize;
+        }
     }
+
+    inside.into()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -178,10 +172,7 @@ fn turn(facing: Direction, tile: char) -> TurnResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day10;
 
     const CASE_A: &str = indoc! {"
         .....
@@ -206,11 +197,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day10.part_a(CASE_A), 4.into());
+        assert_eq!(super::part_a(CASE_A), 4.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day10.part_b(CASE_B), 10.into());
+        assert_eq!(super::part_b(CASE_B), 10.into());
     }
 }

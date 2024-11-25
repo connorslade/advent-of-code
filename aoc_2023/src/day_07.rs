@@ -1,24 +1,18 @@
 use std::{cmp::Ordering, fmt::Debug};
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use itertools::Itertools;
 
-pub struct Day07;
+solution!("Camel Cards", 7);
 
-impl Solution for Day07 {
-    fn name(&self) -> &'static str {
-        "Camel Cards"
-    }
+fn part_a(input: &str) -> Answer {
+    let hands = parse(input, "AKQJT98765432");
+    solve(hands, Hand::score_a).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let hands = parse(input, "AKQJT98765432");
-        solve(hands, Hand::score_a).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let hands = parse(input, "AKQT98765432J");
-        solve(hands, Hand::score_b).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let hands = parse(input, "AKQT98765432J");
+    solve(hands, Hand::score_b).into()
 }
 
 fn solve(mut hands: Vec<Hand>, score: fn(&Hand) -> HandType) -> usize {
@@ -140,10 +134,7 @@ impl Hand {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day07;
 
     const CASE: &str = indoc! {"
         32T3K 765
@@ -155,11 +146,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day07.part_a(CASE), 6440.into());
+        assert_eq!(super::part_a(CASE), 6440.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day07.part_b(CASE), 5905.into());
+        assert_eq!(super::part_b(CASE), 5905.into());
     }
 }

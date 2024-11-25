@@ -1,21 +1,15 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day13;
+solution!("Point of Incidence", 13);
 
-impl Solution for Day13 {
-    fn name(&self) -> &'static str {
-        "Point of Incidence"
-    }
+fn part_a(input: &str) -> Answer {
+    let valleys = parse(input);
+    solve(&valleys, 0).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let valleys = parse(input);
-        solve(&valleys, 0).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let valleys = parse(input);
-        solve(&valleys, 1).into()
-    }
+fn part_b(input: &str) -> Answer {
+    let valleys = parse(input);
+    solve(&valleys, 1).into()
 }
 
 fn solve(valleys: &[Valley], limit: usize) -> usize {
@@ -93,10 +87,7 @@ impl Valley {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day13;
 
     const CASE: &str = indoc! {"
         #.##..##.
@@ -118,11 +109,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day13.part_a(CASE), 405.into());
+        assert_eq!(super::part_a(CASE), 405.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day13.part_b(CASE), 400.into());
+        assert_eq!(super::part_b(CASE), 400.into());
     }
 }

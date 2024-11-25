@@ -1,4 +1,7 @@
-use std::str::FromStr;
+use std::{
+    fmt::{self, Display, Write},
+    str::FromStr,
+};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Part {
@@ -18,12 +21,11 @@ impl FromStr for Part {
     }
 }
 
-impl ToString for Part {
-    fn to_string(&self) -> String {
-        match self {
-            Part::A => "a",
-            Part::B => "b",
-        }
-        .to_owned()
+impl Display for Part {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_char(match self {
+            Part::A => 'a',
+            Part::B => 'b',
+        })
     }
 }

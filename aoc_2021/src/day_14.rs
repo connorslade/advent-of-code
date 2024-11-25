@@ -1,23 +1,17 @@
 use hashbrown::HashMap;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day14;
+solution!("Extended Polymerization", 14);
 
-impl Solution for Day14 {
-    fn name(&self) -> &'static str {
-        "Extended Polymerization"
-    }
+fn part_a(input: &str) -> Answer {
+    process(input, 10).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        process(input, 10).into()
-    }
-
-    // TODO: work with counts of units instead of the units themselves
-    fn part_b(&self, input: &str) -> Answer {
-        let mut _polymer = Polymer::parse(input);
-        Answer::Unimplemented
-    }
+// TODO: work with counts of units instead of the units themselves
+fn part_b(input: &str) -> Answer {
+    let mut _polymer = Polymer::parse(input);
+    Answer::Unimplemented
 }
 
 fn process(raw: &str, steps: usize) -> usize {

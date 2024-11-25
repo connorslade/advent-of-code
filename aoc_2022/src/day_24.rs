@@ -1,36 +1,30 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use hashbrown::HashSet;
 use nd_vec::{vector, Vec2};
 use pathfinding::directed::bfs::bfs;
 
+solution!("Blizzard Basin", 24);
+
 type Pos = Vec2<usize>;
 
-pub struct Day24;
+fn part_a(input: &str) -> Answer {
+    let basin = Basin::parse(input);
+    let end = basin.end();
+    let states = basin.all_states();
 
-impl Solution for Day24 {
-    fn name(&self) -> &'static str {
-        "Blizzard Basin"
-    }
+    path(&states, 0, vector!(1, 0), end).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let basin = Basin::parse(input);
-        let end = basin.end();
-        let states = basin.all_states();
+fn part_b(input: &str) -> Answer {
+    let basin = Basin::parse(input);
+    let end = basin.end();
+    let states = basin.all_states();
 
-        path(&states, 0, vector!(1, 0), end).into()
-    }
+    let a = path(&states, 0, vector!(1, 0), end);
+    let b = path(&states, a, end, vector!(1, 0));
+    let c = path(&states, a + b, vector!(1, 0), end);
 
-    fn part_b(&self, input: &str) -> Answer {
-        let basin = Basin::parse(input);
-        let end = basin.end();
-        let states = basin.all_states();
-
-        let a = path(&states, 0, vector!(1, 0), end);
-        let b = path(&states, a, end, vector!(1, 0));
-        let c = path(&states, a + b, vector!(1, 0), end);
-
-        (a + b + c).into()
-    }
+    (a + b + c).into()
 }
 
 fn path(states: &[Basin], state: usize, start: Pos, end: Pos) -> usize {
@@ -237,9 +231,7 @@ impl Tile {
 mod test {
     use indoc::indoc;
 
-    use common::Solution;
-
-    use super::{Basin, Day24};
+    use super::Basin;
 
     const CASE: &str = indoc! {"
         #.######
@@ -261,12 +253,12 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day24.part_a(CASE), 18.into());
+        assert_eq!(super::part_a(CASE), 18.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day24.part_b(CASE), 54.into());
+        assert_eq!(super::part_b(CASE), 54.into());
     }
 
     #[test]

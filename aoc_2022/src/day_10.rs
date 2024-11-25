@@ -1,47 +1,41 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day10;
+solution!("Cathode-Ray Tube", 10);
 
-impl Solution for Day10 {
-    fn name(&self) -> &'static str {
-        "Cathode-Ray Tube"
+fn part_a(input: &str) -> Answer {
+    let instructions = parse(input);
+    let cycles = cycle(&instructions);
+
+    let mut out = 0;
+    for i in (0..6).map(|x| 20 + 40 * x) {
+        out += cycles[0..i].iter().sum::<i32>() * i as i32;
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let instructions = parse(input);
-        let cycles = cycle(&instructions);
+    out.into()
+}
 
-        let mut out = 0;
-        for i in (0..6).map(|x| 20 + 40 * x) {
-            out += cycles[0..i].iter().sum::<i32>() * i as i32;
-        }
+fn part_b(input: &str) -> Answer {
+    let instructions = parse(input);
+    let mut out = "\n".to_owned();
+    let mut sprite = 1;
+    let mut cycle = 0;
 
-        out.into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let instructions = parse(input);
-        let mut out = "\n".to_owned();
-        let mut sprite = 1;
-        let mut cycle = 0;
-
-        for i in instructions {
-            let (goto, inc) = i.info();
-            for i in cycle..goto + cycle {
-                let diff = i % 40_i32 - sprite;
-                if diff.abs() < 2 {
-                    out.push('#');
-                    continue;
-                }
-                out.push(' ');
+    for i in instructions {
+        let (goto, inc) = i.info();
+        for i in cycle..goto + cycle {
+            let diff = i % 40_i32 - sprite;
+            if diff.abs() < 2 {
+                out.push('#');
+                continue;
             }
-
-            cycle += goto;
-            sprite += inc;
+            out.push(' ');
         }
 
-        make_lines(&out, 40).into()
+        cycle += goto;
+        sprite += inc;
     }
+
+    make_lines(&out, 40).into()
 }
 
 #[derive(Debug, Clone, Copy)]

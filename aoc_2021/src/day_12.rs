@@ -1,22 +1,16 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 use hashbrown::{HashMap, HashSet};
 use petgraph::graph::{NodeIndex, UnGraph};
 
-pub struct Day12;
+solution!("Passage Pathing", 12);
 
-impl Solution for Day12 {
-    fn name(&self) -> &'static str {
-        "Passage Pathing"
-    }
+fn part_a(input: &str) -> Answer {
+    let graph = parse(input);
+    paths_a(&graph, graph.start, HashSet::new()).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        let graph = parse(input);
-        paths_a(&graph, graph.start, HashSet::new()).into()
-    }
-
-    fn part_b(&self, _input: &str) -> Answer {
-        Answer::Unimplemented
-    }
+fn part_b(_input: &str) -> Answer {
+    Answer::Unimplemented
 }
 
 fn paths_a(graph: &ParseResult, at: NodeIndex, mut visited: HashSet<NodeIndex>) -> usize {
@@ -103,10 +97,7 @@ fn parse(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day12;
 
     const CASE: &str = indoc! {"
         start-A
@@ -133,12 +124,12 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day12.part_a(CASE), 10.into());
-        assert_eq!(Day12.part_a(CASE_2), 19.into());
+        assert_eq!(super::part_a(CASE), 10.into());
+        assert_eq!(super::part_a(CASE_2), 19.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day12.part_b(CASE), ().into()); // 36
+        assert_eq!(super::part_b(CASE), ().into()); // 36
     }
 }

@@ -1,45 +1,39 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day07;
+solution!("The Treachery of Whales", 7);
 
-impl Solution for Day07 {
-    fn name(&self) -> &'static str {
-        "The Treachery of Whales"
-    }
+fn part_a(input: &str) -> Answer {
+    let data = parse_crabs(input);
 
-    fn part_a(&self, input: &str) -> Answer {
-        let data = parse_crabs(input);
+    let min = data.iter().min().unwrap();
+    let max = data.iter().max().unwrap();
 
-        let min = data.iter().min().unwrap();
-        let max = data.iter().max().unwrap();
-
-        let mut this_min = u32::MAX;
-        for i in *min..=*max {
-            let cost = move_crabs(&data, i);
-            if cost < this_min {
-                this_min = cost;
-            }
+    let mut this_min = u32::MAX;
+    for i in *min..=*max {
+        let cost = move_crabs(&data, i);
+        if cost < this_min {
+            this_min = cost;
         }
-
-        this_min.into()
     }
 
-    fn part_b(&self, input: &str) -> Answer {
-        let data = parse_crabs(input);
+    this_min.into()
+}
 
-        let min = data.iter().min().unwrap();
-        let max = data.iter().max().unwrap();
+fn part_b(input: &str) -> Answer {
+    let data = parse_crabs(input);
 
-        let mut this_min = u32::MAX;
-        for i in *min..=*max {
-            let cost = move_crabs_b(&data, i);
-            if cost < this_min {
-                this_min = cost;
-            }
+    let min = data.iter().min().unwrap();
+    let max = data.iter().max().unwrap();
+
+    let mut this_min = u32::MAX;
+    for i in *min..=*max {
+        let cost = move_crabs_b(&data, i);
+        if cost < this_min {
+            this_min = cost;
         }
-
-        this_min.into()
     }
+
+    this_min.into()
 }
 
 fn parse_crabs(inp: &str) -> Vec<u32> {

@@ -1,21 +1,15 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
 use hashbrown::HashMap;
 
-pub struct Day05;
+solution!("Hydrothermal Venture", 5);
 
-impl Solution for Day05 {
-    fn name(&self) -> &'static str {
-        "Hydrothermal Venture"
-    }
+fn part_a(input: &str) -> Answer {
+    run(input, false).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        run(input, false).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        run(input, true).into()
-    }
+fn part_b(input: &str) -> Answer {
+    run(input, true).into()
 }
 
 /// dig -> Weather to include Diagonal Lines

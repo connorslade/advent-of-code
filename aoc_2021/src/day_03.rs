@@ -1,73 +1,67 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day03;
+solution!("Binary Diagnostic", 3);
 
-impl Solution for Day03 {
-    fn name(&self) -> &'static str {
-        "Binary Diagnostic"
+fn part_a(input: &str) -> Answer {
+    let num_len = input.lines().next().unwrap().len();
+
+    let mut gamma = vec![0; num_len];
+    let mut epsilon = vec![1; num_len];
+
+    for i in 0..num_len {
+        let mut z = 0;
+        let mut o = 0;
+
+        input.lines().for_each(|j| match j.chars().nth(i).unwrap() {
+            '0' => z += 1,
+            '1' => o += 1,
+            _ => {}
+        });
+
+        if o > z {
+            epsilon[i] = 0;
+            gamma[i] = 1;
+        }
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let num_len = input.lines().next().unwrap().len();
+    let gamma = int_from_bin(&gamma).unwrap();
+    let epsilon = int_from_bin(&epsilon).unwrap();
 
-        let mut gamma = vec![0; num_len];
-        let mut epsilon = vec![1; num_len];
+    (epsilon * gamma).into()
+}
 
-        for i in 0..num_len {
-            let mut z = 0;
-            let mut o = 0;
+fn part_b(input: &str) -> Answer {
+    let num_len = input.lines().next().unwrap().len();
 
-            input.lines().for_each(|j| match j.chars().nth(i).unwrap() {
-                '0' => z += 1,
-                '1' => o += 1,
-                _ => {}
-            });
+    let mut oxygen_keep = input.lines().collect::<Vec<&str>>();
+    let mut oxygen_raw = vec![[0, 0]; num_len];
+    let mut oxygen_gen = 0;
 
-            if o > z {
-                epsilon[i] = 0;
-                gamma[i] = 1;
-            }
+    let mut co2_keep = oxygen_keep.clone();
+    let mut co2_raw = oxygen_raw.clone();
+    let mut co2_scrub = 0;
+
+    for i in 0..num_len {
+        // Filter Oxygen
+        let imax = get_imax(&oxygen_raw, i);
+        oxygen_raw = gen_raw(oxygen_raw, num_len, &oxygen_keep);
+        oxygen_keep.retain(|x| x.chars().nth(i).unwrap() == imax);
+
+        // Filter Co2
+        let imax = get_imax(&co2_raw, i);
+        co2_raw = gen_raw(co2_raw, num_len, &co2_keep);
+        co2_keep.retain(|x| x.chars().nth(i).unwrap() != imax);
+
+        if oxygen_keep.len() == 1 {
+            oxygen_gen = isize::from_str_radix(oxygen_keep.first().unwrap(), 2).unwrap();
         }
 
-        let gamma = int_from_bin(&gamma).unwrap();
-        let epsilon = int_from_bin(&epsilon).unwrap();
-
-        (epsilon * gamma).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let num_len = input.lines().next().unwrap().len();
-
-        let mut oxygen_keep = input.lines().collect::<Vec<&str>>();
-        let mut oxygen_raw = vec![[0, 0]; num_len];
-        let mut oxygen_gen = 0;
-
-        let mut co2_keep = oxygen_keep.clone();
-        let mut co2_raw = oxygen_raw.clone();
-        let mut co2_scrub = 0;
-
-        for i in 0..num_len {
-            // Filter Oxygen
-            let imax = get_imax(&oxygen_raw, i);
-            oxygen_raw = gen_raw(oxygen_raw, num_len, &oxygen_keep);
-            oxygen_keep.retain(|x| x.chars().nth(i).unwrap() == imax);
-
-            // Filter Co2
-            let imax = get_imax(&co2_raw, i);
-            co2_raw = gen_raw(co2_raw, num_len, &co2_keep);
-            co2_keep.retain(|x| x.chars().nth(i).unwrap() != imax);
-
-            if oxygen_keep.len() == 1 {
-                oxygen_gen = isize::from_str_radix(oxygen_keep.first().unwrap(), 2).unwrap();
-            }
-
-            if co2_keep.len() == 1 {
-                co2_scrub = isize::from_str_radix(co2_keep.first().unwrap(), 2).unwrap();
-            }
+        if co2_keep.len() == 1 {
+            co2_scrub = isize::from_str_radix(co2_keep.first().unwrap(), 2).unwrap();
         }
-
-        (oxygen_gen * co2_scrub).into()
     }
+
+    (oxygen_gen * co2_scrub).into()
 }
 
 fn int_from_bin(inp: &[u32]) -> Option<usize> {

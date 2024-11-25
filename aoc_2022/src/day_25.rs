@@ -1,20 +1,14 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
-pub struct Day25;
+solution!("Full of Hot Air", 25);
 
-impl Solution for Day25 {
-    fn name(&self) -> &'static str {
-        "Full of Hot Air"
-    }
+fn part_a(input: &str) -> Answer {
+    snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).into()
+}
 
-    fn part_a(&self, input: &str) -> Answer {
-        snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).into()
-    }
-
-    fn part_b(&self, _input: &str) -> Answer {
-        // No part b for day 25!
-        Answer::Unimplemented
-    }
+fn part_b(_input: &str) -> Answer {
+    // No part b for day 25!
+    Answer::Unimplemented
 }
 
 mod snafu {
@@ -52,9 +46,6 @@ mod snafu {
 mod test {
     use indoc::indoc;
 
-    use super::Day25;
-    use common::Solution;
-
     const CASE: &str = indoc! {r"
         1=-0-2
         12111
@@ -73,6 +64,6 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day25.part_a(CASE), "2=-1=0".into());
+        assert_eq!(super::part_a(CASE), "2=-1=0".into());
     }
 }

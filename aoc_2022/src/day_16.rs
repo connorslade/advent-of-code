@@ -1,36 +1,30 @@
 use std::collections::VecDeque;
 
-use common::{Answer, Solution};
+use common::{solution, Answer};
 
 use hashbrown::HashMap;
 
-pub struct Day16;
+solution!("Proboscidea Volcanium", 16);
 
-impl Solution for Day16 {
-    fn name(&self) -> &'static str {
-        "Proboscidea Volcanium"
+fn part_a(input: &str) -> Answer {
+    let parse = parse(input);
+    solve(&mut HashMap::new(), &parse, 0, parse.start, 30).into()
+}
+
+fn part_b(input: &str) -> Answer {
+    let parse = parse(input);
+
+    let mut max = 0;
+    let set = (1 << parse.indices.len() as u64) - 1;
+
+    let mut cache = HashMap::new();
+    for i in 0..((set + 1) / 2) {
+        let a = solve(&mut cache, &parse, i, parse.start, 26);
+        let b = solve(&mut cache, &parse, set ^ i, parse.start, 26);
+        max = max.max(a + b);
     }
 
-    fn part_a(&self, input: &str) -> Answer {
-        let parse = parse(input);
-        solve(&mut HashMap::new(), &parse, 0, parse.start, 30).into()
-    }
-
-    fn part_b(&self, input: &str) -> Answer {
-        let parse = parse(input);
-
-        let mut max = 0;
-        let set = (1 << parse.indices.len() as u64) - 1;
-
-        let mut cache = HashMap::new();
-        for i in 0..((set + 1) / 2) {
-            let a = solve(&mut cache, &parse, i, parse.start, 26);
-            let b = solve(&mut cache, &parse, set ^ i, parse.start, 26);
-            max = max.max(a + b);
-        }
-
-        max.into()
-    }
+    max.into()
 }
 
 fn solve(
@@ -158,10 +152,7 @@ fn parse(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod test {
-    use common::Solution;
     use indoc::indoc;
-
-    use super::Day16;
 
     const CASE: &str = indoc! {"
         Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
@@ -178,11 +169,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day16.part_a(CASE), 1651.into());
+        assert_eq!(super::part_a(CASE), 1651.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day16.part_b(CASE), 1707.into());
+        assert_eq!(super::part_b(CASE), 1707.into());
     }
 }
