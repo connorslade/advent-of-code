@@ -23,14 +23,26 @@ fn solve(instructions: Vec<(Direction, u32)>) -> i64 {
     let mut perimeter = 0;
     let mut area = 0;
 
+    // Shoelace formula (Trapezoid formula) to get area of polygon.
+    // (The perimeter is also calculated here by just adding all the side lengths)
     for (dir, steps) in instructions.into_iter() {
-        let cng = dir.as_vector() * (steps as i64);
-        pos += cng;
-
+        // Update the perimeter.
         perimeter += steps as i64;
+
+        // Get the change in position from the direction and steps.
+        let cng = dir.as_vector() * (steps as i64);
+        // Update the position.
+        pos += cng;
+        // Update the area using the new x coordinate and the change in y.
         area += pos.x() * cng.y();
     }
 
+    // Uses Pick's theorem to calculate the area of the polygon.
+    // This is because we are looking for the number of cube segments the lagoon can hold rather than the volume.
+    //
+    // area = inner + perimeter / 2 - 1
+    // inner = area - perimeter / 2 + 1
+    // inner + perimeter = area + perimeter / 2 + 1
     area + perimeter / 2 + 1
 }
 
