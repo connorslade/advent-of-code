@@ -4,7 +4,7 @@ use common::{solution, Answer};
 use petgraph::{graph::UnGraph, stable_graph::NodeIndex, Graph, Undirected};
 use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
-solution!("Snowverload", (2023, 04));
+solution!("Snowverload", 25);
 
 fn part_a(input: &str) -> Answer {
     let wires = parse(input);

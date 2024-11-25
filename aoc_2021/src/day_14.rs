@@ -2,7 +2,7 @@ use hashbrown::HashMap;
 
 use common::{solution, Answer};
 
-solution!("Extended Polymerization", (2022, 00));
+solution!("Extended Polymerization", 14);
 
 fn part_a(input: &str) -> Answer {
     process(input, 10).into()

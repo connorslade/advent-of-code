@@ -6,7 +6,7 @@ use nd_vec::{vector, Vec2};
 
 use polynomial::Polynomial;
 
-solution!("Step Counter", (2023, 04));
+solution!("Step Counter", 21);
 
 fn part_a(input: &str) -> Answer {
     let map = parse(input);

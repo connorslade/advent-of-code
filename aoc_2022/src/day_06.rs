@@ -2,7 +2,7 @@ use hashbrown::HashSet;
 
 use common::{solution, Answer};
 
-solution!("Tuning Trouble", (2022, 00));
+solution!("Tuning Trouble", 6);
 
 fn part_a(input: &str) -> Answer {
     process(input, 4).into()

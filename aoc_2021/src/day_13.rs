@@ -5,7 +5,7 @@ use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
-solution!("Transparent Origami", (2022, 00));
+solution!("Transparent Origami", 13);
 
 fn part_a(input: &str) -> Answer {
     let mut paper = Paper::parse(input);

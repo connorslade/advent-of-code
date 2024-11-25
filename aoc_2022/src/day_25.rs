@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Full of Hot Air", (2022, 00));
+solution!("Full of Hot Air", 25);
 
 fn part_a(input: &str) -> Answer {
     snafu::encode(input.lines().map(snafu::decode).sum::<i64>()).into()

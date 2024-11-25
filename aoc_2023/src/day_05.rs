@@ -1,7 +1,7 @@
 use common::{solution, Answer};
 use rayon::{iter::ParallelIterator, slice::ParallelSlice};
 
-solution!("If You Give A Seed A Fertilizer", (2023, 05));
+solution!("If You Give A Seed A Fertilizer", 5);
 
 fn part_a(input: &str) -> Answer {
     let seeds = parse(input);

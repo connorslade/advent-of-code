@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Smoke Basin", (2022, 00));
+solution!("Smoke Basin", 9);
 
 fn part_a(input: &str) -> Answer {
     let data = parse(input);

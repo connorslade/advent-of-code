@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Trebuchet?!", (2023, 01));
+solution!("Trebuchet?!", 1);
 
 const DIGITS: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",

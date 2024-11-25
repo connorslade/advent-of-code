@@ -6,7 +6,7 @@ use common::{solution, Answer};
 
 type Pos = Vec2<usize>;
 
-solution!("Cosmic Expansion", (2023, 04));
+solution!("Cosmic Expansion", 11);
 
 fn part_a(input: &str) -> Answer {
     let mut galaxies = parse(input);

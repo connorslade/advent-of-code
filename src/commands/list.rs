@@ -11,7 +11,7 @@ pub fn list(cmd: &ListArgs) -> Result<()> {
         println!(
             " {} Day {}: {}",
             if last { "└" } else { "├" },
-            i + 1,
+            e.day,
             e.name
         );
     }

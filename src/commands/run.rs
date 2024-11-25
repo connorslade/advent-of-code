@@ -9,7 +9,7 @@ pub fn run(cmd: &RunArgs) -> Result<()> {
     let solutions = get_year(cmd.year);
     let solution = solutions
         .iter()
-        .find(|x| x.date.1 == cmd.day)
+        .find(|x| x.day == cmd.day)
         .with_context(|| format!("No solution for day {} in year {}", cmd.day, cmd.year))?;
 
     println!(

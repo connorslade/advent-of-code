@@ -2,7 +2,7 @@ use hashbrown::HashMap;
 
 use common::{solution, Answer};
 
-solution!("Monkey Math", (2022, 00));
+solution!("Monkey Math", 21);
 
 fn part_a(input: &str) -> Answer {
     let monkeys = MonkeyBusiness::new(input);

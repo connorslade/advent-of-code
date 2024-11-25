@@ -3,9 +3,9 @@ use hashbrown::HashSet;
 use nd_vec::{vector, Vec2};
 use pathfinding::directed::bfs::bfs;
 
-type Pos = Vec2<usize>;
+solution!("Blizzard Basin", 24);
 
-solution!("Blizzard Basin", (2022, 00));
+type Pos = Vec2<usize>;
 
 fn part_a(input: &str) -> Answer {
     let basin = Basin::parse(input);

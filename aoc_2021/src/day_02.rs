@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Dive!", (2022, 00));
+solution!("Dive!", 2);
 
 fn part_a(input: &str) -> Answer {
     let mut dep: u32 = 0;

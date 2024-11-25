@@ -6,7 +6,7 @@ use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<usize>;
 
-solution!("Gear Ratios", (2023, 03));
+solution!("Gear Ratios", 3);
 
 fn part_a(input: &str) -> Answer {
     parse(input)

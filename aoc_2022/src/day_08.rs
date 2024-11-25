@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Treetop Tree House", (2022, 00));
+solution!("Treetop Tree House", 8);
 
 fn part_a(input: &str) -> Answer {
     let trees = parse_trees(input);

@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("The Treachery of Whales", (2022, 00));
+solution!("The Treachery of Whales", 7);
 
 fn part_a(input: &str) -> Answer {
     let data = parse_crabs(input);

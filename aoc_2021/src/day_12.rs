@@ -2,7 +2,7 @@ use common::{solution, Answer};
 use hashbrown::{HashMap, HashSet};
 use petgraph::graph::{NodeIndex, UnGraph};
 
-solution!("Passage Pathing", (2022, 00));
+solution!("Passage Pathing", 12);
 
 fn part_a(input: &str) -> Answer {
     let graph = parse(input);

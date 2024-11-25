@@ -3,9 +3,9 @@ use hashbrown::{hash_map::Entry, HashMap};
 use common::{solution, Answer};
 use nd_vec::vector;
 
-type Point = nd_vec::Vec2<i64>;
+solution!("Pyroclastic Flow", 17);
 
-solution!("Pyroclastic Flow", (2022, 00));
+type Point = nd_vec::Vec2<i64>;
 
 fn part_a(input: &str) -> Answer {
     let mut world = World::new(input);

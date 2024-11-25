@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Binary Diagnostic", (2022, 00));
+solution!("Binary Diagnostic", 3);
 
 fn part_a(input: &str) -> Answer {
     let num_len = input.lines().next().unwrap().len();

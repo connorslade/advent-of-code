@@ -4,9 +4,9 @@ use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
-type Pos = Vec2<usize>;
+solution!("Clumsy Crucible", 17);
 
-solution!("Clumsy Crucible", (2023, 04));
+type Pos = Vec2<usize>;
 
 fn part_a(input: &str) -> Answer {
     pathfind(parse(input), 1, 3).into()

@@ -4,7 +4,7 @@ use common::{solution, Answer};
 
 use hashbrown::HashMap;
 
-solution!("Proboscidea Volcanium", (2022, 00));
+solution!("Proboscidea Volcanium", 16);
 
 fn part_a(input: &str) -> Answer {
     let parse = parse(input);

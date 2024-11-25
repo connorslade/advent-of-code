@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use common::{solution, Answer};
 
-solution!("Hot Springs", (2023, 04));
+solution!("Hot Springs", 12);
 
 fn part_a(input: &str) -> Answer {
     parse(input)

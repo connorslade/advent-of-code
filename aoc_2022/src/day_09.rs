@@ -7,7 +7,7 @@ use nd_vec::vector;
 
 type Point = nd_vec::Vec2<i32>;
 
-solution!("Rope Bridge", (2022, 00));
+solution!("Rope Bridge", 9);
 
 fn part_a(input: &str) -> Answer {
     process(input, 1).into()

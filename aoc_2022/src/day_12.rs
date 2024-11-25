@@ -5,7 +5,7 @@ use nd_vec::vector;
 
 type Point = nd_vec::Vec2<usize>;
 
-solution!("Hill Climbing Algorithm", (2022, 00));
+solution!("Hill Climbing Algorithm", 12);
 
 fn part_a(input: &str) -> Answer {
     let map = parse(input);

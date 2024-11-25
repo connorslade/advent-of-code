@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Camp Cleanup", (2022, 00));
+solution!("Camp Cleanup", 4);
 
 fn part_a(input: &str) -> Answer {
     let mut out = 0;

@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Sonar Sweep", (2022, 00));
+solution!("Sonar Sweep", 1);
 
 fn part_a(input: &str) -> Answer {
     let data = input

@@ -1,15 +1,9 @@
-use common::{Answer, Solution};
+use common::{solution, Answer};
+
+solution!("Cube Conundrum", 2);
 
 // 12 red cubes, 13 green cubes, and 14 blue cubes
 const MAX_CUBES: [u32; 3] = [12, 13, 14];
-
-pub const SOLUTION: Solution = Solution {
-    name: "Cube Conundrum",
-    date: (2023, 02),
-
-    part_a,
-    part_b,
-};
 
 fn part_a(input: &str) -> Answer {
     parse(input)

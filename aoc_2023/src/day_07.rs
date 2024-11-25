@@ -3,7 +3,7 @@ use std::{cmp::Ordering, fmt::Debug};
 use common::{solution, Answer};
 use itertools::Itertools;
 
-solution!("Camel Cards", (2023, 04));
+solution!("Camel Cards", 7);
 
 fn part_a(input: &str) -> Answer {
     let hands = parse(input, "AKQJT98765432");

@@ -2,7 +2,7 @@ use aoc_lib::direction::Direction;
 use common::{solution, Answer};
 use nd_vec::vector;
 
-solution!("Lavaduct Lagoon", (2023, 04));
+solution!("Lavaduct Lagoon", 18);
 
 fn part_a(input: &str) -> Answer {
     solve(parse_a(input)).into()

@@ -3,9 +3,9 @@ use hashbrown::{hash_map::Entry, HashMap, HashSet};
 use common::{solution, Answer};
 use nd_vec::vector;
 
-type Point = nd_vec::Vec2<isize>;
+solution!("Unstable Diffusion", 32);
 
-solution!("Unstable Diffusion", (2022, 00));
+type Point = nd_vec::Vec2<isize>;
 
 fn part_a(input: &str) -> Answer {
     let mut world = World::parse(input);

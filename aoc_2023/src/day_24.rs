@@ -5,7 +5,7 @@ use itertools::Itertools;
 use nd_vec::{vector, Vec2, Vec3};
 use num_traits::Num;
 
-solution!("Never Tell Me The Odds", (2023, 04));
+solution!("Never Tell Me The Odds", 24);
 
 fn part_a(input: &str) -> Answer {
     let stones = parse(input);

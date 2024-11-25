@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Scratchcards", (2023, 04));
+solution!("Scratchcards", 4);
 
 fn part_a(input: &str) -> Answer {
     let cards = parse(input);

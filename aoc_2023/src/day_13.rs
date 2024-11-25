@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Point of Incidence", (2023, 04));
+solution!("Point of Incidence", 13);
 
 fn part_a(input: &str) -> Answer {
     let valleys = parse(input);

@@ -1,7 +1,7 @@
 use common::{solution, Answer};
 use hashbrown::HashMap;
 
-solution!("Not Enough Minerals ", (2022, 00));
+solution!("Not Enough Minerals", 19);
 
 fn part_a(input: &str) -> Answer {
     let robots = parse(input);

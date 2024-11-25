@@ -8,7 +8,7 @@ const DIGITS: [&str; 10] = [
     "abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg",
 ];
 
-solution!("Seven Segment Search", (2022, 00));
+solution!("Seven Segment Search", 8);
 
 fn part_a(input: &str) -> Answer {
     let data = parse(input);

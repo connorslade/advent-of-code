@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use common::{solution, Answer};
 
-solution!("Distress Signal", (2022, 00));
+solution!("Distress Signal", 13);
 
 fn part_a(input: &str) -> Answer {
     let signals = parse(input);

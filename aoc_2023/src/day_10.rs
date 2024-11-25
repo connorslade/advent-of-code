@@ -14,7 +14,7 @@ const START_PIECES: [(char, [Direction; 2]); 4] = [
     ('L', [Direction::Up, Direction::Right]),
 ];
 
-solution!("Pipe Maze", (2023, 04));
+solution!("Pipe Maze", 10);
 
 fn part_a(input: &str) -> Answer {
     let maze = parse(input);

@@ -2,19 +2,19 @@ use hashbrown::HashSet;
 
 use common::{solution, Answer};
 
-solution!("Rucksack Reorganization", (2022, 00));
+solution!("Rucksack Reorganization", 3);
 
 fn part_a(input: &str) -> Answer {
     let mut out = 0;
 
     for i in input.trim().lines() {
-        let mut bolth = i[0..i.len() / 2].chars().collect::<Vec<_>>();
+        let mut both = i[0..i.len() / 2].chars().collect::<Vec<_>>();
         let pocket_2 = i[i.len() / 2..].chars().collect::<Vec<_>>();
-        bolth.retain(|x| pocket_2.contains(x));
-        bolth.dedup();
+        both.retain(|x| pocket_2.contains(x));
+        both.dedup();
 
-        debug_assert!(bolth.len() == 1);
-        out += score_item(bolth[0]) as usize;
+        debug_assert!(both.len() == 1);
+        out += score_item(both[0]) as usize;
     }
 
     out.into()

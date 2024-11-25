@@ -3,7 +3,7 @@ use std::{collections::HashSet, convert::identity};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec3};
 
-solution!("Sand Slabs", (2023, 04));
+solution!("Sand Slabs", 22);
 
 fn part_a(input: &str) -> Answer {
     solve(parse(input), false, |x| (x == 0) as u32).into()

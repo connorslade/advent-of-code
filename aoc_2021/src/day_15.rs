@@ -3,7 +3,7 @@ use common::{solution, Answer};
 use hashbrown::HashMap;
 use nd_vec::vector;
 
-solution!("Chiton", (2022, 00));
+solution!("Chiton", 15);
 
 fn part_a(input: &str) -> Answer {
     let matrix = Matrix::new_chars(input, |chr| chr.to_digit(10).unwrap() as u8);

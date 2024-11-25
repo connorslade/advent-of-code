@@ -2,7 +2,7 @@ use common::{solution, Answer};
 
 use hashbrown::HashMap;
 
-solution!("Hydrothermal Venture", (2022, 00));
+solution!("Hydrothermal Venture", 5);
 
 fn part_a(input: &str) -> Answer {
     run(input, false).into()

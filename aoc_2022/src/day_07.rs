@@ -2,7 +2,7 @@ use hashbrown::HashSet;
 
 use common::{solution, Answer};
 
-solution!("No Space Left On Device", (2022, 00));
+solution!("No Space Left On Device", 7);
 
 fn part_a(input: &str) -> Answer {
     process(input)

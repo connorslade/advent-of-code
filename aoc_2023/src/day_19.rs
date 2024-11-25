@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use common::{solution, Answer};
 
-solution!("Aplenty", (2023, 04));
+solution!("Aplenty", 19);
 
 fn part_a(input: &str) -> Answer {
     let (rules, shapes) = parse(input);

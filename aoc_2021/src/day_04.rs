@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Giant Squid", (2022, 00));
+solution!("Giant Squid", 4);
 
 fn part_a(input: &str) -> Answer {
     let bingo = Bingo::parse_input(input);
@@ -11,9 +11,9 @@ fn part_a(input: &str) -> Answer {
 
 fn part_b(input: &str) -> Answer {
     let bingo = Bingo::parse_input(input);
-    let loseing = bingo.loseing_solve();
+    let losing = bingo.losing_solve();
 
-    loseing.0[loseing.1].final_out(loseing.2).into()
+    losing.0[losing.1].final_out(losing.2).into()
 }
 
 #[derive(Debug, Clone)]
@@ -67,7 +67,7 @@ impl Bingo {
         }
     }
 
-    fn loseing_solve(self) -> (Vec<Board>, usize, u32) {
+    fn losing_solve(self) -> (Vec<Board>, usize, u32) {
         let mut nums = self.numbers.clone();
         let mut tick = self.boards;
         let mut take = self.take;

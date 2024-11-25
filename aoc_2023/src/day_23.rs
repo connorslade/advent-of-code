@@ -7,9 +7,9 @@ use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
-type Pos = Vec2<usize>;
+solution!("A Long Walk", 23);
 
-solution!("A Long Walk", (2023, 04));
+type Pos = Vec2<usize>;
 
 fn part_a(input: &str) -> Answer {
     solve_a(&parse(input), &mut HashSet::new(), vector!(1, 0), 0).into()

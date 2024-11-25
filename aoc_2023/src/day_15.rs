@@ -1,7 +1,7 @@
 use common::{solution, Answer};
 use itertools::Itertools;
 
-solution!("Lens Library", (2023, 04));
+solution!("Lens Library", 15);
 
 fn part_a(input: &str) -> Answer {
     input

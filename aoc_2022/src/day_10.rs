@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Cathode-Ray Tube", (2022, 00));
+solution!("Cathode-Ray Tube", 10);
 
 fn part_a(input: &str) -> Answer {
     let instructions = parse(input);

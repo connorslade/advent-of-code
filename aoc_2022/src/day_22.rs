@@ -4,9 +4,9 @@ use std::collections::VecDeque;
 
 use common::{solution, Answer};
 
-type Point = nd_vec::Vec2<isize>;
+solution!("Monkey Map", 22);
 
-solution!("Monkey Map", (2022, 00));
+type Point = nd_vec::Vec2<isize>;
 
 fn part_a(input: &str) -> Answer {
     let mut world = World::parse(input);

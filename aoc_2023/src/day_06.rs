@@ -1,7 +1,7 @@
 use common::{solution, Answer};
 use itertools::Itertools;
 
-solution!("Wait For It", (2023, 06));
+solution!("Wait For It", 6);
 
 fn part_a(input: &str) -> Answer {
     parse_a(input)

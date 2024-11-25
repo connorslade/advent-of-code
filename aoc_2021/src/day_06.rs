@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use hashbrown::HashMap;
 
-solution!("Lanternfish", (2022, 00));
+solution!("Lanternfish", 6);
 
 fn part_a(input: &str) -> Answer {
     let data = Fish::parse_inp(input);

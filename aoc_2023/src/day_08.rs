@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use common::{solution, Answer};
 
-solution!("Haunted Wasteland", (2023, 04));
+solution!("Haunted Wasteland", 8);
 
 /// Just start at `AAA` and follow the instructions until you reach `ZZZ`.
 fn part_a(input: &str) -> Answer {

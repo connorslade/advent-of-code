@@ -3,9 +3,9 @@ use common::{solution, Answer};
 use nd_vec::vector;
 use rayon::prelude::*;
 
-type Point = nd_vec::Vec2<isize>;
+solution!("Beacon Exclusion Zone", 15);
 
-solution!("Beacon Exclusion Zone", (2022, 00));
+type Point = nd_vec::Vec2<isize>;
 
 fn part_a(input: &str) -> Answer {
     let world = World::parse(input);

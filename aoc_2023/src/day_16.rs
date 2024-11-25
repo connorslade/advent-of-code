@@ -4,9 +4,9 @@ use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
-type Pos = Vec2<isize>;
+solution!("The Floor Will Be Lava", 16);
 
-solution!("The Floor Will Be Lava", (2023, 04));
+type Pos = Vec2<isize>;
 
 fn part_a(input: &str) -> Answer {
     lazer(&parse(input), vector!(-1, 0), Direction::Right).into()

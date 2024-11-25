@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Calorie Counting", (2022, 00));
+solution!("Calorie Counting", 1);
 
 fn part_a(input: &str) -> Answer {
     let elfs = get_elfs(input);

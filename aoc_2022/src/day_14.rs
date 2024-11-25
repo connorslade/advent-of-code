@@ -1,11 +1,11 @@
 use common::{solution, Answer};
 use nd_vec::vector;
 
+solution!("Regolith Reservoir", 14);
+
 type Point = nd_vec::Vec2<usize>;
 
 const NEW_POINT: Point = vector!(500, 0);
-
-solution!("Regolith Reservoir", (2022, 00));
 
 fn part_a(input: &str) -> Answer {
     let mut world = World::parse(input);

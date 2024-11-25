@@ -2,7 +2,7 @@ use common::{solution, Answer};
 
 const CHARS: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
-solution!("Syntax Scoring", (2022, 00));
+solution!("Syntax Scoring", 10);
 
 fn part_a(input: &str) -> Answer {
     let data = parse(input);

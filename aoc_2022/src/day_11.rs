@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use common::{solution, Answer};
 
-solution!("Monkey in the Middle", (2022, 00));
+solution!("Monkey in the Middle", 11);
 
 fn part_a(input: &str) -> Answer {
     let monkeys = parse_monkeys(input);

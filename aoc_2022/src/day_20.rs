@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Grove Positioning System", (2022, 00));
+solution!("Grove Positioning System", 20);
 
 fn part_a(input: &str) -> Answer {
     let mut file = File::new(input);

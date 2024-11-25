@@ -3,9 +3,9 @@ use hashbrown::HashSet;
 use common::{solution, Answer};
 use nd_vec::{vector, Vector};
 
-type Pos = nd_vec::Vec3<i32>;
+solution!("Boiling Boulders", 18);
 
-solution!("Boiling Boulders", (2022, 00));
+type Pos = nd_vec::Vec3<i32>;
 
 fn part_a(input: &str) -> Answer {
     let world = World::parse(input);

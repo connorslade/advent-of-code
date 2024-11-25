@@ -2,7 +2,7 @@ use std::collections::{HashMap, VecDeque};
 
 use common::{solution, Answer};
 
-solution!("Pulse Propagation", (2023, 04));
+solution!("Pulse Propagation", 20);
 
 fn part_a(input: &str) -> Answer {
     let connections = parse_input(input);

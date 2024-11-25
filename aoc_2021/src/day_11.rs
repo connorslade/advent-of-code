@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Dumbo Octopus", (2022, 00));
+solution!("Dumbo Octopus", 11);
 
 fn part_a(input: &str) -> Answer {
     let mut octopi = parse(input);

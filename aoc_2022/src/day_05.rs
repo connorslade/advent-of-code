@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Supply Stacks", (2022, 00));
+solution!("Supply Stacks", 5);
 
 fn part_a(input: &str) -> Answer {
     process(input, true).into()

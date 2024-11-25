@@ -1,6 +1,6 @@
 use common::{solution, Answer};
 
-solution!("Mirage Maintenance", (2023, 04));
+solution!("Mirage Maintenance", 9);
 
 fn part_a(input: &str) -> Answer {
     parse(input)

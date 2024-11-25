@@ -6,7 +6,7 @@ use nd_vec::{vector, Vec2};
 
 type Pos = Vec2<isize>;
 
-solution!("Parabolic Reflector Dish", (2023, 04));
+solution!("Parabolic Reflector Dish", 14);
 
 fn part_a(input: &str) -> Answer {
     let mut dish = parse(input);
