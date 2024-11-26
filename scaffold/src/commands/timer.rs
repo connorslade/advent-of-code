@@ -16,7 +16,7 @@ pub fn timer(cmd: &TimerArgs) -> Result<()> {
     let mut stop_time = next_release()?;
 
     if let Some(offset) = cmd.offset {
-        stop_time = stop_time + chrono::Duration::seconds(offset as i64);
+        stop_time += chrono::Duration::seconds(offset as i64);
     }
 
     if Utc::now() >= stop_time {
@@ -66,8 +66,7 @@ fn next_release() -> Result<DateTime<Utc>> {
     if after_event || before_event {
         next = next
             .with_month(12)
-            .map(|x| x.with_day(1))
-            .flatten()
+            .and_then(|x| x.with_day(1))
             .context("Can not represent the next first of December.")?;
     }
 

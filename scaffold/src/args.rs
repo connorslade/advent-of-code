@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{borrow::Cow, path::PathBuf, str::FromStr};
 
 use clap::Parser;
 use common::Part;
@@ -65,25 +65,22 @@ pub struct InitArgs {
     /// The argument is formatted as `{location}:{marker}:{template}` or if you want to use multiple markers `{location}:{marker}:{template}:{marker}:{template}:...`.
     /// This argument can be provided multiple times.
     /// Some uses of inserters are automatically importing the new source into a module or adding the day to the list of days.
-    #[arg(short, long, default_values = ["aoc_{{year}}/src/lib.rs|// [import_marker]|mod day_{{day:pad(2)}};\\n|// [list_marker]|day_{{day:pad(2)}}::SOLUTION,\\n    "])]
+    #[arg(short, long)]
     pub inserter: Vec<Insertion>,
+    /// Cancel adding an inserter to import the newly scaffolded into its years's lib.rs and adding it to the SOLUTIONS array.
+    /// Equivalent to `"aoc_{{year}}/src/lib.rs|// [import_marker]|mod day_{{day:pad(2)}};\\n|// [list_marker]|day_{{day:pad(2)}}::SOLUTION,\\n    "`.
+    #[arg(long)]
+    pub no_default_insertions: bool,
     /// Location formatter of the file importing each solution module.
     #[arg(long, default_value = "aoc_{{year}}/src/lib.rs")]
     pub module_location: String,
-    /// A formatter for a new line that will be added to the module file before the marker.
-    #[arg(long, default_values_t = ["mod day_{{day:pad(2)}};\n".to_owned(), "day_{{day:pad(2)}}::SOLUTION,\n    ".to_owned()])]
-    pub module_templates: Vec<String>,
-    /// A marker is a string that will be found in the module file and is used to determine where to insert the new line.
-    /// If not provided, the default markers will be used.
-    #[arg(long, default_values_t = ["// [import_marker]".to_owned(), "// [list_marker]".to_owned()])]
-    pub module_markers: Vec<String>,
     /// A formatter that will be used to get the path for the solution file.
     #[arg(short, long, default_value = "aoc_{{year}}/src/day_{{day:pad(2)}}.rs")]
     pub solution_location: String,
     /// Path to a template file that will be used to create the solution file.
     /// If not provided, a default template will be used.
     #[arg(short = 't', long)]
-    pub solution_template: Option<String>,
+    pub solution_template: Option<PathBuf>,
     /// Don't create a solution file.
     /// Useful if you want to use this command with a different language or organization.
     #[arg(short, long)]
@@ -138,9 +135,9 @@ pub struct SubmitArgs {
 
 #[derive(Debug, Clone)]
 pub struct Insertion {
-    pub location: String,
+    pub location: Cow<'static, str>,
     // (Marker, Template)
-    pub parts: Vec<(String, String)>,
+    pub parts: Vec<(Cow<'static, str>, Cow<'static, str>)>,
 }
 
 impl FromStr for Insertion {
@@ -157,9 +154,12 @@ impl FromStr for Insertion {
         let location = parts.remove(0).to_owned();
         let parts = parts
             .chunks_exact(2)
-            .map(|x| (x[0].to_owned(), x[1].to_owned()))
+            .map(|x| (x[0].to_owned().into(), x[1].to_owned().into()))
             .collect::<Vec<_>>();
 
-        Ok(Self { location, parts })
+        Ok(Self {
+            location: Cow::Owned(location),
+            parts,
+        })
     }
 }
