@@ -17,8 +17,8 @@ pub fn verify_inner(session: &Session, address: &Url) -> Result<SessionVerificat
     match session.verify(address) {
         Ok(Some(verification)) => Ok(verification),
         Ok(None) => {
-            bail!("[E] Session token is invalid. Sign in again and update with `aoc token`.")
+            bail!("Session token is invalid. Sign in again and update with `aoc token`.")
         }
-        Err(err) => bail!("[E] Failed to verify session: {}", err),
+        Err(err) => bail!("Failed to verify session: {}", err),
     }
 }

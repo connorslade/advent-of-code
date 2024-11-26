@@ -2,7 +2,7 @@ mod answer;
 mod misc;
 mod part;
 #[macro_use]
-mod solution;
+pub mod solution;
 
 pub use answer::Answer;
 pub use misc::{human_time, load};
