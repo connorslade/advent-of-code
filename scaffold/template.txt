@@ -1,26 +1,18 @@
-use common::{Answer, Solution};
+use common::{Answer, solution};
 
-pub struct Day{{day:pad(2)}};
+solution!("{{problem_name}}", day);
 
-impl Solution for Day{{day:pad(2)}} {
-    fn name(&self) -> &'static str {
-        "{{problem_name}}"
-    }
+fn part_a(input: &str) -> Answer {
+    Answer::Unimplemented
+}
 
-    fn part_a(input: &str) -> Answer {
-        Answer::Unimplemented
-    }
-
-    fn part_b(input: &str) -> Answer {
-        Answer::Unimplemented
-    }
+fn part_b(input: &str) -> Answer {
+    Answer::Unimplemented
 }
 
 #[cfg(test)]
 mod test {
     use indoc::indoc;
-
-    use super::Day{{day:pad(2)}};
 
     const CASE: &str = indoc! {"
         ...
@@ -28,11 +20,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(Day{{day:pad(2)}}.part_a(CASE), ().into());
+        assert_eq!(super::part_a(CASE), ().into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(Day{{day:pad(2)}}.part_b(CASE), ().into());
+        assert_eq!(super::part_b(CASE), ().into());
     }
 }

@@ -65,13 +65,13 @@ pub struct InitArgs {
     /// The argument is formatted as `{location}:{marker}:{template}` or if you want to use multiple markers `{location}:{marker}:{template}:{marker}:{template}:...`.
     /// This argument can be provided multiple times.
     /// Some uses of inserters are automatically importing the new source into a module or adding the day to the list of days.
-    #[arg(short, long, default_values = ["aoc_{{year}}/src/lib.rs|// [import_marker]|mod day_{{day:pad(2)}};\\n|// [list_marker]|&day_{{day:pad(2)}}::Day{{day:pad(2)}},\\n    "])]
+    #[arg(short, long, default_values = ["aoc_{{year}}/src/lib.rs|// [import_marker]|mod day_{{day:pad(2)}};\\n|// [list_marker]|day_{{day:pad(2)}}::SOLUTION,\\n    "])]
     pub inserter: Vec<Insertion>,
     /// Location formatter of the file importing each solution module.
     #[arg(long, default_value = "aoc_{{year}}/src/lib.rs")]
     pub module_location: String,
     /// A formatter for a new line that will be added to the module file before the marker.
-    #[arg(long, default_values_t = ["mod day_{{day:pad(2)}};\n".to_owned(), "&day_{{day:pad(2)}}::Day{{day:pad(2)}},\n    ".to_owned()])]
+    #[arg(long, default_values_t = ["mod day_{{day:pad(2)}};\n".to_owned(), "day_{{day:pad(2)}}::SOLUTION,\n    ".to_owned()])]
     pub module_templates: Vec<String>,
     /// A marker is a string that will be found in the module file and is used to determine where to insert the new line.
     /// If not provided, the default markers will be used.

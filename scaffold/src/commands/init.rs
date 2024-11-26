@@ -105,7 +105,7 @@ fn modify_module(cmd: &InitArgs, formats: &[(&str, String)]) -> Result<()> {
     }
 
     fs::write(&module_file, file)?;
-    println!("[*] Modified {module_file}");
+    println!("[*] Modified module {module_file}");
     Ok(())
 }
 
