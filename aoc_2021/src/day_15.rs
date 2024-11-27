@@ -1,46 +1,89 @@
+use std::collections::BinaryHeap;
+
+use hashbrown::HashMap;
+use nd_vec::{vector, Vector};
+
 use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{solution, Answer};
-use hashbrown::HashMap;
-use nd_vec::vector;
 
 solution!("Chiton", 15);
 
+type Point = Vector<usize, 2>;
+
 fn part_a(input: &str) -> Answer {
     let matrix = Matrix::new_chars(input, |chr| chr.to_digit(10).unwrap() as u8);
+    solve(matrix.size, |pos| matrix.get(pos).copied()).into()
+}
 
-    let mut out = usize::MAX;
-    let mut visited = HashMap::new();
-    let mut queue = Vec::new();
-    queue.push((vector!(0, 0), 0));
+fn part_b(input: &str) -> Answer {
+    let matrix = Matrix::new_chars(input, |chr| chr.to_digit(10).unwrap() as u8);
+    solve(matrix.size * 5, |pos| {
+        let (cx, cy) = (pos.x() / matrix.size.x(), pos.y() / matrix.size.y());
+        if cx > 4 || cy > 4 {
+            return None;
+        };
 
-    while let Some((pos, cost)) = queue.pop() {
-        if pos == matrix.size - vector!(1, 1) {
-            out = out.min(cost);
-            continue;
+        let pos = vector!(pos.x() % matrix.size.x(), pos.y() % matrix.size.y());
+        matrix
+            .get(pos)
+            .map(|x| (x + cx as u8 + cy as u8 - 1) % 9 + 1)
+    })
+    .into()
+}
+
+fn solve(size: Point, get: impl Fn(Point) -> Option<u8>) -> u32 {
+    let mut seen = HashMap::new();
+    let mut queue = BinaryHeap::new();
+
+    seen.insert(vector!(0, 0), 0);
+    queue.push(QueueItem {
+        pos: vector!(0, 0),
+        distance: 0,
+    });
+
+    while let Some(item) = queue.pop() {
+        if item.pos == size - vector!(1, 1) {
+            return item.distance;
         }
 
-        visited.insert(pos, cost);
         for dir in Direction::ALL {
-            if let Some((next, new_cost)) = dir
-                .try_advance(pos)
-                .and_then(|x| Some((x, cost + *matrix.get(x)? as usize)))
-            {
-                if let Some(prev) = visited.get(&next) {
-                    if *prev <= new_cost {
-                        continue;
-                    }
-                }
+            let Some((pos, cost)) = dir.try_advance(item.pos).and_then(|x| Some((x, get(x)?)))
+            else {
+                continue;
+            };
 
-                queue.push((next, new_cost));
+            let dist = seen.entry(pos).or_insert(u32::MAX);
+            let next_dist = item.distance + cost as u32;
+
+            if next_dist < *dist {
+                *dist = next_dist;
+                queue.push(QueueItem {
+                    pos,
+                    distance: next_dist,
+                });
             }
         }
     }
 
-    out.into()
+    unreachable!()
 }
 
-fn part_b(_input: &str) -> Answer {
-    Answer::Unimplemented
+#[derive(PartialEq, Eq)]
+struct QueueItem {
+    pos: Point,
+    distance: u32,
+}
+
+impl Ord for QueueItem {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        other.distance.cmp(&self.distance)
+    }
+}
+
+impl PartialOrd for QueueItem {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 #[cfg(test)]
@@ -67,6 +110,6 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), ().into());
+        assert_eq!(super::part_b(CASE), 315.into());
     }
 }
