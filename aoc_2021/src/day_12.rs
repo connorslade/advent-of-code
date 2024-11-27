@@ -6,27 +6,56 @@ solution!("Passage Pathing", 12);
 
 fn part_a(input: &str) -> Answer {
     let graph = parse(input);
-    paths_a(&graph, graph.start, HashSet::new()).into()
-}
 
-fn part_b(_input: &str) -> Answer {
-    Answer::Unimplemented
-}
+    fn paths(graph: &ParseResult, at: NodeIndex, mut visited: HashSet<NodeIndex>) -> usize {
+        if at == graph.end {
+            return 1;
+        }
 
-fn paths_a(graph: &ParseResult, at: NodeIndex, mut visited: HashSet<NodeIndex>) -> usize {
-    if at == graph.end {
-        return 1;
+        if !visited.insert(at) && graph.graph[at].cave_type != Type::Big {
+            return 0;
+        }
+
+        graph
+            .graph
+            .neighbors(at)
+            .map(|child| paths(graph, child, visited.clone()))
+            .sum()
     }
 
-    if !visited.insert(at) && graph.graph[at].cave_type != Type::Big {
-        return 0;
+    paths(&graph, graph.start, HashSet::new()).into()
+}
+
+fn part_b(input: &str) -> Answer {
+    let graph = parse(input);
+
+    fn paths(
+        graph: &ParseResult,
+        at: NodeIndex,
+        mut visited: HashSet<NodeIndex>,
+        mut small_twice: bool,
+    ) -> usize {
+        if at == graph.end {
+            return 1;
+        }
+
+        let cave = graph.graph[at].cave_type;
+        if !visited.insert(at) && cave != Type::Big {
+            if !small_twice && cave == Type::Small {
+                small_twice = true;
+            } else {
+                return 0;
+            }
+        }
+
+        graph
+            .graph
+            .neighbors(at)
+            .map(|child| paths(graph, child, visited.clone(), small_twice))
+            .sum()
     }
 
-    graph
-        .graph
-        .neighbors(at)
-        .map(|child| paths_a(graph, child, visited.clone()))
-        .sum()
+    paths(&graph, graph.start, HashSet::new(), false).into()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -130,6 +159,7 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), ().into()); // 36
+        assert_eq!(super::part_b(CASE), 36.into());
+        assert_eq!(super::part_b(CASE_2), 103.into());
     }
 }

@@ -76,4 +76,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 09: Smoke Basin](aoc_2021/src/day_09.rs)
 - [Day 10: Syntax Scoring](aoc_2021/src/day_10.rs)
 - [Day 11: Dumbo Octopus](aoc_2021/src/day_11.rs)
+- [Day 12: Passage Pathing](aoc_2021/src/day_12.rs)
 - [Day 13: Transparent Origami](aoc_2021/src/day_13.rs)
+- [Day 14: Extended Polymerization](aoc_2021/src/day_14.rs)
+- [Day 15: Chiton](aoc_2021/src/day_15.rs)
