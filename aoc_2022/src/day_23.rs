@@ -3,7 +3,7 @@ use hashbrown::{hash_map::Entry, HashMap, HashSet};
 use common::{solution, Answer};
 use nd_vec::vector;
 
-solution!("Unstable Diffusion", 32);
+solution!("Unstable Diffusion", 23);
 
 type Point = nd_vec::Vec2<isize>;
 

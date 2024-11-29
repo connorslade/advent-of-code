@@ -52,7 +52,7 @@ fn part_b(input: &str) -> Answer {
         }
 
         if !is_corrupted {
-            let mut score = 0;
+            let mut score = 0u64;
             while let Some(ch) = queue.pop() {
                 score = 5 * score
                     + match ch {

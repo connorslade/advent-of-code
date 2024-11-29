@@ -47,7 +47,7 @@ impl State {
     fn tick(self) -> Self {
         let mut resources = self.resources;
         for (i, resource) in resources.iter_mut().enumerate() {
-            *resource += self.robots[i];
+            *resource = resource.saturating_add(self.robots[i]);
         }
 
         Self { resources, ..self }

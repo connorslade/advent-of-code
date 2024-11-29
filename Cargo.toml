@@ -25,7 +25,6 @@ clap = { version = "4.0.29", features = ["derive"] }
 chrono = "0.4.31"
 anyhow = "1.0.75"
 
-
 [profile.release]
 overflow-checks = true
 incremental = true
