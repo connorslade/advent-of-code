@@ -1,4 +1,7 @@
-use std::collections::{HashMap, VecDeque};
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashMap},
+};
 
 use aoc_lib::{direction::Direction, matrix::Matrix};
 use common::{solution, Answer};
@@ -21,35 +24,36 @@ fn parse(input: &str) -> Matrix<u8> {
 }
 
 fn pathfind(board: Matrix<u8>, min_dist: u8, max_dist: u8) -> u32 {
-    let mut queue = VecDeque::new();
+    let mut queue = BinaryHeap::new();
     let mut visited = HashMap::new();
     let mut res = u32::MAX;
 
     let end = board.size() - vector!(1, 1);
     for dir in [Direction::Down, Direction::Right] {
         let state = State::new(vector!(0, 0), dir, 1);
-        queue.push_back((0, state));
+        queue.push(QueueItem { state, cost: 0 });
         visited.insert(state, 0);
     }
 
-    while let Some((cost, state)) = queue.pop_front() {
+    while let Some(item) = queue.pop() {
+        let state = item.state;
         let mut explore = |facing: Direction, turn_distance: u8| {
             if let Some(pos) = facing
                 .try_advance(state.pos)
                 .filter(|pos| board.contains(*pos))
             {
                 let state = State::new(pos, facing, turn_distance);
-                let cost = cost + board[pos] as u32;
+                let cost = item.cost + board[pos] as u32;
 
                 if !visited.contains_key(&state) || visited.get(&state).unwrap() > &cost {
-                    queue.push_back((cost, state));
+                    queue.push(QueueItem { state, cost });
                     visited.insert(state, cost);
                 }
             }
         };
 
         if state.pos == end && state.turn_distance >= min_dist {
-            res = res.min(cost);
+            res = res.min(item.cost);
             continue;
         }
 
@@ -73,6 +77,12 @@ struct State {
     turn_distance: u8,
 }
 
+#[derive(PartialEq, Eq)]
+struct QueueItem {
+    state: State,
+    cost: u32,
+}
+
 impl State {
     fn new(pos: Pos, facing: Direction, turn_distance: u8) -> Self {
         Self {
@@ -80,6 +90,18 @@ impl State {
             facing,
             turn_distance,
         }
+    }
+}
+
+impl Ord for QueueItem {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.cost.cmp(&self.cost)
+    }
+}
+
+impl PartialOrd for QueueItem {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 

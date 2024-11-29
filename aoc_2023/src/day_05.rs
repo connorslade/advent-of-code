@@ -93,7 +93,7 @@ fn parse(input: &str) -> ParseResult {
 
 impl Range {
     fn start_contains(&self, value: u32) -> bool {
-        self.start <= value && value < self.start + self.length
+        self.start <= value && value < self.start.wrapping_add(self.length)
     }
 }
 
@@ -101,7 +101,7 @@ impl Map {
     fn map(&self, value: u32) -> u32 {
         for range in &self.ranges {
             if range.start_contains(value) {
-                return range.end + value - range.start;
+                return range.end.wrapping_add(value).wrapping_sub(range.start);
             }
         }
 
