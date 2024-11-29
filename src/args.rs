@@ -18,6 +18,8 @@ pub struct Args {
 pub enum Commands {
     /// Run a solution to a problem
     Run(RunArgs),
+    /// Run all solutions in a given year
+    RunAll(RunAllArgs),
     /// List all solutions for a given year
     List(ListArgs),
 }
@@ -37,6 +39,13 @@ pub struct RunArgs {
     /// Wether just the answer should be printed, not the execution time or other information
     #[arg(short, long)]
     pub raw: bool,
+}
+
+#[derive(Parser)]
+pub struct RunAllArgs {
+    /// The year to run
+    #[arg(default_value_t = current_year())]
+    pub year: u16,
 }
 
 #[derive(Parser)]
