@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use aoc_lib::math::lcm;
 use common::{solution, Answer};
 
 solution!("Haunted Wasteland", 8);
@@ -23,6 +24,7 @@ fn part_a(input: &str) -> Answer {
 }
 
 /// Get the cycle length for each starting position, this is the number of positions you need to get from `AAA` to `ZZZ`.
+/// Calculate the least common multiple of all cycle lengths to get the number of steps needed to get from `AAA` to `ZZZ` for all starting positions.
 fn part_b(input: &str) -> Answer {
     let map = parse(input);
 
@@ -35,7 +37,7 @@ fn part_b(input: &str) -> Answer {
 
     let mut cycles = Vec::new();
     for mut pos in pos {
-        let mut cycle_len = 0;
+        let mut cycle_len = 0_u64;
         let mut i = 0;
         loop {
             pos = map.get(pos, i);
@@ -49,9 +51,7 @@ fn part_b(input: &str) -> Answer {
         }
     }
 
-    // Note: This works because the cycle lengths are all prime numbers.
-    // This was not described in the problem, but should be true for all inputs.
-    cycles.into_iter().product::<i32>().into()
+    cycles.into_iter().reduce(lcm).unwrap().into()
 }
 
 #[derive(Debug)]
