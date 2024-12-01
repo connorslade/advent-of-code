@@ -3,55 +3,41 @@ use common::{solution, Answer};
 solution!("Historian Hysteria", 1);
 
 fn part_a(input: &str) -> Answer {
-    let mut list_a = Vec::new();
-    let mut list_b = Vec::new();
-
-    for x in input.lines() {
-        let mut parts = x.split_whitespace();
-        let a = parts.next().unwrap().parse::<i32>().unwrap();
-        let b = parts.next().unwrap().parse::<i32>().unwrap();
-
-        list_a.push(a);
-        list_b.push(b);
-    }
-
+    let (mut list_a, mut list_b) = parse(input);
     list_a.sort();
     list_b.sort();
 
-    let mut diff = 0;
-
-    for (a, b) in list_a.iter().zip(list_b.iter()) {
-        diff += (a - b).abs();
-    }
-
-    diff.into()
+    list_a
+        .into_iter()
+        .zip(list_b)
+        .map(|(a, b)| a.abs_diff(b))
+        .sum::<u32>()
+        .into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let mut list_a = Vec::new();
-    let mut list_b = Vec::new();
+    let (list_a, list_b) = parse(input);
+
+    list_a
+        .into_iter()
+        .map(|x| {
+            let count = list_b.iter().filter(|&&y| y == x).count();
+            x * count as u32
+        })
+        .sum::<u32>()
+        .into()
+}
+
+fn parse(input: &str) -> (Vec<u32>, Vec<u32>) {
+    let (mut a, mut b) = (Vec::new(), Vec::new());
 
     for x in input.lines() {
         let mut parts = x.split_whitespace();
-        let a = parts.next().unwrap().parse::<i32>().unwrap();
-        let b = parts.next().unwrap().parse::<i32>().unwrap();
-
-        list_a.push(a);
-        list_b.push(b);
+        a.push(parts.next().unwrap().parse::<u32>().unwrap());
+        b.push(parts.next().unwrap().parse::<u32>().unwrap());
     }
 
-    let mut out = 0;
-
-    for x in list_a {
-        let mut count = 0;
-        for &y in list_b.iter() {
-            count += (y == x) as u32;
-        }
-
-        out += x * count as i32;
-    }
-
-    out.into()
+    (a, b)
 }
 
 #[cfg(test)]
