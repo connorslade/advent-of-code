@@ -166,6 +166,7 @@ version = "0.1.0"
 dependencies = [
  "aoc_lib",
  "common",
+ "indoc",
 ]
 
 [[package]]
