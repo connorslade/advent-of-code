@@ -1,6 +1,6 @@
 use common::{Answer, solution};
 
-solution!("{{problem_name}}", day);
+solution!("{{problem_name}}", {{day}});
 
 fn part_a(input: &str) -> Answer {
     Answer::Unimplemented
