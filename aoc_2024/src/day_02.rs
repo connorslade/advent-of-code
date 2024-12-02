@@ -1,5 +1,3 @@
-use std::usize;
-
 use common::{solution, Answer};
 use itertools::Itertools;
 
@@ -7,76 +5,44 @@ solution!("Red-Nosed Reports", 2);
 
 fn part_a(input: &str) -> Answer {
     let reports = parse(input);
-
-    let mut safe = 0;
-    for report in reports {
-        if is_safe(report, usize::MAX) {
-            safe += 1;
-        }
-    }
-
-    safe.into()
+    reports.iter().filter(|x| is_safe(x)).count().into()
 }
 
 fn part_b(input: &str) -> Answer {
     let reports = parse(input);
-
-    let mut safe = 0;
-    for report in reports {
-        if dbg!(is_safe_b(&report, usize::MAX)) {
-            safe += 1;
-        }
-    }
-
-    safe.into()
+    reports.iter().filter(|x| is_safe_b(x, None)).count().into()
 }
 
-fn is_safe(input: Vec<i32>, skip: usize) -> bool {
-    let diffs = input
+fn is_safe(input: &[i32]) -> bool {
+    let sig = (input[0] - input[1]).signum();
+    input
         .iter()
-        .enumerate()
-        .filter(|(idx, _)| *idx != skip)
-        .map(|(_, &x)| x)
         .tuple_windows()
         .map(|(a, b)| a - b)
-        .collect::<Vec<_>>();
-
-    let count = diffs
-        .iter()
-        .filter(|&x| x.abs() > 3 || x.abs() < 1 || x.signum() != diffs[0].signum())
-        .count();
-
-    count == 0
+        .all(|x| (1..=3).contains(&x.abs()) && x.signum() == sig)
 }
 
-fn is_safe_b(input: &[i32], skip: usize) -> bool {
-    let diffs = input
+fn is_safe_b(input: &[i32], skip: Option<usize>) -> bool {
+    let vals = input
         .iter()
         .enumerate()
-        .filter(|(idx, _)| *idx != skip)
-        .map(|(_, &x)| x)
-        .tuple_windows()
-        .map(|(a, b)| a - b)
-        .collect::<Vec<_>>();
+        .filter(|(idx, _)| skip.is_none() || Some(*idx) != skip)
+        .map(|(_, &x)| x);
+    let diffs = vals.tuple_windows().map(|(a, b)| a - b).collect::<Vec<_>>();
 
-    let invalid = diffs
+    let first_invalid = diffs
         .iter()
-        .map(|&x| x.abs() > 3 || x.abs() < 1 || x.signum() != diffs[0].signum())
-        .collect::<Vec<_>>();
+        .position(|&x| !(1..=3).contains(&x.abs()) || x.signum() != diffs[0].signum());
 
-    if invalid.iter().all(|x| *x == false) {
-        return true;
-    }
-
-    if skip == usize::MAX {
-        if let Some(first_invalid) = invalid.iter().position(|x| *x == true) {
-            return is_safe_b(input, first_invalid)
-                | is_safe_b(input, first_invalid + 1)
-                | is_safe_b(input, first_invalid.saturating_sub(1));
+    match first_invalid {
+        Some(x) if skip.is_none() => {
+            is_safe_b(input, Some(x))
+                || is_safe_b(input, Some(x + 1))
+                || is_safe_b(input, Some(x.saturating_sub(1)))
         }
+        None => true,
+        _ => false,
     }
-
-    false
 }
 
 fn parse(input: &str) -> Vec<Vec<i32>> {
