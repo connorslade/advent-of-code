@@ -6,6 +6,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 ## [2024](https://adventofcode.com/2024) [![aoc_2024](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml)
 
 - [Day 01: Historian Hysteria](aoc_2024/src/day_01.rs)
+- [Day 02: Red-Nosed Reports](aoc_2024/src/day_02.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
