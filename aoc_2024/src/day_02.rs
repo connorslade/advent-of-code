@@ -28,17 +28,16 @@ fn is_safe_b(input: &[i32], skip: Option<usize>) -> bool {
         .enumerate()
         .filter(|(idx, _)| skip.is_none() || Some(*idx) != skip)
         .map(|(_, &x)| x);
-    let diffs = vals.tuple_windows().map(|(a, b)| a - b).collect::<Vec<_>>();
+    let mut diffs = vals.tuple_windows().map(|(a, b)| a - b).peekable();
 
-    let first_invalid = diffs
-        .iter()
-        .position(|&x| !(1..=3).contains(&x.abs()) || x.signum() != diffs[0].signum());
+    let sig = diffs.peek().unwrap().signum();
+    let first_invalid = diffs.position(|x| !(1..=3).contains(&x.abs()) || x.signum() != sig);
 
     match first_invalid {
         Some(x) if skip.is_none() => {
-            is_safe_b(input, Some(x))
-                || is_safe_b(input, Some(x + 1))
+            is_safe_b(input, Some(x + 1))
                 || is_safe_b(input, Some(x.saturating_sub(1)))
+                || is_safe_b(input, Some(x))
         }
         None => true,
         _ => false,
