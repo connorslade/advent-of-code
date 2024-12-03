@@ -168,6 +168,9 @@ dependencies = [
  "common",
  "indoc",
  "itertools 0.13.0",
+ "nd_vec 0.4.0",
+ "once_cell",
+ "regex",
 ]
 
 [[package]]
