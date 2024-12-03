@@ -1,124 +1,90 @@
-use aoc_lib::regex;
 use common::{solution, Answer};
 
 solution!("Mull It Over", 3);
 
 fn part_a(input: &str) -> Answer {
-    let instructions = parse(input);
-    let mut acc = 0;
-    for ins in instructions {
-        acc += ins.a * ins.b;
-    }
-
-    acc.into()
+    solve(input, false).into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let instructions = parse_b(input);
-    let mut acc = 0;
-    for ins in instructions {
-        acc += ins.a * ins.b;
-    }
-
-    acc.into()
+    solve(input, true).into()
 }
 
-#[derive(Debug)]
-struct Mul {
-    a: u32,
-    b: u32,
-}
+fn solve(input: &str, part_b: bool) -> u32 {
+    let mut out = 0;
 
-fn parse(input: &str) -> Vec<Mul> {
-    let mut out = Vec::new();
-
-    let matches = regex!(r"mul\((\d*),(\d*)\)").captures_iter(input);
-
-    for x in matches {
-        let a = dbg!(x.get(1).unwrap().as_str()).parse::<u32>().unwrap();
-        let b = dbg!(x.get(2).unwrap().as_str()).parse::<u32>().unwrap();
-
-        out.push(Mul { a, b });
-    }
-
-    out
-}
-
-fn cmp_chars(chars: &[char], str: &str) -> bool {
-    chars.len() == str.len() && str.chars().zip(chars).all(|(a, &b)| a == b)
-}
-
-fn parse_b(input: &str) -> Vec<Mul> {
-    let mut out = Vec::new();
-
-    let chars = input.chars().collect::<Vec<_>>();
-
-    let mut i = 0;
+    let mut parser = Parser::new(input);
     let mut active = true;
 
-    let next_num = |i: &mut usize| {
-        let mut working = String::new();
-        while chars[*i].is_ascii_digit() && *i < chars.len() {
-            working.push(chars[*i]);
-            *i += 1;
-        }
-        working.parse::<u32>().ok()
-    };
+    while !parser.is_eof() {
+        active |= parser.expect("do()");
+        active &= !parser.expect("don't()");
 
-    while i < chars.len() {
-        if i + 4 < chars.len() && cmp_chars(&chars[i..i + 4], "do()") {
-            active = true;
-        }
-
-        if i + 7 < chars.len() && cmp_chars(&chars[i..i + 7], "don't()") {
-            println!("dont");
-            active = false;
-        }
-
-        if i + 3 < chars.len() && cmp_chars(&chars[i..i + 3], "mul") {
-            i += 3;
-
-            if chars[i] != '(' {
-                i += 1;
+        if parser.expect("mul(") {
+            let Some(a) = parser.number() else { continue };
+            if !parser.expect(",") {
                 continue;
             }
-            i += 1;
-
-            let Some(a) = next_num(&mut i) else {
-                i += 1;
-                continue;
-            };
-
-            if chars[i] != ',' {
-                i += 1;
+            let Some(b) = parser.number() else { continue };
+            if !parser.expect(")") {
                 continue;
             }
 
-            i += 1;
-            let Some(b) = next_num(&mut i) else {
-                i += 1;
-                println!("failed b");
-                continue;
-            };
-
-            if chars[i] != ')' {
-                i += 1;
-                continue;
+            if active || !part_b {
+                out += a * b;
             }
-
-            let ins = Mul { a, b };
-
-            if active {
-                out.push(ins);
-            }
+        } else {
+            parser.advance(1);
         }
-
-        i += 1;
     }
 
     out
 }
 
+struct Parser {
+    chars: Vec<char>,
+    idx: usize,
+}
+
+impl Parser {
+    pub fn new(input: &str) -> Self {
+        Self {
+            chars: input.chars().collect(),
+            idx: 0,
+        }
+    }
+
+    pub fn expect(&mut self, str: &str) -> bool {
+        let valid = self.idx + str.len() < self.chars.len()
+            && self.chars[self.idx..self.idx + str.len()]
+                .iter()
+                .zip(str.chars())
+                .all(|(&a, b)| a == b);
+
+        if valid {
+            self.idx += str.len();
+        }
+
+        valid
+    }
+
+    pub fn number(&mut self) -> Option<u32> {
+        let mut working = String::new();
+        while self.chars[self.idx].is_ascii_digit() && self.idx < self.chars.len() {
+            working.push(self.chars[self.idx]);
+            self.idx += 1;
+        }
+        working.parse::<u32>().ok()
+    }
+
+    pub fn advance(&mut self, count: usize) {
+        self.idx += count;
+    }
+
+    pub fn is_eof(&self) -> bool {
+        self.idx >= self.chars.len()
+    }
+}
 #[cfg(test)]
 mod test {
     use indoc::indoc;
