@@ -1,4 +1,4 @@
-use aoc_lib::direction::Direction;
+use aoc_lib::direction::cardinal::Direction;
 use common::{solution, Answer};
 use nd_vec::vector;
 

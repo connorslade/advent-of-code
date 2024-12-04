@@ -1,35 +1,35 @@
-use aoc_lib::matrix::Matrix;
+use std::convert::identity;
+
+use aoc_lib::{direction::ordinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
-use nd_vec::{vector, Vector};
+use nd_vec::vector;
 
 solution!("Ceres Search", 4);
 
 fn part_a(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, |x| x);
+    let matrix = Matrix::new_chars(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {
         for x in 0..matrix.size.x() {
             let start = vector!(x, y);
-            for dir in Direction::ALL {
-                let mut pos = start.clone();
-                let mut word = String::new();
-                for _ in 0..4 {
-                    if let Some(&chr) = matrix.get(pos) {
-                        word.push(chr);
-                    } else {
-                        break;
-                    }
+            if *matrix.get(start).unwrap() != 'X' {
+                continue;
+            }
 
-                    let Some(next) = dir.try_advance(pos) else {
-                        break;
-                    };
+            'outer: for dir in Direction::ALL {
+                let mut pos = start;
+                for expected in ['M', 'A', 'S'] {
+                    let next = dir.try_advance(pos);
+                    let Some(next) = next else { continue 'outer };
                     pos = next;
+
+                    if Some(&expected) != matrix.get(pos) {
+                        continue 'outer;
+                    };
                 }
 
-                if word == "XMAS" {
-                    count += 1;
-                }
+                count += 1;
             }
         }
     }
@@ -37,8 +37,14 @@ fn part_a(input: &str) -> Answer {
     count.into()
 }
 
+/// The directions to advance from the middle 'A' for each MAS instance.
+const MAS_DIRECTIONS: [[Direction; 2]; 2] = [
+    [Direction::NorthEast, Direction::SouthWest],
+    [Direction::SouthEast, Direction::NorthWest],
+];
+
 fn part_b(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, |x| x);
+    let matrix = Matrix::new_chars(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {
@@ -48,19 +54,10 @@ fn part_b(input: &str) -> Answer {
                 continue;
             }
 
-            let directions = [
-                [Direction::NorthEast, Direction::SouthWest],
-                [Direction::SouthEast, Direction::NorthWest],
-                // should have a 'M' and a 'S'
-            ];
-
-            for mas in directions {
+            for mas in MAS_DIRECTIONS {
                 let (mut m, mut s) = (false, false);
                 for dir in mas {
-                    let Some(pos) = dir.try_advance(start) else {
-                        continue 'outer;
-                    };
-                    let Some(&chr) = matrix.get(pos) else {
+                    let Some(&chr) = dir.try_advance(start).and_then(|x| matrix.get(x)) else {
                         continue 'outer;
                     };
 
@@ -78,45 +75,6 @@ fn part_b(input: &str) -> Answer {
     }
 
     count.into()
-}
-
-#[derive(Debug)]
-enum Direction {
-    North,
-    NorthEast,
-    East,
-    SouthEast,
-    South,
-    SouthWest,
-    West,
-    NorthWest,
-}
-
-impl Direction {
-    pub const ALL: [Direction; 8] = [
-        Direction::North,
-        Direction::NorthEast,
-        Direction::East,
-        Direction::SouthEast,
-        Direction::South,
-        Direction::SouthWest,
-        Direction::West,
-        Direction::NorthWest,
-    ];
-
-    pub fn try_advance(&self, pos: Vector<usize, 2>) -> Option<Vector<usize, 2>> {
-        Some(match self {
-            Self::North => vector!(pos.x(), pos.y() + 1),
-            Self::NorthEast => vector!(pos.x() + 1, pos.y() + 1),
-            Self::East => vector!(pos.x() + 1, pos.y()),
-            Self::SouthEast if pos.y() > 0 => vector!(pos.x() + 1, pos.y() - 1),
-            Self::South if pos.y() > 0 => vector!(pos.x(), pos.y() - 1),
-            Self::SouthWest if pos.x() > 0 && pos.y() > 0 => vector!(pos.x() - 1, pos.y() - 1),
-            Self::West if pos.x() > 0 => vector!(pos.x() - 1, pos.y()),
-            Self::NorthWest if pos.x() > 0 => vector!(pos.x() - 1, pos.y() + 1),
-            _ => return None,
-        })
-    }
 }
 
 #[cfg(test)]

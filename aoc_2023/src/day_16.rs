@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::{direction::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 

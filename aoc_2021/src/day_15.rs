@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 use hashbrown::HashMap;
 use nd_vec::{vector, Vector};
 
-use aoc_lib::{direction::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
 
 solution!("Chiton", 15);

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use nd_vec::{vector, Vec2};
 
-use aoc_lib::direction::Direction;
+use aoc_lib::direction::cardinal::Direction;
 use common::{solution, Answer};
 
 type Pos = Vec2<usize>;

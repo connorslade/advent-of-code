@@ -21,7 +21,7 @@ impl<T> Matrix<T> {
     }
 
     pub fn new_chars(input: &str, parse: fn(char) -> T) -> Self {
-        let mut data = Vec::new();
+        let mut data = Vec::with_capacity(input.len());
         let mut size = vector!(0, 0);
 
         for line in input.lines() {
