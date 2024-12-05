@@ -9,6 +9,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 02: Red-Nosed Reports](aoc_2024/src/day_02.rs)
 - [Day 03: Mull It Over](aoc_2024/src/day_03.rs)
 - [Day 04: Ceres Search](aoc_2024/src/day_04.rs)
+- [Day 05: Print Queue](aoc_2024/src/day_05.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
