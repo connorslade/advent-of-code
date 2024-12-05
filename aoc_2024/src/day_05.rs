@@ -7,8 +7,7 @@ solution!("Print Queue", 5);
 fn part_a(input: &str) -> Answer {
     let problem = PrintQueue::parse(input);
 
-    // For each list of pages in an update, sum the middle value of all valid
-    // ones.
+    // Sum the middle value of all valid page lists.
     (0..problem.updates.len())
         .filter(|&x| problem.is_valid(x))
         .map(|x| &problem.updates[x])
@@ -20,8 +19,8 @@ fn part_a(input: &str) -> Answer {
 fn part_b(input: &str) -> Answer {
     let problem = PrintQueue::parse(input);
 
-    // For each list of pages that are not correctly sorted, sort them then find
-    // the middle.
+    // Sum the middle value of the sorted versions of all page lists that are
+    // not sorted correctly.
     (0..problem.updates.len())
         .filter(|&x| !problem.is_valid(x))
         .map(|x| problem.sort_pages(x))
@@ -61,14 +60,18 @@ impl PrintQueue {
 
     fn is_valid(&self, idx: usize) -> bool {
         let line = &self.updates[idx];
-        // A line is sorted if to the left of every page is a page that should be before it.
+        // A line is sorted if to the left of every page is a page that should
+        // be before it. If b is not in the rule map, that means that there are
+        // no pages that come before it and since b is at least the 2nd item in
+        // the line, the line is therefore invalid.
         line.is_sorted_by(|a, b| self.rule_map.contains_key(b) && self.rule_map[b].contains(a))
     }
 
     fn sort_pages(&self, idx: usize) -> Vec<u32> {
         let mut line = self.updates[idx].clone();
-        // Just the same expression from before used by a sorting algo to put our pages in order!
-        line.sort_by(|a, b| {
+        // Just the same expression from before plugged into a sorting algo to
+        // put our pages in order!
+        line.sort_unstable_by(|a, b| {
             (self.rule_map.contains_key(b) && self.rule_map[b].contains(a)).cmp(&true)
         });
         line
