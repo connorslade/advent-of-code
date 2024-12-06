@@ -2,26 +2,22 @@ use std::collections::HashSet;
 
 use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
-use nd_vec::{vector, Vec2};
+use nd_vec::Vec2;
 
 solution!("Guard Gallivant", 6);
 
 fn part_a(input: &str) -> Answer {
-    Map::new(input).visited().into()
+    Map::new(input).visited().len().into()
 }
 
 fn part_b(input: &str) -> Answer {
     let map = Map::new(input);
 
-    let mut count = 0;
-    for y in 0..map.map.size.y() {
-        for x in 0..map.map.size.x() {
-            let obs = vector!(x, y);
-            count += map.loops(obs) as usize;
-        }
-    }
-
-    count.into()
+    map.visited()
+        .into_iter()
+        .map(|x| map.loops(x) as usize)
+        .sum::<usize>()
+        .into()
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -43,22 +39,12 @@ impl Map {
             '^' => Tile::Start,
             _ => Tile::None,
         });
-
-        let mut start = vector!(0, 0);
-        'outer: for y in 0..map.size.y() {
-            for x in 0..map.size.x() {
-                let tmp = vector!(x, y);
-                if *map.get(tmp).unwrap() == Tile::Start {
-                    start = tmp;
-                    break 'outer;
-                }
-            }
-        }
+        let start = map.find(Tile::Start).unwrap();
 
         Self { map, start }
     }
 
-    fn visited(&self) -> usize {
+    fn visited(&self) -> HashSet<Vec2<usize>> {
         let mut seen = HashSet::new();
         let mut pos = self.start;
         let mut direction = Direction::Up;
@@ -66,9 +52,8 @@ impl Map {
         loop {
             seen.insert(pos);
 
-            let mut next = match direction.try_advance(pos) {
-                Some(x) => x,
-                None => break,
+            let Some(mut next) = direction.try_advance(pos) else {
+                break;
             };
             let Some(tile) = self.map.get(next) else {
                 break;
@@ -84,7 +69,7 @@ impl Map {
             pos = next;
         }
 
-        seen.len()
+        seen
     }
 
     fn loops(&self, obstacle: Vec2<usize>) -> bool {
