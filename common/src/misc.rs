@@ -12,16 +12,3 @@ pub fn load_raw(year: u16, day: u32) -> io::Result<String> {
     fs::read_to_string(file)
 }
 
-pub fn human_time(time: u128) -> String {
-    const TIME_UNITS: &[&str] = &["ns", "μs", "ms", "s"];
-
-    let mut time = time;
-    for i in TIME_UNITS {
-        if time < 1000 {
-            return format!("{}{}", time, i);
-        }
-        time /= 1000;
-    }
-
-    format!("{}{}", time, TIME_UNITS.last().unwrap())
-}

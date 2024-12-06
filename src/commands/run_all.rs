@@ -1,7 +1,7 @@
 use std::{fs, path::PathBuf, time::Instant};
 
 use anyhow::Result;
-use common::{human_time, Part};
+use common::Part;
 
 use crate::{args::RunAllArgs, get_year};
 
@@ -23,8 +23,7 @@ pub fn run(cmd: &RunAllArgs) -> Result<()> {
                 Part::B => (solution.part_b)(&input),
             };
 
-            let time = start.elapsed().as_nanos();
-            println!(" | Part {part}: {} ({})", out, human_time(time));
+            println!(" | Part {part}: {} ({:.2?})", out, start.elapsed());
         }
     }
 

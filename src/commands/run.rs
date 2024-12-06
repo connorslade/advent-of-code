@@ -1,7 +1,7 @@
 use std::{borrow::Cow, fs, path::PathBuf, time::Instant};
 
 use anyhow::{bail, Context, Result};
-use common::{human_time, Part};
+use common::Part;
 
 use crate::{args::RunArgs, get_year};
 
@@ -40,8 +40,7 @@ pub fn run(cmd: &RunArgs) -> Result<()> {
     if cmd.raw {
         println!("{out}");
     } else {
-        let time = start.elapsed().as_nanos();
-        println!("[+] OUT: {} ({})", out, human_time(time));
+        println!("[+] OUT: {} ({:.2?})", out, start.elapsed());
     }
 
     Ok(())

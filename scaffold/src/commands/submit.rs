@@ -4,7 +4,6 @@ use std::{
 };
 
 use anyhow::{Context, Result};
-use common::human_time;
 use scraper::Html;
 
 use crate::{
@@ -47,7 +46,7 @@ fn get_answer(cmd: &SubmitArgs) -> Result<String> {
 
     let start = Instant::now();
     let output = executable.wait_with_output()?;
-    let time = start.elapsed().as_nanos();
+    let time = start.elapsed();
 
     if output.status.code() != Some(0) {
         anyhow::bail!(
@@ -68,7 +67,7 @@ fn get_answer(cmd: &SubmitArgs) -> Result<String> {
         .trim()
         .to_owned();
 
-    println!("[*] Answer: `{answer}` ({})", human_time(time));
+    println!("[*] Answer: `{answer}` ({time:.2?})");
 
     Ok(answer)
 }
