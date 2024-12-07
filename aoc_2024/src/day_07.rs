@@ -3,29 +3,27 @@ use common::{solution, Answer};
 solution!("Bridge Repair", 7);
 
 fn part_a(input: &str) -> Answer {
-    let problem = Problem::parse(input);
-    let mut sum = 0;
-
-    for case in problem.cases {
-        if case.is_valid_a() {
-            sum += case.result;
-        }
-    }
-
-    sum.into()
+    solve(input, false).into()
 }
 
 fn part_b(input: &str) -> Answer {
+    solve(input, true).into()
+}
+
+fn solve(input: &str, part_b: bool) -> u64 {
     let problem = Problem::parse(input);
-    let mut sum = 0;
 
-    for case in problem.cases {
-        if case.is_valid_b_working() {
-            sum += case.result;
-        }
-    }
-
-    sum.into()
+    // For each of the equations, we will add its result value if it is valid.
+    // For part a, we check if its valid using `is_valid` with part_b = false,
+    // because an equation that is valid for part a is must be valid for part b,
+    // we can get a small speedup by only doing the more intense part_b = true
+    // check if needed. 
+    problem
+        .cases
+        .into_iter()
+        .filter(|x| x.is_valid(false) || (part_b && x.is_valid(true)))
+        .map(|x| x.result)
+        .sum::<u64>()
 }
 
 struct Problem {
@@ -66,74 +64,37 @@ impl Problem {
 }
 
 impl TestCase {
-    fn is_valid_a(&self) -> bool {
+    fn is_valid(&self, part_b: bool) -> bool {
         let op_count = self.inputs.len() - 1;
         let mut ops = vec![0; op_count];
 
-        loop {
+        'outer: loop {
+            // Set the result to be the first input value to start. Then update
+            // the result for each operation using the previous result and the
+            // next number as inputs.
             let mut result = self.inputs[0];
             for (&op, &input) in ops.iter().zip(self.inputs.iter().skip(1)) {
                 let op = [Operations::Add, Operations::Multiply, Operations::Concat][op];
                 result = op.evaluate(result, input);
             }
-                
-                if result == self.result {
-                    return true;
-                }
 
-            let mut i = 0;
-            loop {
-                if i >= op_count {
-                    return false;
-                }
-
-                ops[i] += 1;
-                if ops[i] > 1 {
-                    ops[i] = 0;
-                    i += 1;
-                    continue;
-                }
-
-                break;
-            }
-        }
-    }
-
-    fn is_valid_b_working(&self) -> bool {
-        let op_count = self.inputs.len() - 1;
-        let mut ops = vec![0; op_count];
-
-        dbg!(&self.inputs);
-        loop {
-            let mut result = self.inputs[0];
-            // println!("{ops:?}");
-            for (idx, &op) in ops.iter().enumerate() {
-                let input = self.inputs[idx + 1];
-                let op = [Operations::Add, Operations::Multiply, Operations::Concat][op];
-                // println!(" | {op:?} ({result}, {input})");
-                result = op.evaluate(result, input);
-            }
-
+            // If the result we get after applying the operations gets us the
+            // expected result, this equation is valid.
             if result == self.result {
-                // println!(" -> WORKS {result}");
                 return true;
             }
 
-            let mut i = 0;
-            loop {
-                if i >= op_count {
-                    return false;
-                }
-
+            // Increments the leftmost operation, carrying if it exceeds 1 for
+            // part a or 2 for part b.  
+            for i in 0..op_count {
                 ops[i] += 1;
-                if ops[i] > 2 {
-                    ops[i] = 0;
-                    i += 1;
-                    continue;
+                if ops[i] <= (1 + part_b as usize) {
+                    continue 'outer;
                 }
-
-                break;
+                ops[i] = 0;
             }
+
+            return false;
         }
     }
 }
