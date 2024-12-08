@@ -9,10 +9,15 @@ use itertools::Itertools;
 solution!("Resonant Collinearity", 8);
 
 fn part_a(input: &str) -> Answer {
+    // Parse the input into a hash table that maps antenna frequencies to positions.
     let map = AntennaMap::parse(input);
 
     let mut out = HashSet::new();
     for (_freq, pos) in map.freqs {
+        // Because a line is defined by two points, we find all point
+        // combinations with two points. To get the two antinode points, we add
+        // the difference between both points to the first point and subtract
+        // the difference from the second.
         for (a, b) in pos.into_iter().tuple_combinations() {
             out.extend(
                 [a + (a - b), b + (b - a)]
@@ -31,6 +36,9 @@ fn part_b(input: &str) -> Answer {
     let mut out = HashSet::new();
     for (_freq, pos) in map.freqs {
         for (a, b) in pos.into_iter().tuple_combinations() {
+            // For part be we just need to keep adding / subtracting the
+            // diffract between the two points to the starting position until
+            // the result is out of bounds.
             for (mut start, delta) in [(a, a - b), (b, b - a)] {
                 while map.world.contains(start) {
                     out.insert(start);

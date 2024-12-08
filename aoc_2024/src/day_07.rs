@@ -86,12 +86,12 @@ impl TestCase {
 
             // Increments the leftmost operation, carrying if it exceeds 1 for
             // part a or 2 for part b.  
-            for i in 0..op_count {
-                ops[i] += 1;
-                if ops[i] <= (1 + part_b as usize) {
+            for op in ops.iter_mut() {
+                *op += 1;
+                if *op <= (1 + part_b as usize) {
                     continue 'outer;
                 }
-                ops[i] = 0;
+                *op = 0;
             }
 
             return false;
