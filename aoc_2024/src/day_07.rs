@@ -17,7 +17,7 @@ fn solve(input: &str, part_b: bool) -> u64 {
     // For part a, we check if its valid using `is_valid` with part_b = false,
     // because an equation that is valid for part a is must be valid for part b,
     // we can get a small speedup by only doing the more intense part_b = true
-    // check if needed. 
+    // check if needed.
     problem
         .cases
         .into_iter()
@@ -85,7 +85,7 @@ impl TestCase {
             }
 
             // Increments the leftmost operation, carrying if it exceeds 1 for
-            // part a or 2 for part b.  
+            // part a or 2 for part b.
             for op in ops.iter_mut() {
                 *op += 1;
                 if *op <= (1 + part_b as usize) {
