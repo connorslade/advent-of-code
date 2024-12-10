@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::Vec2;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
 solution!("Guard Gallivant", 6);
 
@@ -15,6 +16,7 @@ fn part_b(input: &str) -> Answer {
 
     map.visited()
         .into_iter()
+        .par_bridge()
         .map(|x| map.loops(x) as usize)
         .sum::<usize>()
         .into()
