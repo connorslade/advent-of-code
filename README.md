@@ -15,6 +15,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 08: Resonant Collinearity](aoc_2024/src/day_08.rs)
 - [Day 09: Disk Fragmenter](aoc_2024/src/day_09.rs)
 - [Day 10: Hoof It](aoc_2024/src/day_10.rs)
+- [Day 11: Plutonian Pebbles](aoc_2024/src/day_11.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
