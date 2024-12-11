@@ -7,21 +7,18 @@ use nd_vec::Vec2;
 solution!("Hoof It", 10);
 
 fn part_a(input: &str) -> Answer {
-    let map = Map::parse(input);
-    map.trailheads()
-        .into_iter()
-        .map(|x| map.score(x))
-        .sum::<usize>()
-        .into()
+    solve(input, false).into()
 }
 
 fn part_b(input: &str) -> Answer {
+    solve(input, true).into()
+}
+
+fn solve(input: &str, part_b: bool) -> usize {
     let map = Map::parse(input);
     map.trailheads()
-        .into_iter()
-        .map(|x| map.rating(x))
+        .map(|x| map.score(x, !part_b))
         .sum::<usize>()
-        .into()
 }
 
 struct Map {
@@ -34,15 +31,17 @@ impl Map {
         Self { board }
     }
 
-    fn trailheads(&self) -> Vec<Vec2<usize>> {
+    // Find the coordinates of all 0s
+    fn trailheads(&self) -> impl Iterator<Item = Vec2<usize>> + use<'_> {
         self.board
             .iter()
             .filter(|(_, &tile)| tile == 0)
             .map(|(pos, _)| pos)
-            .collect()
     }
 
-    fn score(&self, pos: Vec2<usize>) -> usize {
+    // Simple BFS for pathfinding, where we don't avoid going to already
+    // explored tiles if on part B.
+    fn score(&self, pos: Vec2<usize>, no_repeats: bool) -> usize {
         let mut queue = VecDeque::new();
         let mut seen = HashSet::new();
 
@@ -52,48 +51,21 @@ impl Map {
         let mut score = 0;
         while let Some(pos) = queue.pop_front() {
             let value = *self.board.get(pos).unwrap();
-            if value == 9 {
-                score += 1;
-            }
+            score += (value == 9) as usize;
 
-            for dir in Direction::ALL {
-                if let Some(next) = dir.try_advance(pos) {
-                    if self.board.contains(next)
-                        && *self.board.get(next).unwrap() == value + 1
-                        && seen.insert(next)
-                    {
-                        queue.push_back(next);
-                    }
-                }
-            }
+            queue.extend(
+                Direction::ALL
+                    .iter()
+                    .filter_map(|&dir| dir.try_advance(pos))
+                    .filter(|&next| {
+                        self.board.contains(next)
+                            && *self.board.get(next).unwrap() == value + 1
+                            && (!no_repeats || seen.insert(next))
+                    }),
+            );
         }
 
         score
-    }
-
-    fn rating(&self, pos: Vec2<usize>) -> usize {
-        fn inner(board: &Matrix<u32>, pos: Vec2<usize>, mut seen: HashSet<Vec2<usize>>) -> usize {
-            let value = *board.get(pos).unwrap();
-            if value == 9 {
-                return 1;
-            }
-
-            let mut sum = 0;
-            for dir in Direction::ALL {
-                if let Some(next) = dir.try_advance(pos) {
-                    if board.contains(next)
-                        && *board.get(next).unwrap() == value + 1
-                        && seen.insert(next)
-                    {
-                        sum += inner(board, next, seen.clone());
-                    }
-                }
-            }
-
-            sum
-        }
-
-        inner(&self.board, pos, HashSet::new())
     }
 }
 

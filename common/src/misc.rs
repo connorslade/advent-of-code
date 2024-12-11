@@ -11,4 +11,3 @@ pub fn load_raw(year: u16, day: u32) -> io::Result<String> {
     let file = format!("data/{year}/{:02}.txt", day);
     fs::read_to_string(file)
 }
-
