@@ -5,86 +5,37 @@ use common::{solution, Answer};
 solution!("Plutonian Pebbles", 11);
 
 fn part_a(input: &str) -> Answer {
-    let mut nums = parse(input);
-
-    // 0->1
-    // even -> (left digits)(right digits)
-    // else -> *= 2024
-    for _ in 0..25 {
-        let mut i = 0;
-        while i < nums.len() {
-            let num = nums[i];
-            if num == 0 {
-                nums[i] = 1;
-            } else if even_digits(num) {
-                let (a, b) = split_digits(num);
-                nums[i] = a;
-                i += 1;
-                nums.insert(i, b);
-            } else {
-                nums[i] *= 2024;
-            }
-            i += 1;
-        }
-    }
-
-    nums.len().into()
+    solve(parse(input), 25).into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let nums = parse(input);
+    solve(parse(input), 75).into()
+}
 
-    // 0->1
-    // even -> (left digits)(right digits)
-    // else -> *= 2024
+fn solve(nums: Vec<u64>, iters: usize) -> u64 {
+    // Store the counts of each stone type
     let mut counts = HashMap::<u64, u64>::new();
-    for num in nums {
-        *counts.entry(num).or_default() += 1;
-    }
-    println!("{counts:?}");
+    nums.into_iter()
+        .for_each(|x| *counts.entry(x).or_default() += 1);
 
-    for _ in 0..75 {
+    // For each iteration, create a new count map by applying the rules for each
+    // stone to get a new key and adding the previous count to it.
+    for _ in 0..iters {
         let mut next = HashMap::new();
-        for (k, v) in counts {
-            if k == 0 {
-                *next.entry(1).or_default() += v;
-            } else if even_digits(k) {
-                let (a, b) = split_digits(k);
-                *next.entry(a).or_default() += v;
-                *next.entry(b).or_default() += v;
+        for (stone, count) in counts {
+            if stone == 0 {
+                *next.entry(1).or_default() += count;
+            } else if let Some((a, b)) = split_digits(stone) {
+                *next.entry(a).or_default() += count;
+                *next.entry(b).or_default() += count;
             } else {
-                *next.entry(k * 2024).or_default() += v;
+                *next.entry(stone * 2024).or_default() += count;
             }
         }
-        println!("{next:?}");
         counts = next;
     }
 
     counts.values().sum::<u64>().into()
-}
-
-fn even_digits(mut num: u64) -> bool {
-    let mut digits = 0;
-
-    while num > 0 {
-        num /= 10;
-        digits += 1;
-    }
-
-    digits % 2 == 0
-}
-
-fn split_digits(num: u64) -> (u64, u64) {
-    let mut working = num;
-    let mut digits = 0;
-
-    while working > 0 {
-        working /= 10;
-        digits += 1;
-    }
-
-    let pow = 10_u64.pow(digits / 2);
-    (num / pow, num - (num / pow) * pow)
 }
 
 fn parse(input: &str) -> Vec<u64> {
@@ -92,6 +43,15 @@ fn parse(input: &str) -> Vec<u64> {
         .split_ascii_whitespace()
         .map(|x| x.parse().unwrap())
         .collect()
+}
+
+/// Given an integer, this function will return None if it has an odd number of
+/// base 10 digits, otherwise the first half and second half of the digits will
+/// be returned severalty.
+fn split_digits(num: u64) -> Option<(u64, u64)> {
+    let digits = num.ilog10() + 1;
+    let pow = 10_u64.pow(digits / 2);
+    (digits & 1 == 0).then(|| (num / pow, num % pow))
 }
 
 #[cfg(test)]
@@ -109,6 +69,6 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), 55312.into());
+        assert_eq!(super::part_b(CASE), 65601038650482_u64.into());
     }
 }

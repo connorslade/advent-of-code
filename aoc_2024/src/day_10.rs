@@ -32,7 +32,7 @@ impl Map {
     }
 
     // Find the coordinates of all 0s
-    fn trailheads(&self) -> impl Iterator<Item = Vec2<usize>> + use<'_> {
+    fn trailheads(&self) -> impl Iterator<Item = Vec2<usize>> + '_ {
         self.board
             .iter()
             .filter(|(_, &tile)| tile == 0)
