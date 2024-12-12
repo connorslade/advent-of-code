@@ -47,10 +47,10 @@ fn parse(input: &str) -> Vec<u64> {
 
 /// Given an integer, this function will return None if it has an odd number of
 /// base 10 digits, otherwise the first half and second half of the digits will
-/// be returned severalty.
+/// be returned separately.
 fn split_digits(num: u64) -> Option<(u64, u64)> {
     let digits = num.ilog10() + 1;
-    let pow = 10_u64.pow(digits / 2);
+    let pow = u64::pow(10, digits / 2);
     (digits & 1 == 0).then(|| (num / pow, num % pow))
 }
 
