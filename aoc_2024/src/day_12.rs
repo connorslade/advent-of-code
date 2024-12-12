@@ -2,68 +2,49 @@ use std::{collections::HashSet, convert::identity};
 
 use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
-use nd_vec::Vec2;
+use itertools::Itertools;
+use nd_vec::{vector, Vec2};
 
 solution!("Garden Groups", 12);
 
 fn part_a(input: &str) -> Answer {
     let mut garden = Garden::parse(input);
-
-    let mut sum = 0;
-
-    for pos in garden.matrix.clone().iter().map(|(pos, _)| pos) {
-        let (area, perimeter) = garden.flood(pos);
-        sum += area * perimeter;
-    }
-
-    sum.into()
+    garden
+        .points()
+        .filter_map(|x| garden.flood(x))
+        .map(|(area, perimeter)| area.len() * perimeter)
+        .sum::<usize>()
+        .into()
 }
 
 fn part_b(input: &str) -> Answer {
     let mut garden = Garden::parse(input);
 
     let mut sum = 0;
-
-    for pos in garden.matrix.clone().iter().map(|(pos, _)| pos) {
-        let plant = *garden.matrix.get(pos).unwrap();
-        let (area, perimeter) = garden.flood_b(pos);
-        if perimeter.is_empty() {
-            continue;
-        }
-
+    for (area, _) in garden.points().filter_map(|x| garden.flood(x)) {
         let mut corners = 0;
 
         for &point in area.iter() {
-            for (a, b) in [
-                (Direction::Up, Direction::Right),
-                (Direction::Right, Direction::Down),
-                (Direction::Down, Direction::Left),
-                (Direction::Left, Direction::Up),
-            ] {
-                // if a and b are both not in area +1
-                if !area.contains(&a.advance(point)) && !area.contains(&b.advance(point)) {
-                    corners += 1;
-                }
+            // Count convex corners by checking to see that the wall is not in
+            // any cardinal direction and a direction orthogonal to that
+            for a in Direction::ALL {
+                corners += (!area.contains(&a.wrapping_advance(point))
+                    && !area.contains(&a.turn_right().wrapping_advance(point)))
+                    as u32;
             }
 
-            for (a, b) in [
-                (Direction::Up, Direction::Right),
-                (Direction::Right, Direction::Down),
-                (Direction::Down, Direction::Left),
-                (Direction::Left, Direction::Up),
-            ] {
-                let e = a.as_vector::<i32>() + b.as_vector();
-                if area.contains(&a.advance(point))
-                    && area.contains(&b.advance(point))
-                    && !area.contains(&(point + e))
-                {
-                    corners += 1;
-                }
+            // Count the concave angles by looking for when both the orthogonal
+            // directions are in the area, but not the diagonal between them.
+            for a in Direction::ALL {
+                let b = a.turn_right();
+                corners += (area.contains(&a.wrapping_advance(point))
+                    && area.contains(&b.wrapping_advance(point))
+                    && !area.contains(&b.wrapping_advance(a.wrapping_advance(point))))
+                    as u32;
             }
         }
 
-        println!("{} * {corners} [{plant}]", area.len());
-        sum += area.len() * corners;
+        sum += area.len() as u32 * corners;
     }
 
     sum.into()
@@ -84,78 +65,46 @@ impl Garden {
         }
     }
 
-    // -> (area, perimeter)
-    fn flood(&mut self, start: Vec2<usize>) -> (u32, u32) {
-        let (mut area, mut perimeter) = (1, 0);
-        let plant = self.matrix.get(start).unwrap();
-
-        let mut queue = Vec::new();
-
-        if !self.seen.insert(start) {
-            return (0, 0);
-        }
-        queue.push(start);
-
-        while let Some(pos) = queue.pop() {
-            for dir in Direction::ALL.into_iter() {
-                let Some(next) = dir.try_advance(pos) else {
-                    perimeter += 1;
-                    continue;
-                };
-                if !self.matrix.contains(next) {
-                    perimeter += 1;
-                    continue;
-                }
-
-                if self.matrix.get(next).unwrap() == plant {
-                    if self.seen.insert(next) {
-                        area += 1;
-                        queue.push(next);
-                    }
-                } else {
-                    perimeter += 1
-                }
-            }
-        }
-
-        (area, perimeter)
+    fn points(&self) -> impl Iterator<Item = Vec2<usize>> {
+        let size = self.matrix.size;
+        (0..size.x())
+            .cartesian_product(0..size.y())
+            .map(|(x, y)| vector!(x, y))
     }
 
-    fn flood_b(&mut self, start: Vec2<usize>) -> (HashSet<Vec2<i32>>, HashSet<Vec2<i32>>) {
-        let (mut area, mut perimeter) = (HashSet::new(), HashSet::new());
-        area.insert(start.try_cast::<i32>().unwrap());
-        let plant = self.matrix.get(start).unwrap();
+    fn flood(&mut self, start: Vec2<usize>) -> Option<(HashSet<Vec2<usize>>, usize)> {
+        if !self.seen.insert(start) {
+            return None;
+        }
+
+        let mut area = HashSet::new();
+        let mut perimeter = 0;
 
         let mut queue = Vec::new();
+        let plant = self.matrix.get(start).unwrap();
 
-        if !self.seen.insert(start) {
-            return (HashSet::new(), HashSet::new());
-        }
+        area.insert(start);
         queue.push(start);
 
         while let Some(pos) = queue.pop() {
-            for dir in Direction::ALL.into_iter() {
-                let Some(next) = dir.try_advance(pos) else {
-                    perimeter.insert(dir.advance(pos.try_cast::<i32>().unwrap()));
-                    continue;
-                };
+            for next in Direction::ALL.map(|x| x.wrapping_advance(pos)) {
                 if !self.matrix.contains(next) {
-                    perimeter.insert(next.try_cast::<i32>().unwrap());
+                    perimeter += 1;
                     continue;
                 }
 
                 if self.matrix.get(next).unwrap() == plant {
                     if self.seen.insert(next) {
-                        area.insert(next.try_cast::<i32>().unwrap());
+                        area.insert(next);
                         queue.push(next);
                     }
                 } else {
-                    perimeter.insert(next.try_cast::<i32>().unwrap());
+                    perimeter += 1;
                 }
             }
         }
 
-        (area, perimeter)
+        Some((area, perimeter))
     }
 }
 

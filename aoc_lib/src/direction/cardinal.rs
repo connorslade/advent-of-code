@@ -1,5 +1,5 @@
 use nd_vec::{vector, Vec2};
-use num_traits::{Num, Signed};
+use num_traits::{Num, Signed, WrappingSub};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -44,6 +44,15 @@ impl Direction {
             Self::Up    => vector!(pos.x(), pos.y() - T::one()),
             Self::Down  => vector!(pos.x(), pos.y() + T::one()),
             Self::Left  => vector!(pos.x() - T::one(), pos.y()),
+            Self::Right => vector!(pos.x() + T::one(), pos.y()),
+        }
+    }
+
+    pub fn wrapping_advance<T: Num + WrappingSub + Copy>(&self, pos: Vec2<T>) -> Vec2<T> {
+        match self {
+            Self::Up => vector!(pos.x(), pos.y().wrapping_sub(&T::one())),
+            Self::Down => vector!(pos.x(), pos.y() + T::one()),
+            Self::Left => vector!(pos.x().wrapping_sub(&T::one()), pos.y()),
             Self::Right => vector!(pos.x() + T::one(), pos.y()),
         }
     }
