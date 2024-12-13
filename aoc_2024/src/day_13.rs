@@ -1,56 +1,56 @@
-use std::collections::{HashMap, VecDeque};
-
+use aoc_lib::vector::AsTuple2;
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
 solution!("Claw Contraption", 13);
 
 fn part_a(input: &str) -> Answer {
-    let problem = Problem::parse(input);
-    problem
-        .cases
-        .iter()
-        .map(|x| x.cheapest())
-        .filter(|&x| x != u64::MAX)
-        .sum::<u64>()
-        .into()
+    Problem::parse(input).solve().into()
 }
 
 fn part_b(input: &str) -> Answer {
-    /* i used mathematica for p2
-
-    out = 0;
-    Do[
-      x = input[[i]];
-      solve =
-       Solve[x[[1]][[1]] == x[[2]][[1]]*a + x[[3]][[1]]*b &&
-         x[[1]][[2]] == x[[2]][[2]]*a + x[[3]][[2]]*b, {a, b}, Integers];
-      result = 3*solve[[All, 1, 2]] + solve[[All, 2, 2]];
-      out += If[Length[result] == 0, {0}, result];
-      , {i, 1, Length[input]}];
-    out
-
-    */
-
-    Answer::Unimplemented
+    Problem::parse(input).part_b().solve().into()
 }
 
-#[derive(Debug)]
 struct Problem {
     cases: Vec<Case>,
 }
 
-#[derive(Debug)]
 struct Case {
     a_button: Vec2<u64>,
     b_button: Vec2<u64>,
     goal: Vec2<u64>,
 }
 
-fn parse_button(input: &str) -> Vec2<u64> {
-    let (_, parts) = input.rsplit_once(": ").unwrap();
-    let (x, y) = parts.split_once(", ").unwrap();
-    vector!(x[1..].parse().unwrap(), y[1..].parse().unwrap())
+impl Case {
+    fn cheapest(&self) -> u64 {
+        let cast = |x: Vec2<u64>| x.try_cast::<i64>().unwrap().as_tuple();
+        let ((gx, gy), (ax, ay), (bx, by)) =
+            (cast(self.goal), cast(self.a_button), cast(self.b_button));
+
+        // The best a and b values for a case are the solutions to the following
+        // system of equations, where g is the goal position, a/b are the number
+        // of times you press the corespondent buttons (what we are solving
+        // for), and (a|b)(x|y) are the offsets applied by each button press.
+        //
+        // gx = ax * a + bx * b
+        // gy = ay * a + by * b
+        //
+        // By plugging those into Wolfram Alpha, I got the below equation for a,
+        // then used that to find the equation of b. Because this is integer
+        // math, we need to verify it by making sure a and b are greater than
+        // zero and checking if the solution actually solves the system. If it
+        // does, we return 3a + b, the price.
+
+        let a = (by * gx - bx * gy) / (ax * by - ay * bx);
+        let b = (gx - ax * a) / bx;
+
+        if a <= 0 || b <= 0 || self.goal != self.a_button * a as u64 + self.b_button * b as u64 {
+            return 0;
+        }
+
+        a as u64 * 3 + b as u64
+    }
 }
 
 impl Problem {
@@ -76,59 +76,22 @@ impl Problem {
         Self { cases }
     }
 
-    fn part_b(mut self) -> Self {
-        for case in self.cases.iter_mut() {
-            case.goal += vector!(10000000000000, 10000000000000);
-        }
+    fn solve(&self) -> u64 {
+        self.cases.iter().map(|x| x.cheapest()).sum::<u64>().into()
+    }
 
+    fn part_b(mut self) -> Self {
+        self.cases
+            .iter_mut()
+            .for_each(|case| case.goal += vector!(10000000000000, 10000000000000));
         self
     }
 }
 
-impl Case {
-    fn cheapest(&self) -> u64 {
-        // a->3, b->1
-        fn inner(
-            case: &Case,
-            memo: &mut HashMap<(Vec2<u64>, (u64, u64)), u64>,
-            pos: Vec2<u64>,
-            counts: (u64, u64),
-            price: u64,
-        ) -> u64 {
-            if let Some(&cache) = memo.get(&(pos, counts)) {
-                return cache;
-            }
-
-            if pos == case.goal {
-                return price;
-            }
-
-            if counts.0 > 100 || counts.1 > 100 {
-                return u64::MAX;
-            }
-
-            let min = inner(
-                case,
-                memo,
-                pos + case.a_button,
-                (counts.0 + 1, counts.1),
-                price + 3,
-            )
-            .min(inner(
-                case,
-                memo,
-                pos + case.b_button,
-                (counts.0, counts.1 + 1),
-                price + 1,
-            ));
-
-            memo.insert((pos, counts), min);
-
-            min
-        }
-
-        inner(self, &mut HashMap::new(), vector!(0, 0), (0, 0), 0)
-    }
+fn parse_button(input: &str) -> Vec2<u64> {
+    let (_, parts) = input.rsplit_once(": ").unwrap();
+    let (x, y) = parts.split_once(", ").unwrap();
+    vector!(x[1..].parse().unwrap(), y[1..].parse().unwrap())
 }
 
 #[cfg(test)]
@@ -160,6 +123,6 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), ().into());
+        assert_eq!(super::part_b(CASE), 875318608908_u64.into());
     }
 }
