@@ -18,6 +18,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 11: Plutonian Pebbles](aoc_2024/src/day_11.rs)
 - [Day 12: Garden Groups](aoc_2024/src/day_12.rs)
 - [Day 13: Claw Contraption](aoc_2024/src/day_13.rs)
+- [Day 14: Restroom Redoubt](aoc_2024/src/day_14.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
