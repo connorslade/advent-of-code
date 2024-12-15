@@ -4,7 +4,7 @@ use nd_vec::{vector, Vec2};
 use num_traits::{Num, ToPrimitive};
 
 pub struct Matrix<T> {
-    data: Vec<T>,
+    pub data: Vec<T>,
     pub size: Vec2<usize>,
 }
 
@@ -43,7 +43,7 @@ impl<T> Matrix<T> {
         pos.x() < self.size.x() && pos.y() < self.size.y()
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = (Vec2<usize>, &T)>  {
+    pub fn iter(&self) -> impl Iterator<Item = (Vec2<usize>, &T)> {
         (0..self.data.len()).map(|x| {
             let pos = vector!(x % self.size.x(), x / self.size.x());
             let data = self.get(pos).unwrap();

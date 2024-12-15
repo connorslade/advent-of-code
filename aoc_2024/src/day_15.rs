@@ -1,5 +1,3 @@
-use std::fmt::{Debug, Write};
-
 use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
@@ -46,18 +44,22 @@ impl Problem {
             _ => panic!(),
         });
 
+        // For part B, double the width of the board and convert the previously
+        // one tile boxes into a Tile::Box and Tile::BoxRight
         if part_b {
             board.size = vector!(board.size.x() * 2, board.size.y());
-            let mut new = Vec::new();
-            for data in board.data {
-                new.push(data);
-                new.push(match data {
-                    Tile::Box => Tile::BoxRight,
-                    Tile::Robot => Tile::Empty,
-                    _ => data,
-                });
+            let mut i = 0;
+            while i < board.data.len() {
+                board.data.insert(
+                    i + 1,
+                    match board.data[i] {
+                        Tile::Box => Tile::BoxRight,
+                        Tile::Robot => Tile::Empty,
+                        x => x,
+                    },
+                );
+                i += 2;
             }
-            board.data = new;
         }
 
         let instructions = instructions
@@ -86,9 +88,7 @@ impl Problem {
     }
 
     fn tick_all(&mut self, part_b: bool) {
-        for _ in 0..self.instructions.len() {
-            self.tick(part_b);
-        }
+        (0..self.instructions.len()).for_each(|_| self.tick(part_b));
     }
 
     fn tick(&mut self, part_b: bool) {
@@ -105,6 +105,14 @@ impl Problem {
         } {
             self.pos = new;
         }
+    }
+
+    fn score(&self) -> u32 {
+        self.board
+            .iter()
+            .filter(|x| *x.1 == Tile::Box)
+            .map(|(pos, _)| (100 * pos.y() + pos.x()) as u32)
+            .sum()
     }
 
     // -> was successful
@@ -131,6 +139,9 @@ impl Problem {
             false
         }
     }
+
+    // these next two function are an absolute disaster, but im too tired to
+    // clean them up right now...
 
     fn can_push(&self, pos: Vec2<usize>, dir: Direction) -> bool {
         // println!("{pos:?}, {dir:?}");
@@ -199,34 +210,6 @@ impl Problem {
             }
         } else {
             false
-        }
-    }
-
-    fn score(&self) -> u32 {
-        let mut score = 0;
-
-        for (pos, _) in self.board.iter().filter(|x| *x.1 == Tile::Box) {
-            score += (100 * pos.y() + pos.x()) as u32;
-        }
-
-        score
-    }
-
-    fn debug(&self) {
-        let mut dbg = self.board.clone();
-        dbg.set(self.pos, Tile::Robot);
-        println!("{:?}", dbg);
-    }
-}
-
-impl Debug for Tile {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Tile::Robot => f.write_char('@'),
-            Tile::Wall => f.write_char('#'),
-            Tile::Box => f.write_char('['),
-            Tile::BoxRight => f.write_char(']'),
-            Tile::Empty => f.write_char('.'),
         }
     }
 }
