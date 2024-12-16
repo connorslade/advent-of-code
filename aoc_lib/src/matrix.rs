@@ -1,4 +1,8 @@
-use std::{fmt::Debug, hash::Hash, ops::Index};
+use std::{
+    fmt::Debug,
+    hash::Hash,
+    ops::{Index, IndexMut},
+};
 
 use nd_vec::{vector, Vec2};
 use num_traits::{Num, ToPrimitive};
@@ -89,12 +93,25 @@ impl<T> Index<[usize; 2]> for Matrix<T> {
     }
 }
 
+impl<T> IndexMut<[usize; 2]> for Matrix<T> {
+    fn index_mut(&mut self, index: [usize; 2]) -> &mut T {
+        &mut self.data[index[1] * self.size.x() + index[0]]
+    }
+}
+
 impl<T, K: ToPrimitive + Copy> Index<Vec2<K>> for Matrix<T> {
     type Output = T;
 
     fn index(&self, index: Vec2<K>) -> &Self::Output {
         let index = index.num_cast::<usize>().unwrap();
         &self.data[index.y() * self.size.x() + index.x()]
+    }
+}
+
+impl<T, K: ToPrimitive + Copy> IndexMut<Vec2<K>> for Matrix<T> {
+    fn index_mut(&mut self, index: Vec2<K>) -> &mut T {
+        let index = index.num_cast::<usize>().unwrap();
+        &mut self.data[index.y() * self.size.x() + index.x()]
     }
 }
 
