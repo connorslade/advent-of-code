@@ -35,7 +35,7 @@ fn solve(nums: Vec<u64>, iters: usize) -> u64 {
         counts = next;
     }
 
-    counts.values().sum::<u64>().into()
+    counts.values().sum::<u64>()
 }
 
 fn parse(input: &str) -> Vec<u64> {

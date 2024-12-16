@@ -96,12 +96,10 @@ impl Problem {
         self.idx += 1;
 
         let new = dir.advance(self.pos);
-        if {
-            if part_b {
-                self.push_b(new, dir)
-            } else {
-                self.push(new, dir)
-            }
+        if if part_b {
+            self.push_b(new, dir)
+        } else {
+            self.push(new, dir)
         } {
             self.pos = new;
         }
