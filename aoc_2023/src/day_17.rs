@@ -3,7 +3,7 @@ use std::{
     collections::{BinaryHeap, HashMap},
 };
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -19,11 +19,11 @@ fn part_b(input: &str) -> Answer {
     pathfind(parse(input), 4, 10).into()
 }
 
-fn parse(input: &str) -> Matrix<u8> {
-    Matrix::new_chars(input, |c| c as u8 - b'0')
+fn parse(input: &str) -> Grid<u8> {
+    Grid::new(input, |c| c as u8 - b'0')
 }
 
-fn pathfind(board: Matrix<u8>, min_dist: u8, max_dist: u8) -> u32 {
+fn pathfind(board: Grid<u8>, min_dist: u8, max_dist: u8) -> u32 {
     let mut queue = BinaryHeap::new();
     let mut visited = HashMap::new();
     let mut res = u32::MAX;

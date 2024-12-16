@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use aoc_lib::matrix::Matrix;
+use aoc_lib::matrix::Grid;
 use common::{solution, Answer};
 use nd_vec::Vec2;
 
@@ -52,7 +52,7 @@ fn part_b(input: &str) -> Answer {
 }
 
 struct AntennaMap {
-    world: Matrix<Tile>,
+    world: Grid<Tile>,
     freqs: HashMap<char, Vec<Vec2<i32>>>,
 }
 
@@ -63,7 +63,7 @@ enum Tile {
 
 impl AntennaMap {
     fn parse(input: &str) -> Self {
-        let world = Matrix::new_chars(input, |x| match x {
+        let world = Grid::new(input, |x| match x {
             'a'..='z' | 'A'..='Z' | '0'..='9' => Tile::Emitter(x),
             _ => Tile::Empty,
         });

@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -30,8 +30,8 @@ fn part_b(input: &str) -> Answer {
     max.into()
 }
 
-fn parse(input: &str) -> Matrix<Tile> {
-    Matrix::new_chars(input, Tile::from_char)
+fn parse(input: &str) -> Grid<Tile> {
+    Grid::new(input, Tile::from_char)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -43,8 +43,8 @@ enum Tile {
     SlantRight, // /
 }
 
-fn lazer(cavern: &Matrix<Tile>, start: Pos, direction: Direction) -> usize {
-    fn _lazer(cavern: &Matrix<Tile>, visited: &mut HashSet<Pos>, mut pos: Pos, mut dir: Direction) {
+fn lazer(cavern: &Grid<Tile>, start: Pos, direction: Direction) -> usize {
+    fn _lazer(cavern: &Grid<Tile>, visited: &mut HashSet<Pos>, mut pos: Pos, mut dir: Direction) {
         loop {
             pos = dir.advance(pos);
             if !cavern.contains(pos) {

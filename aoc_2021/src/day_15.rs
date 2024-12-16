@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 use hashbrown::HashMap;
 use nd_vec::{vector, Vector};
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 
 solution!("Chiton", 15);
@@ -11,12 +11,12 @@ solution!("Chiton", 15);
 type Point = Vector<usize, 2>;
 
 fn part_a(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, |chr| chr.to_digit(10).unwrap() as u8);
+    let matrix = Grid::new(input, |chr| chr.to_digit(10).unwrap() as u8);
     solve(matrix.size, |pos| matrix.get(pos).copied()).into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, |chr| chr.to_digit(10).unwrap() as u8);
+    let matrix = Grid::new(input, |chr| chr.to_digit(10).unwrap() as u8);
     solve(matrix.size * 5, |pos| {
         let (cx, cy) = (pos.x() / matrix.size.x(), pos.y() / matrix.size.y());
         if cx > 4 || cy > 4 {

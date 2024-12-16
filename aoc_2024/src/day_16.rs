@@ -3,7 +3,7 @@ use std::{
     collections::{BinaryHeap, HashSet},
 };
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::Vec2;
 
@@ -22,7 +22,7 @@ fn part_b(input: &str) -> Answer {
 }
 
 struct Maze {
-    map: Matrix<Tile>,
+    map: Grid<Tile>,
 
     start: Vec2<usize>,
     end: Vec2<usize>,
@@ -45,7 +45,7 @@ struct Item {
 
 impl Maze {
     fn parse(input: &str) -> Self {
-        let map = Matrix::new_chars(input, |c| match c {
+        let map = Grid::new(input, |c| match c {
             '.' => Tile::Empty,
             '#' => Tile::Wall,
             'S' => Tile::Start,
@@ -61,10 +61,10 @@ impl Maze {
 
     /// Use dijkstra's to find the shortest path, populating a costs grid with
     /// the minimum cost needed to reach that tile, which will be used for part B.
-    fn foreword(&self) -> (Matrix<[u32; 4]>, u32) {
+    fn foreword(&self) -> (Grid<[u32; 4]>, u32) {
         let mut queue = BinaryHeap::new();
         let mut seen = HashSet::new();
-        let mut costs = Matrix::new_default(self.map.size, [u32::MAX; 4]);
+        let mut costs = Grid::parse(self.map.size, [u32::MAX; 4]);
 
         queue.push(Item::new(self.start, Direction::Right, 0));
 
@@ -95,7 +95,7 @@ impl Maze {
 
     /// Walks backwards from the end using a BFS to find all the tiles that are
     /// on any of the shortest path.
-    fn reverse(&self, mut scores: Matrix<[u32; 4]>) -> u32 {
+    fn reverse(&self, mut scores: Grid<[u32; 4]>) -> u32 {
         let mut seen = HashSet::new();
         let mut seen_queue = vec![];
 

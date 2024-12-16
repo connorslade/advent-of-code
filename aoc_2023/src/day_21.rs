@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -86,8 +86,8 @@ enum Tile {
     Start,
 }
 
-fn parse(input: &str) -> Matrix<Tile> {
-    Matrix::new_chars(input, |x| match x {
+fn parse(input: &str) -> Grid<Tile> {
+    Grid::new(input, |x| match x {
         '#' => Tile::Wall,
         '.' => Tile::Garden,
         'S' => Tile::Start,

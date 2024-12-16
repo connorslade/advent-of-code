@@ -3,7 +3,7 @@ use std::{
     convert::identity,
 };
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -20,7 +20,7 @@ fn part_b(input: &str) -> Answer {
 }
 
 // Simple DFS to find the longest path for part A
-fn solve_a(map: &Matrix<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -> u32 {
+fn solve_a(map: &Grid<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -> u32 {
     if pos == map.size() - vector!(2, 1) {
         return idx;
     }
@@ -44,7 +44,7 @@ fn solve_a(map: &Matrix<char>, visited: &mut HashSet<Pos>, pos: Pos, idx: u32) -
 }
 
 // Convert the map into a graph and collapse it to find the longest path for part B
-fn solve_b(map: &Matrix<char>) -> u32 {
+fn solve_b(map: &Grid<char>) -> u32 {
     // == Build graph ==
     let mut graph = HashMap::new();
     let mut add_edge = |a: Pos, b: Pos| {
@@ -124,8 +124,8 @@ fn solve_b(map: &Matrix<char>) -> u32 {
     max
 }
 
-fn parse(input: &str) -> Matrix<char> {
-    Matrix::new_chars(input, identity)
+fn parse(input: &str) -> Grid<char> {
+    Grid::new(input, identity)
 }
 
 fn dir_matches(dir: Direction, chr: char) -> bool {

@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::Vec2;
 use rayon::iter::{ParallelBridge, ParallelIterator};
@@ -30,13 +30,13 @@ enum Tile {
 }
 
 struct Map {
-    map: Matrix<Tile>,
+    map: Grid<Tile>,
     start: Vec2<usize>,
 }
 
 impl Map {
     fn new(input: &str) -> Self {
-        let map = Matrix::new_chars(input, |x| match x {
+        let map = Grid::new(input, |x| match x {
             '#' => Tile::Obstacle,
             '^' => Tile::Start,
             _ => Tile::None,

@@ -7,14 +7,14 @@ use std::{
 use nd_vec::{vector, Vec2};
 use num_traits::{Num, ToPrimitive};
 
-pub struct Matrix<T> {
+pub struct Grid<T> {
     pub data: Vec<T>,
     pub size: Vec2<usize>,
 }
 
 #[allow(dead_code)]
-impl<T> Matrix<T> {
-    pub fn new_default(size: Vec2<usize>, default: T) -> Self
+impl<T> Grid<T> {
+    pub fn parse(size: Vec2<usize>, default: T) -> Self
     where
         T: Clone,
     {
@@ -24,7 +24,7 @@ impl<T> Matrix<T> {
         }
     }
 
-    pub fn new_chars(input: &str, parse: fn(char) -> T) -> Self {
+    pub fn new(input: &str, parse: fn(char) -> T) -> Self {
         let mut data = Vec::with_capacity(input.len());
         let mut size = vector!(0, 0);
 
@@ -85,7 +85,7 @@ impl<T> Matrix<T> {
     }
 }
 
-impl<T> Index<[usize; 2]> for Matrix<T> {
+impl<T> Index<[usize; 2]> for Grid<T> {
     type Output = T;
 
     fn index(&self, index: [usize; 2]) -> &Self::Output {
@@ -93,13 +93,13 @@ impl<T> Index<[usize; 2]> for Matrix<T> {
     }
 }
 
-impl<T> IndexMut<[usize; 2]> for Matrix<T> {
+impl<T> IndexMut<[usize; 2]> for Grid<T> {
     fn index_mut(&mut self, index: [usize; 2]) -> &mut T {
         &mut self.data[index[1] * self.size.x() + index[0]]
     }
 }
 
-impl<T, K: ToPrimitive + Copy> Index<Vec2<K>> for Matrix<T> {
+impl<T, K: ToPrimitive + Copy> Index<Vec2<K>> for Grid<T> {
     type Output = T;
 
     fn index(&self, index: Vec2<K>) -> &Self::Output {
@@ -108,14 +108,14 @@ impl<T, K: ToPrimitive + Copy> Index<Vec2<K>> for Matrix<T> {
     }
 }
 
-impl<T, K: ToPrimitive + Copy> IndexMut<Vec2<K>> for Matrix<T> {
+impl<T, K: ToPrimitive + Copy> IndexMut<Vec2<K>> for Grid<T> {
     fn index_mut(&mut self, index: Vec2<K>) -> &mut T {
         let index = index.num_cast::<usize>().unwrap();
         &mut self.data[index.y() * self.size.x() + index.x()]
     }
 }
 
-impl<T: Clone> Clone for Matrix<T> {
+impl<T: Clone> Clone for Grid<T> {
     fn clone(&self) -> Self {
         Self {
             data: self.data.clone(),
@@ -124,22 +124,22 @@ impl<T: Clone> Clone for Matrix<T> {
     }
 }
 
-impl<T: PartialEq> PartialEq for Matrix<T> {
+impl<T: PartialEq> PartialEq for Grid<T> {
     fn eq(&self, other: &Self) -> bool {
         self.data == other.data && self.size == other.size
     }
 }
 
-impl<T: Eq> Eq for Matrix<T> {}
+impl<T: Eq> Eq for Grid<T> {}
 
-impl<T: Hash> Hash for Matrix<T> {
+impl<T: Hash> Hash for Grid<T> {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.data.hash(state);
         self.size.hash(state);
     }
 }
 
-impl<T: Debug> Debug for Matrix<T> {
+impl<T: Debug> Debug for Grid<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for y in 0..self.size.y() {
             for x in 0..self.size.x() {
