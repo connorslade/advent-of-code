@@ -1,6 +1,6 @@
 use std::{collections::HashSet, convert::identity};
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use itertools::Itertools;
 use nd_vec::{vector, Vec2};
@@ -51,14 +51,14 @@ fn part_b(input: &str) -> Answer {
 }
 
 struct Garden {
-    matrix: Matrix<char>,
+    matrix: Grid<char>,
 
     seen: HashSet<Vec2<usize>>,
 }
 
 impl Garden {
     fn parse(input: &str) -> Self {
-        let matrix = Matrix::new_chars(input, identity);
+        let matrix = Grid::new(input, identity);
         Self {
             matrix,
             seen: HashSet::new(),

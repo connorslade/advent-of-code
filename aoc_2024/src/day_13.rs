@@ -77,7 +77,7 @@ impl Problem {
     }
 
     fn solve(&self) -> u64 {
-        self.cases.iter().map(|x| x.cheapest()).sum::<u64>().into()
+        self.cases.iter().map(|x| x.cheapest()).sum::<u64>()
     }
 
     fn part_b(mut self) -> Self {

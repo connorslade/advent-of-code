@@ -1,10 +1,32 @@
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashSet},
+};
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
-use nd_vec::{vector, Vec2};
+use nd_vec::Vec2;
 
 solution!("Reindeer Maze", 16);
+
+fn part_a(input: &str) -> Answer {
+    let map = Maze::parse(input);
+    let (_, shortest) = map.foreword();
+    shortest.into()
+}
+
+fn part_b(input: &str) -> Answer {
+    let map = Maze::parse(input);
+    let (scores, _) = map.foreword();
+    map.reverse(scores).into()
+}
+
+struct Maze {
+    map: Grid<Tile>,
+
+    start: Vec2<usize>,
+    end: Vec2<usize>,
+}
 
 #[derive(PartialEq, Eq)]
 enum Tile {
@@ -14,210 +36,117 @@ enum Tile {
     End,
 }
 
-fn part_a(input: &str) -> Answer {
-    let map = Matrix::new_chars(input, |c| match c {
-        '.' => Tile::Empty,
-        '#' => Tile::Wall,
-        'S' => Tile::Start,
-        'E' => Tile::End,
-        _ => panic!(),
-    });
-    let start = map.find(Tile::Start).unwrap();
-
-    // find minimum score needed to path from S to E
-    // - Move foreword (+1)
-    // - rotate left or right (+1000)
-
-    #[derive(PartialEq, Eq)]
-    struct Item {
-        pos: Vec2<usize>,
-        dir: Direction,
-        score: u32,
-    }
-
-    impl Ord for Item {
-        fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-            other.score.cmp(&self.score)
-        }
-    }
-
-    impl PartialOrd for Item {
-        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-            Some(other.score.cmp(&self.score))
-        }
-    }
-
-    // todo: try bin heap
-    let mut queue = BinaryHeap::new();
-    let mut seen = HashSet::new();
-
-    queue.push(Item {
-        pos: start,
-        dir: Direction::Right,
-        score: 0,
-    });
-
-    while let Some(Item { pos, dir, score }) = queue.pop() {
-        if !seen.insert((pos, dir)) {
-            continue;
-        }
-
-        if map[pos] == Tile::End {
-            return score.into();
-        }
-
-        // Move foreword
-        let next = dir.wrapping_advance(pos);
-        if map.contains(next) && map[next] != Tile::Wall {
-            queue.push(Item {
-                pos: next,
-                dir,
-                score: score + 1,
-            });
-        }
-
-        queue.push(Item {
-            pos,
-            dir: dir.turn_left(),
-            score: score + 1000,
-        });
-
-        queue.push(Item {
-            pos,
-            dir: dir.turn_right(),
-            score: score + 1000,
-        });
-    }
-
-    unreachable!()
+#[derive(PartialEq, Eq)]
+struct Item {
+    pos: Vec2<usize>,
+    dir: Direction,
+    score: u32,
 }
 
-fn part_b(input: &str) -> Answer {
-    let map = Matrix::new_chars(input, |c| match c {
-        '.' => Tile::Empty,
-        '#' => Tile::Wall,
-        'S' => Tile::Start,
-        'E' => Tile::End,
-        _ => panic!(),
-    });
-    let start = map.find(Tile::Start).unwrap();
+impl Maze {
+    fn parse(input: &str) -> Self {
+        let map = Grid::new(input, |c| match c {
+            '.' => Tile::Empty,
+            '#' => Tile::Wall,
+            'S' => Tile::Start,
+            'E' => Tile::End,
+            _ => panic!(),
+        });
 
-    // find minimum score needed to path from S to E
-    // - Move foreword (+1)
-    // - rotate left or right (+1000)
+        let start = map.find(Tile::Start).unwrap();
+        let end = map.find(Tile::End).unwrap();
 
-    #[derive(PartialEq, Eq)]
-    struct Item {
-        pos: Vec2<usize>,
-        dir: Direction,
-        score: u32,
-
-        path: Vec<Vec2<usize>>,
+        Self { map, start, end }
     }
 
-    impl Ord for Item {
-        fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-            other.score.cmp(&self.score)
-        }
-    }
+    /// Use dijkstra's to find the shortest path, populating a costs grid with
+    /// the minimum cost needed to reach that tile, which will be used for part B.
+    fn foreword(&self) -> (Grid<[u32; 4]>, u32) {
+        let mut queue = BinaryHeap::new();
+        let mut seen = HashSet::new();
+        let mut costs = Grid::parse(self.map.size, [u32::MAX; 4]);
 
-    impl PartialOrd for Item {
-        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-            Some(other.score.cmp(&self.score))
-        }
-    }
+        queue.push(Item::new(self.start, Direction::Right, 0));
 
-    // todo: try bin heap
-    let mut queue = BinaryHeap::new();
-    let mut seen = HashMap::new();
+        while let Some(Item { pos, dir, score }) = queue.pop() {
+            let min = &mut costs[pos];
+            min[dir as usize] = min[dir as usize].min(score);
 
-    let mut on_best = HashSet::<Vec2<usize>>::new();
-
-    queue.push(Item {
-        pos: start,
-        dir: Direction::Right,
-        score: 0,
-
-        path: vec![start],
-    });
-
-    let mut best = None;
-
-    while let Some(Item {
-        pos,
-        dir,
-        score,
-        path,
-    }) = queue.pop()
-    {
-        if let Some(&prev) = seen.get(&(pos, dir)) {
-            if score > prev {
+            if !seen.insert((pos, dir)) {
                 continue;
             }
-        } else {
-            seen.insert((pos, dir), score);
-        }
 
-        if map[pos] == Tile::End {
-            if let Some(real_best) = best {
-                dbg!(score, real_best);
-                if score == real_best {
-                    on_best.extend(path.iter());
-                }
-            } else {
-                best = Some(score);
-                on_best.extend(path.iter());
+            if self.map[pos] == Tile::End {
+                return (costs, score);
             }
 
-            continue;
+            let next = dir.wrapping_advance(pos);
+            if self.map.contains(next) && self.map[next] != Tile::Wall {
+                queue.push(Item::new(next, dir, score + 1));
+            }
+
+            for dir in [dir.turn_left(), dir.turn_right()] {
+                queue.push(Item::new(pos, dir, score + 1000));
+            }
         }
 
-        // Move foreword
-        let next = dir.wrapping_advance(pos);
-        let mut next_path = path.clone();
-        next_path.push(next);
-        if map.contains(next) && map[next] != Tile::Wall {
-            queue.push(Item {
-                pos: next,
-                dir,
-                score: score + 1,
-                path: next_path,
-            });
-        }
-
-        queue.push(Item {
-            pos,
-            dir: dir.turn_left(),
-            score: score + 1000,
-            path: path.clone(),
-        });
-
-        queue.push(Item {
-            pos,
-            dir: dir.turn_right(),
-            score: score + 1000,
-            path,
-        });
+        unreachable!("No path found")
     }
 
-    for y in 0..map.size.y() {
-        for x in 0..map.size.x() {
-            let pos = vector!(x, y);
-            print!(
-                "{}",
-                match map[pos] {
-                    Tile::Empty if on_best.contains(&pos) => '@',
-                    Tile::Empty => '.',
-                    Tile::Wall => '#',
-                    Tile::Start => 'S',
-                    Tile::End => 'E',
+    /// Walks backwards from the end using a BFS to find all the tiles that are
+    /// on any of the shortest path.
+    fn reverse(&self, mut scores: Grid<[u32; 4]>) -> u32 {
+        let mut seen = HashSet::new();
+        let mut seen_queue = vec![];
+
+        let end_lowest = scores.get(self.end).unwrap();
+        for dir in Direction::ALL {
+            let min_cost = end_lowest[dir as usize];
+            seen_queue.push(Item::new(self.end, dir, min_cost));
+        }
+
+        while let Some(item) = seen_queue.pop() {
+            seen.insert(item.pos);
+            if item.pos == self.start {
+                continue;
+            }
+
+            let next = item.dir.opposite().wrapping_advance(item.pos);
+            for next in [
+                Item::new(next, item.dir, item.score - 1),
+                Item::new(item.pos, item.dir.turn_left(), item.score - 1000),
+                Item::new(item.pos, item.dir.turn_right(), item.score - 1000),
+            ] {
+                if self.map.contains(next.pos)
+                    && self.map[next.pos] != Tile::Wall
+                    && next.score == scores.get(next.pos).unwrap()[next.dir as usize]
+                {
+                    scores.get_mut(next.pos).unwrap()[next.dir as usize] = u32::MAX;
+                    seen_queue.push(next);
                 }
-            );
+            }
         }
-        println!();
-    }
 
-    on_best.len().into()
+        seen.len() as u32
+    }
+}
+
+impl Item {
+    fn new(pos: Vec2<usize>, dir: Direction, score: u32) -> Self {
+        Self { pos, dir, score }
+    }
+}
+
+impl Ord for Item {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.score.cmp(&self.score)
+    }
+}
+
+impl PartialOrd for Item {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 #[cfg(test)]

@@ -1,4 +1,4 @@
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -20,7 +20,7 @@ struct Problem {
     pos: Vec2<usize>,
     idx: usize,
 
-    board: Matrix<Tile>,
+    board: Grid<Tile>,
     instructions: Vec<Direction>,
 }
 
@@ -36,7 +36,7 @@ enum Tile {
 impl Problem {
     fn parse(input: &str, part_b: bool) -> Self {
         let (board, instructions) = input.split_once("\n\n").unwrap();
-        let mut board = Matrix::new_chars(board, |chr| match chr {
+        let mut board = Grid::new(board, |chr| match chr {
             '@' => Tile::Robot,
             '#' => Tile::Wall,
             'O' => Tile::Box,
@@ -96,12 +96,10 @@ impl Problem {
         self.idx += 1;
 
         let new = dir.advance(self.pos);
-        if {
-            if part_b {
-                self.push_b(new, dir)
-            } else {
-                self.push(new, dir)
-            }
+        if if part_b {
+            self.push_b(new, dir)
+        } else {
+            self.push(new, dir)
         } {
             self.pos = new;
         }

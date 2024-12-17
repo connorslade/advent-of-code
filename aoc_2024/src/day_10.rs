@@ -1,6 +1,6 @@
 use std::collections::{HashSet, VecDeque};
 
-use aoc_lib::{direction::cardinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::Vec2;
 
@@ -22,12 +22,12 @@ fn solve(input: &str, part_b: bool) -> usize {
 }
 
 struct Map {
-    board: Matrix<u32>,
+    board: Grid<u32>,
 }
 
 impl Map {
     fn parse(input: &str) -> Self {
-        let board = Matrix::new_chars(input, |x| x.to_digit(10).unwrap());
+        let board = Grid::new(input, |x| x.to_digit(10).unwrap());
         Self { board }
     }
 

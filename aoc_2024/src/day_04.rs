@@ -1,13 +1,13 @@
 use std::convert::identity;
 
-use aoc_lib::{direction::ordinal::Direction, matrix::Matrix};
+use aoc_lib::{direction::ordinal::Direction, matrix::Grid};
 use common::{solution, Answer};
 use nd_vec::vector;
 
 solution!("Ceres Search", 4);
 
 fn part_a(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, identity);
+    let matrix = Grid::new(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {
@@ -44,7 +44,7 @@ const MAS_DIRECTIONS: [[Direction; 2]; 2] = [
 ];
 
 fn part_b(input: &str) -> Answer {
-    let matrix = Matrix::new_chars(input, identity);
+    let matrix = Grid::new(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {

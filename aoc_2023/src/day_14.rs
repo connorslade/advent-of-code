@@ -1,6 +1,6 @@
 use std::{collections::HashMap, convert::identity, hash::Hash};
 
-use aoc_lib::matrix::Matrix;
+use aoc_lib::matrix::Grid;
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -35,12 +35,12 @@ fn part_b(input: &str) -> Answer {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Dish {
-    tiles: Matrix<char>,
+    tiles: Grid<char>,
 }
 
 fn parse(input: &str) -> Dish {
     Dish {
-        tiles: Matrix::new_chars(input, identity),
+        tiles: Grid::new(input, identity),
     }
 }
 

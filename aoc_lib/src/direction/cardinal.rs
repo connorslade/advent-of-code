@@ -2,6 +2,7 @@ use nd_vec::{vector, Vec2};
 use num_traits::{Num, Signed, WrappingSub};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[repr(u8)]
 pub enum Direction {
     Up,
     Down,
