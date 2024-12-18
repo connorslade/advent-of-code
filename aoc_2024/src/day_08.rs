@@ -63,7 +63,7 @@ enum Tile {
 
 impl AntennaMap {
     fn parse(input: &str) -> Self {
-        let world = Grid::new(input, |x| match x {
+        let world = Grid::parse(input, |x| match x {
             'a'..='z' | 'A'..='Z' | '0'..='9' => Tile::Emitter(x),
             _ => Tile::Empty,
         });

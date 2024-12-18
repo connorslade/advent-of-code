@@ -40,7 +40,7 @@ struct Dish {
 
 fn parse(input: &str) -> Dish {
     Dish {
-        tiles: Grid::new(input, identity),
+        tiles: Grid::parse(input, identity),
     }
 }
 

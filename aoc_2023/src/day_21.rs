@@ -87,7 +87,7 @@ enum Tile {
 }
 
 fn parse(input: &str) -> Grid<Tile> {
-    Grid::new(input, |x| match x {
+    Grid::parse(input, |x| match x {
         '#' => Tile::Wall,
         '.' => Tile::Garden,
         'S' => Tile::Start,

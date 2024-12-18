@@ -7,7 +7,7 @@ use nd_vec::vector;
 solution!("Ceres Search", 4);
 
 fn part_a(input: &str) -> Answer {
-    let matrix = Grid::new(input, identity);
+    let matrix = Grid::parse(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {
@@ -44,7 +44,7 @@ const MAS_DIRECTIONS: [[Direction; 2]; 2] = [
 ];
 
 fn part_b(input: &str) -> Answer {
-    let matrix = Grid::new(input, identity);
+    let matrix = Grid::parse(input, identity);
     let mut count = 0;
 
     for y in 0..matrix.size.y() {

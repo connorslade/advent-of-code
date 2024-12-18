@@ -125,7 +125,7 @@ fn solve_b(map: &Grid<char>) -> u32 {
 }
 
 fn parse(input: &str) -> Grid<char> {
-    Grid::new(input, identity)
+    Grid::parse(input, identity)
 }
 
 fn dir_matches(dir: Direction, chr: char) -> bool {

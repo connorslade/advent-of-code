@@ -36,7 +36,7 @@ struct Map {
 
 impl Map {
     fn new(input: &str) -> Self {
-        let map = Grid::new(input, |x| match x {
+        let map = Grid::parse(input, |x| match x {
             '#' => Tile::Obstacle,
             '^' => Tile::Start,
             _ => Tile::None,

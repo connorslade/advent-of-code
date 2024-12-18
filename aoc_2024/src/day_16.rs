@@ -45,7 +45,7 @@ struct Item {
 
 impl Maze {
     fn parse(input: &str) -> Self {
-        let map = Grid::new(input, |c| match c {
+        let map = Grid::parse(input, |c| match c {
             '.' => Tile::Empty,
             '#' => Tile::Wall,
             'S' => Tile::Start,
@@ -64,7 +64,7 @@ impl Maze {
     fn foreword(&self) -> (Grid<[u32; 4]>, u32) {
         let mut queue = BinaryHeap::new();
         let mut seen = HashSet::new();
-        let mut costs = Grid::parse(self.map.size, [u32::MAX; 4]);
+        let mut costs = Grid::new(self.map.size, [u32::MAX; 4]);
 
         queue.push(Item::new(self.start, Direction::Right, 0));
 

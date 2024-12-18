@@ -58,7 +58,7 @@ struct Garden {
 
 impl Garden {
     fn parse(input: &str) -> Self {
-        let matrix = Grid::new(input, identity);
+        let matrix = Grid::parse(input, identity);
         Self {
             matrix,
             seen: HashSet::new(),

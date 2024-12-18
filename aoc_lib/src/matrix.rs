@@ -13,7 +13,7 @@ pub struct Grid<T> {
 }
 
 impl<T> Grid<T> {
-    pub fn parse(size: Vec2<usize>, default: T) -> Self
+    pub fn new(size: Vec2<usize>, default: T) -> Self
     where
         T: Clone,
     {
@@ -23,7 +23,7 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn new(input: &str, parse: fn(char) -> T) -> Self {
+    pub fn parse(input: &str, parse: fn(char) -> T) -> Self {
         let mut data = Vec::with_capacity(input.len());
         let mut size = vector!(0, 0);
 

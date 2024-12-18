@@ -20,7 +20,7 @@ fn part_b(input: &str) -> Answer {
 }
 
 fn parse(input: &str) -> Grid<u8> {
-    Grid::new(input, |c| c as u8 - b'0')
+    Grid::parse(input, |c| c as u8 - b'0')
 }
 
 fn pathfind(board: Grid<u8>, min_dist: u8, max_dist: u8) -> u32 {

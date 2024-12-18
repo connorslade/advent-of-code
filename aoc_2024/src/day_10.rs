@@ -27,7 +27,7 @@ struct Map {
 
 impl Map {
     fn parse(input: &str) -> Self {
-        let board = Grid::new(input, |x| x.to_digit(10).unwrap());
+        let board = Grid::parse(input, |x| x.to_digit(10).unwrap());
         Self { board }
     }
 

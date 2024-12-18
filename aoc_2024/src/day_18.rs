@@ -55,7 +55,7 @@ impl Map {
             })
             .collect::<Vec<_>>();
 
-        let board = Grid::parse(size, false);
+        let board = Grid::new(size, false);
 
         Self { falling, board }
     }

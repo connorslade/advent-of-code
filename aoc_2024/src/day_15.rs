@@ -36,7 +36,7 @@ enum Tile {
 impl Problem {
     fn parse(input: &str, part_b: bool) -> Self {
         let (board, instructions) = input.split_once("\n\n").unwrap();
-        let mut board = Grid::new(board, |chr| match chr {
+        let mut board = Grid::parse(board, |chr| match chr {
             '@' => Tile::Robot,
             '#' => Tile::Wall,
             'O' => Tile::Box,

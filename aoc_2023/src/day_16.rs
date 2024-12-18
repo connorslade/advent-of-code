@@ -31,7 +31,7 @@ fn part_b(input: &str) -> Answer {
 }
 
 fn parse(input: &str) -> Grid<Tile> {
-    Grid::new(input, Tile::from_char)
+    Grid::parse(input, Tile::from_char)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
