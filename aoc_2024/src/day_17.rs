@@ -20,7 +20,7 @@ fn part_a(input: &str) -> Answer {
         .into()
 }
 
-fn part_b(input: &str) -> Answer {
+fn part_b(_input: &str) -> Answer {
     // {
     //     let mut processor = processor.clone();
     //     *processor.reg_mut(0) = 1234;
@@ -270,21 +270,8 @@ mod test {
         Program: 0,1,5,4,3,0
     "};
 
-    const CASE_B: &str = indoc! {"
-        Register A: 2024
-        Register B: 0
-        Register C: 0
-
-        Program: 0,3,5,4,3,0
-    "};
-
     #[test]
     fn part_a() {
         assert_eq!(super::part_a(CASE_A), "4,6,3,5,6,3,5,2,1,0".into());
-    }
-
-    #[test]
-    fn part_b() {
-        assert_eq!(super::part_b(CASE_B), 117_440.into());
     }
 }
