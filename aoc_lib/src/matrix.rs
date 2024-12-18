@@ -12,7 +12,6 @@ pub struct Grid<T> {
     pub size: Vec2<usize>,
 }
 
-#[allow(dead_code)]
 impl<T> Grid<T> {
     pub fn parse(size: Vec2<usize>, default: T) -> Self
     where
@@ -82,6 +81,12 @@ impl<T> Grid<T> {
             .iter()
             .position(|x| x == &value)
             .map(|x| vector!(x % self.size.x(), x / self.size.x()))
+    }
+}
+
+impl<T: Clone> Grid<T> {
+    pub fn fill(&mut self, value: T) {
+        self.data.fill(value);
     }
 }
 

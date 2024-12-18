@@ -1,8 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet, VecDeque},
-    fmt::{Debug, Write},
-    usize,
-};
+use std::collections::{HashSet, VecDeque};
 
 use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
@@ -12,39 +8,40 @@ solution!("RAM Run", 18);
 
 fn part_a(input: &str) -> Answer {
     let mut map = Map::parse(input, vector!(71, 71));
-    map.fill_all();
+    map.fill_to(1023);
     map.shortest_path().into()
 }
 
 fn part_b(input: &str) -> Answer {
     let mut map = Map::parse(input, vector!(71, 71));
-    loop {
-        let next = map.fill_next();
-        if map.shortest_path() == usize::MAX {
+
+    let (mut start, mut end) = (0, map.falling.len() - 1);
+
+    while start <= end {
+        let mid = (start + end) / 2;
+        let next = map.fill_to(mid);
+
+        let works = map.shortest_path() != usize::MAX;
+
+        if !works && {
+            map.fill_to(mid - 1);
+            map.shortest_path() != usize::MAX
+        } {
             return format!("{},{}", next.x(), next.y()).into();
         }
-    }
 
-    unreachable!()
-}
-
-#[derive(Clone, PartialEq, Eq)]
-enum Tile {
-    Filled,
-    Empty,
-}
-
-impl Debug for Tile {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Tile::Filled => f.write_char('#'),
-            Tile::Empty => f.write_char('.'),
+        if works {
+            start = mid + 1;
+        } else {
+            end = mid - 1;
         }
     }
+
+    panic!("No solution found")
 }
 
 struct Map {
-    board: Grid<Tile>,
+    board: Grid<bool>,
     falling: Vec<Vec2<usize>>,
 }
 
@@ -58,23 +55,18 @@ impl Map {
             })
             .collect::<Vec<_>>();
 
-        let board = Grid::parse(size, Tile::Empty);
+        let board = Grid::parse(size, false);
 
         Self { falling, board }
     }
 
-    fn fill_next(&mut self) -> Vec2<usize> {
-        let pos = self.falling.remove(0);
-        self.board.set(pos, Tile::Filled);
-        pos
-    }
-
-    fn fill_all(&mut self) {
-        for ins in &self.falling[0..1024] {
-            self.board.set(*ins, Tile::Filled);
+    fn fill_to(&mut self, end: usize) -> Vec2<usize> {
+        self.board.fill(false);
+        for ins in &self.falling[0..=end] {
+            self.board.set(*ins, true);
         }
 
-        println!("{:?}", self.board);
+        self.falling[end]
     }
 
     fn shortest_path(&self) -> usize {
@@ -93,7 +85,7 @@ impl Map {
 
             for dir in Direction::ALL {
                 let next = dir.wrapping_advance(pos);
-                if self.board.get(next) == Some(&Tile::Empty) {
+                if self.board.get(next) == Some(&false) {
                     queue.push_back((next, depth + 1));
                 }
             }
@@ -106,6 +98,9 @@ impl Map {
 #[cfg(test)]
 mod test {
     use indoc::indoc;
+    use nd_vec::vector;
+
+    use super::Map;
 
     const CASE: &str = indoc! {"
         5,4
@@ -137,11 +132,8 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(super::part_a(CASE), 22.into());
-    }
-
-    #[test]
-    fn part_b() {
-        assert_eq!(super::part_b(CASE), ().into());
+        let mut map = Map::parse(CASE, vector!(7, 7));
+        map.fill_to(11);
+        assert_eq!(map.shortest_path(), 22);
     }
 }
