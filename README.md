@@ -24,6 +24,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 17: Chronospatial Computer](aoc_2024/src/day_17.rs)
 - [Day 18: RAM Run](aoc_2024/src/day_18.rs)
 - [Day 19: Linen Layout](aoc_2024/src/day_19.rs)
+- [Day 20: Race Condition](aoc_2024/src/day_20.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
