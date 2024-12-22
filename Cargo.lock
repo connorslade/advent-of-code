@@ -122,7 +122,7 @@ dependencies = [
  "common",
  "hashbrown 0.13.2",
  "indoc",
- "nd_vec 0.4.0",
+ "nd_vec",
  "petgraph",
 ]
 
@@ -134,7 +134,7 @@ dependencies = [
  "derive_more",
  "hashbrown 0.13.2",
  "indoc",
- "nd_vec 0.4.1",
+ "nd_vec",
  "num-traits",
  "pathfinding",
  "petgraph",
@@ -150,7 +150,7 @@ dependencies = [
  "common",
  "indoc",
  "itertools 0.12.1",
- "nd_vec 0.4.0",
+ "nd_vec",
  "num-traits",
  "once_cell",
  "petgraph",
@@ -168,7 +168,7 @@ dependencies = [
  "common",
  "indoc",
  "itertools 0.13.0",
- "nd_vec 0.4.0",
+ "nd_vec",
  "rayon",
 ]
 
@@ -176,7 +176,7 @@ dependencies = [
 name = "aoc_lib"
 version = "0.1.0"
 dependencies = [
- "nd_vec 0.4.0",
+ "nd_vec",
  "num-traits",
  "once_cell",
  "regex",
@@ -926,17 +926,8 @@ dependencies = [
 
 [[package]]
 name = "nd_vec"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "feb6d97b3da527dc7426d665f8e5e285d07783f8e4c624c8478ce4d63abd8d62"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
-name = "nd_vec"
 version = "0.4.1"
-source = "git+https://github.com/connorslade/nd-vec#68ba8287eec3b915e4e9c9128722ad8b42a3ac65"
+source = "git+https://github.com/connorslade/nd-vec.git#68ba8287eec3b915e4e9c9128722ad8b42a3ac65"
 dependencies = [
  "num-traits",
 ]
