@@ -1,4 +1,4 @@
-use std::iter::repeat;
+use std::iter::{once, repeat};
 
 use common::{solution, Answer};
 use itertools::Itertools;
@@ -11,18 +11,9 @@ fn part_a(input: &str) -> Answer {
 
     for num in input.lines() {
         let mut num = num.parse::<u64>().unwrap();
-
-        for _ in 0..2000 {
-            num ^= num * 64;
-            num %= 16777216;
-
-            num ^= num / 32;
-            num %= 16777216;
-
-            num ^= num * 2048;
-            num %= 16777216;
-        }
-
+        (0..2000).for_each(|_| {
+            next(&mut num);
+        });
         sum += num;
     }
 
@@ -31,51 +22,35 @@ fn part_a(input: &str) -> Answer {
 
 fn part_b(input: &str) -> Answer {
     let mut buyers = Vec::new();
-    let mut diffs = Vec::new();
-
     for num in input.lines() {
         let mut num = num.parse::<u64>().unwrap();
-        let mut seq = vec![num];
-
-        for _ in 0..2000 {
-            num ^= num * 64;
-            num %= 16777216;
-
-            num ^= num / 32;
-            num %= 16777216;
-
-            num ^= num * 2048;
-            num %= 16777216;
-
-            seq.push(num);
-        }
-
+        let seq = once(num)
+            .chain((0..2000).map(|_| next(&mut num)))
+            .collect::<Vec<_>>();
         buyers.push(seq);
     }
 
-    for buyer in buyers.iter() {
-        let mut diff = Vec::new();
-        for (&a, &b) in buyer.iter().tuple_windows() {
-            diff.push((b % 10) as i8 - (a % 10) as i8);
-        }
-        diffs.push(diff);
-    }
+    let diffs = buyers
+        .iter()
+        .map(|buyer| {
+            buyer
+                .iter()
+                .tuple_windows()
+                .map(|(&a, &b)| (b % 10) as i8 - (a % 10) as i8)
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
 
     let out = repeat(-9..=9)
         .take(4)
         .multi_cartesian_product()
+        .map(|x| (x[0], x[1], x[2], x[3]))
         .par_bridge()
-        .map(|x| {
-            let (a, b, c, d) = (x[0], x[1], x[2], x[3]);
+        .map(|(a, b, c, d)| {
             let mut sum = 0;
 
             for (diff, nums) in diffs.iter().zip(buyers.iter()) {
-                let idx = diff
-                    .iter()
-                    .tuple_windows()
-                    .position(|(&ax, &bx, &cx, &dx)| ax == a && bx == b && cx == c && dx == d);
-
-                if let Some(idx) = idx {
+                if let Some(idx) = find_sequence(diff, (a, b, c, d)) {
                     sum += nums[idx + 4] % 10;
                 }
             }
@@ -86,6 +61,26 @@ fn part_b(input: &str) -> Answer {
         .unwrap();
 
     out.into()
+}
+
+fn next(num: &mut u64) -> u64 {
+    *num ^= *num * 64;
+    *num %= 16777216;
+
+    *num ^= *num / 32;
+    *num %= 16777216;
+
+    *num ^= *num * 2048;
+    *num %= 16777216;
+
+    *num
+}
+
+fn find_sequence(haystack: &[i8], (a, b, c, d): (i8, i8, i8, i8)) -> Option<usize> {
+    haystack
+        .iter()
+        .tuple_windows()
+        .position(|(&ax, &bx, &cx, &dx)| ax == a && bx == b && cx == c && dx == d)
 }
 
 #[cfg(test)]
