@@ -1,4 +1,4 @@
-use aoc_lib::vector::AsTuple2;
+use aoc_lib::vector::IntoTuple2;
 use common::{solution, Answer};
 use nd_vec::{vector, Vec2};
 
@@ -24,7 +24,7 @@ struct Case {
 
 impl Case {
     fn cheapest(&self) -> u64 {
-        let cast = |x: Vec2<u64>| x.try_cast::<i64>().unwrap().as_tuple();
+        let cast = |x: Vec2<u64>| x.try_cast::<i64>().unwrap().into_tuple();
         let ((gx, gy), (ax, ay), (bx, by)) =
             (cast(self.goal), cast(self.a_button), cast(self.b_button));
 

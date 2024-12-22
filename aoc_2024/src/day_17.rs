@@ -21,49 +21,17 @@ fn part_a(input: &str) -> Answer {
 }
 
 fn part_b(_input: &str) -> Answer {
-    // {
-    //     let mut processor = processor.clone();
-    //     *processor.reg_mut(0) = 1234;
-
-    //     while let Some(ins) = processor.next_instruction() {
-    //         ins.opcode.debug(&processor, ins.argument.clone());
-    //         ins.opcode.evaluate(&mut processor, ins.argument);
-    //     }
-
-    //     println!("{processor:?}");
-    // }
-
-    // while a != 0 {
-    //     b = a % 8;
-    //     b = b ^ 2;
-    //     c = a.wrapping_shr(b as u32);
-    //     b = b ^ c;
-    //     b = b ^ 3;
-    //     dbg!(b % 8);
-    //     a = a.wrapping_shr(3);
-    // }
-
-    // while a != 0 {
-    //     dbg!((((a % 8) ^ 2) ^ a.wrapping_shr((a % 8) as u32 ^ 2) ^ 3) % 8);
-    //     a = a.wrapping_shr(3);
-    // }
+    // There is no way to make a general solution to this problem, so we have to
+    // rever engineer our specific input. In my case the input program
+    // translates into the following, where x is the input to the first
+    // register.
+    //
+    // (((x % 8) ^ 2) ^ x.wrapping_shr((x % 8) as u32 ^ 2) ^ 3) % 8
+    // 
+    // Because an input can cause multiple outputs, we then use a recursive
+    // solver to create the needed input three bits at a time.
 
     let exp = [2, 4, 1, 2, 7, 5, 4, 7, 1, 3, 5, 5, 0, 3, 3, 0];
-    // let mut out = 0;
-
-    // for exp in [2, 4] {
-    //     for x in 0..=u64::MAX {
-    //         // let val = ((x ^ 2) ^ x.wrapping_shr(x as u32 ^ 2) ^ 3) % 8;
-    //         let val = (((x % 8) ^ 2) ^ x.wrapping_shr((x % 8) as u32 ^ 2) ^ 3) % 8;
-    //         println!("{x}: {val}");
-    //         if val == exp {
-    //             println!("{x}");
-    //             out <<= 3;
-    //             out |= x;
-    //             break;
-    //         }
-    //     }
-    // }
 
     fn solve(exp: &[u64], n: usize, a: u64) -> u64 {
         for inp in 0..=0b111u64 {
@@ -159,15 +127,6 @@ impl Processor {
         }
     }
 
-    fn new(program: Vec<u64>) -> Self {
-        Self {
-            registers: [0, 0, 0],
-            program,
-            ptr: 0,
-            output: Vec::new(),
-        }
-    }
-
     fn reg(&self, reg: u64) -> u64 {
         self.registers[reg as usize]
     }
@@ -222,6 +181,7 @@ impl OpCode {
         }
     }
 
+    #[allow(unused)]
     fn debug(&self, proc: &Processor, (combo, literal): (Option<Argument>, u64)) {
         match self {
             OpCode::Adv => println!("A = A >> {:?}", combo.unwrap()),

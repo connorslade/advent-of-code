@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, convert::identity, u32};
+use std::{collections::VecDeque, convert::identity};
 
 use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{solution, Answer};
