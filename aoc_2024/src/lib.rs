@@ -21,6 +21,7 @@ mod day_18;
 mod day_19;
 mod day_20;
 mod day_21;
+mod day_22;
 // [import_marker]
 
 pub const SOLUTIONS: &[Solution] = &[
@@ -45,5 +46,6 @@ pub const SOLUTIONS: &[Solution] = &[
     day_19::SOLUTION,
     day_20::SOLUTION,
     day_21::SOLUTION,
+    day_22::SOLUTION,
     // [list_marker]
 ];
