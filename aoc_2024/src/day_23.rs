@@ -70,10 +70,10 @@ fn bron_kerbosch<'a>(
         return;
     }
 
-    let pivot = p.iter().chain(x.iter()).next().cloned();
+    let pivot = p.iter().chain(x.iter()).next();
 
-    for &v in p.clone().difference(&pivot.map_or_else(HashSet::new, |p| {
-        graph.get(&p).unwrap_or(&HashSet::new()).clone()
+    for &v in p.difference(&pivot.map_or_else(HashSet::new, |p| {
+        graph.get(p).cloned().unwrap_or(HashSet::new())
     })) {
         let mut r = r.clone();
         r.insert(v);
