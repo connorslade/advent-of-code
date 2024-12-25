@@ -29,6 +29,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 22: Monkey Market](aoc_2024/src/day_22.rs)
 - [Day 23: LAN Party](aoc_2024/src/day_23.rs)
 - [Day 24: Crossed Wires](aoc_2024/src/day_24.rs)
+- [Day 25: Code Chronicle](aoc_2024/src/day_25.rs)
 <!-- MARKER -->
 
 ## [2023](https://adventofcode.com/2023) [![aoc_2023](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2023.yml)
