@@ -2,7 +2,6 @@ use std::{
     cell::RefCell,
     collections::{hash_map::Keys, HashMap, HashSet},
     fs,
-    hash::Hash,
 };
 
 use common::{solution, Answer};
@@ -182,21 +181,6 @@ impl<'a> Problem<'a> {
         self.connections.keys()
     }
 
-    fn find_children(&self, key: &'a str) -> Vec<&'a str> {
-        if !self.connections.contains_key(key) {
-            return vec![];
-        }
-
-        let mut out = Vec::new();
-
-        let (a, _, b) = self.connections[key];
-        out.push(key);
-        out.extend(self.find_children(a));
-        out.extend(self.find_children(b));
-
-        out
-    }
-
     fn get(&self, key: &'a str) -> bool {
         if let Some(&val) = self.values.borrow().get(key) {
             return val;
@@ -214,17 +198,6 @@ impl<'a> Problem<'a> {
 
         self.values.borrow_mut().insert(key, out);
         out
-    }
-
-    fn swap(&mut self, a: &'a str, b: &'a str) {
-        // a -> smth
-        // b -> smth
-
-        let a_source = self.connections[a];
-        let b_source = self.connections[b];
-
-        self.connections.insert(b, a_source);
-        self.connections.insert(a, b_source);
     }
 }
 
