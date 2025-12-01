@@ -6,16 +6,10 @@ fn part_a(input: &str) -> Answer {
     let mut pos = 50;
     let mut out = 0;
 
-    for line in input.trim().lines() {
+    for line in input.lines() {
         let num = line[1..].parse::<u32>().unwrap();
         match line.as_bytes()[0] {
-            b'L' => {
-                if num % 100 > pos {
-                    pos = 100 - (num % 100 - pos);
-                } else {
-                    pos -= num;
-                }
-            }
+            b'L' => pos = (100 + pos - num % 100) % 100,
             b'R' => pos = (pos + num) % 100,
             _ => unreachable!(),
         }
@@ -30,30 +24,16 @@ fn part_b(input: &str) -> Answer {
     let mut pos = 50;
     let mut out = 0;
 
-    for line in input.trim().lines() {
-        let num = line[1..].parse::<u32>().unwrap();
+    for line in input.lines() {
+        let num = line[1..].parse::<u64>().unwrap();
         match line.as_bytes()[0] {
             b'L' => {
-                for _ in 0..num {
-                    if pos == 0 {
-                        pos = 99;
-                    } else {
-                        pos -= 1;
-                    }
-
-                    out += (pos == 0) as u64;
-                }
+                out += (99 - (pos + 99) % 100 + num) / 100;
+                pos = (100 + pos - num % 100) % 100;
             }
             b'R' => {
-                for _ in 0..num {
-                    if pos == 99 {
-                        pos = 0;
-                    } else {
-                        pos += 1;
-                    }
-
-                    out += (pos == 0) as u64;
-                }
+                out += (pos + num) / 100;
+                pos = (pos + num) % 100;
             }
             _ => unreachable!(),
         }
@@ -77,7 +57,6 @@ mod test {
         L99
         R14
         L82
-
     "};
 
     #[test]
