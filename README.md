@@ -5,6 +5,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 
 ## [2025](https://adventofcode.com/2025) [![aoc_2025](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2025.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2025.yml)
 
+- [Day 01: Secret Entrance](aoc_2025/src/day_01.rs)
 <!-- MARKER -->
 
 ## [2024](https://adventofcode.com/2024) [![aoc_2024](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml)
