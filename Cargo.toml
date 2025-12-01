@@ -12,6 +12,7 @@ members = [
     "aoc_2022",
     "aoc_2023",
     "aoc_2024",
+    "aoc_2025",
 ]
 
 [dependencies]
@@ -20,6 +21,7 @@ aoc_2021 = { path = "aoc_2021" }
 aoc_2022 = { path = "aoc_2022" }
 aoc_2023 = { path = "aoc_2023" }
 aoc_2024 = { path = "aoc_2024" }
+aoc_2025 = { path = "aoc_2025" }
 
 clap = { version = "4.0.29", features = ["derive"] }
 chrono = "0.4.31"

@@ -24,6 +24,7 @@ fn get_year(year: u16) -> &'static [Solution] {
         2022 => aoc_2022::SOLUTIONS,
         2023 => aoc_2023::SOLUTIONS,
         2024 => aoc_2024::SOLUTIONS,
+        2025 => aoc_2025::SOLUTIONS,
         _ => &[],
     }
 }

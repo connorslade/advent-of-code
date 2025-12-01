@@ -17,6 +17,7 @@ dependencies = [
  "aoc_2022",
  "aoc_2023",
  "aoc_2024",
+ "aoc_2025",
  "chrono",
  "clap",
  "common",
@@ -162,6 +163,18 @@ dependencies = [
 
 [[package]]
 name = "aoc_2024"
+version = "0.1.0"
+dependencies = [
+ "aoc_lib",
+ "common",
+ "indoc",
+ "itertools 0.13.0",
+ "nd_vec",
+ "rayon",
+]
+
+[[package]]
+name = "aoc_2025"
 version = "0.1.0"
 dependencies = [
  "aoc_lib",

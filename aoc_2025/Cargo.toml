@@ -1,0 +1,13 @@
+[package]
+name = "aoc_2025"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc_lib = { path = "../aoc_lib" }
+common = { path = "../common" }
+
+indoc = "2.0.4"
+itertools = "0.13.0"
+nd_vec = { git = "https://github.com/connorslade/nd-vec.git" }
+rayon = "1.10.0"

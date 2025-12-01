@@ -6,12 +6,16 @@ use nd_vec::{vector, Vec2};
 
 solution!("RAM Run", 18);
 
+// Drop the first 1024 boxes, then find the length of the shortest path through
+// the board.
 fn part_a(input: &str) -> Answer {
     let mut map = Map::parse(input, vector!(71, 71));
     map.fill_to(1023);
     map.shortest_path().into()
 }
 
+// Binary search to find the first box that when dropped causes the maze to be
+// unsolvable.
 fn part_b(input: &str) -> Answer {
     let mut map = Map::parse(input, vector!(71, 71));
 
