@@ -32,7 +32,7 @@ fn part_a(input: &str) -> Answer {
     out.into()
 }
 
-fn part_b(input: &str) -> Answer {
+fn part_b(_input: &str) -> Answer {
     Answer::Unimplemented
 }
 

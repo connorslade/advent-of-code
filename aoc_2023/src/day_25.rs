@@ -26,7 +26,7 @@ struct Wires<'a> {
     wire: Graph<&'a str, (), Undirected>,
 }
 
-fn parse(input: &str) -> Wires {
+fn parse(input: &str) -> Wires<'_> {
     let mut nodes = HashMap::new();
     let mut wire = UnGraph::new_undirected();
 

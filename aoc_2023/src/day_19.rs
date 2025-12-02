@@ -127,7 +127,7 @@ enum Rule<'a> {
     },
 }
 
-fn parse(input: &str) -> (HashMap<&str, Vec<Rule>>, Vec<[u32; 4]>) {
+fn parse(input: &str) -> (HashMap<&str, Vec<Rule<'_>>>, Vec<[u32; 4]>) {
     let mut rules_out = HashMap::new();
     let mut shapes = Vec::new();
 

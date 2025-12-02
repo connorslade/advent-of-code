@@ -76,11 +76,11 @@ struct ParseResult<'a> {
     end: NodeIndex,
 }
 
-fn parse(input: &str) -> ParseResult {
+fn parse(input: &str) -> ParseResult<'_> {
     let mut graph = UnGraph::new_undirected();
     let mut nodes = HashMap::new();
 
-    fn make_node(name: &str) -> Node {
+    fn make_node(name: &str) -> Node<'_> {
         Node {
             name,
             cave_type: if name == "start" || name == "end" {

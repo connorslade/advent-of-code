@@ -73,7 +73,7 @@ impl<'a> Map<'a> {
     }
 }
 
-fn parse(input: &str) -> Map {
+fn parse(input: &str) -> Map<'_> {
     let (instructions, node_list) = input.split_once("\n\n").unwrap();
 
     let mut nodes = HashMap::new();
