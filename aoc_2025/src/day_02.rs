@@ -43,8 +43,8 @@ fn count_invalid(input: &str, is_invalid: fn(u64) -> bool) -> u64 {
 
     for range in input.split(',') {
         let (start, end) = range.split_once('-').unwrap();
-        let start = start.parse::<u64>().unwrap();
-        let end = end.parse::<u64>().unwrap();
+        let start = start.parse().unwrap();
+        let end = end.parse().unwrap();
 
         for id in start..=end {
             count += is_invalid(id) as u64 * id;
