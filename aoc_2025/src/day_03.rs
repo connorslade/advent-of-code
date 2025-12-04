@@ -24,23 +24,21 @@ fn solve(input: &str, n: usize) -> u64 {
 }
 
 fn joltage(digits: &[u8], n: usize) -> u64 {
-    let mut num = 0;
-    let mut last_used = 0;
+    let mut out = 0;
+    let mut last = 0;
 
-    for bat in 0..n {
-        let size = digits.len() - (n - 1 - bat) - last_used;
-        let slice = &digits[last_used..(last_used + size).min(digits.len())];
-
+    for bat in 1..=n {
+        let size = digits.len() - (n - bat) - last;
         for i in (0..=9).rev() {
-            if let Some(idx) = slice.iter().position(|x| *x == i) {
-                last_used += idx + 1;
-                num = num * 10 + i as u64;
+            if let Some(idx) = digits.iter().skip(last).take(size).position(|x| *x == i) {
+                last += idx + 1;
+                out = out * 10 + i as u64;
                 break;
             }
         }
     }
 
-    num
+    out
 }
 
 #[cfg(test)]
