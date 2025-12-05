@@ -1,23 +1,32 @@
-use std::{mem, ops::RangeInclusive};
+use std::ops::RangeInclusive;
 
 use common::{Answer, solution};
 
 solution!("Cafeteria", 5);
 
-type Range = RangeInclusive<u64>;
-
 fn part_a(input: &str) -> Answer {
     let (ranges, nums) = parse(input);
-    let count = nums.iter().filter(|x| ranges.contains(x)).count();
-    count.into()
+    nums.iter()
+        .filter(|n| ranges.iter().any(|r| r.contains(n)))
+        .count()
+        .into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let (ranges, _) = parse(input);
-    ranges.count().into()
+    let (mut ranges, _) = parse(input);
+    ranges.sort_by_key(|x| *x.start());
+
+    let (mut out, mut max) = (0, 0);
+    for range in ranges {
+        let (start, end) = (*range.start().max(&max), range.end() + 1);
+        out += end.saturating_sub(start);
+        max = max.max(end);
+    }
+
+    out.into()
 }
 
-fn parse(input: &str) -> (Ranges, Vec<u64>) {
+fn parse(input: &str) -> (Vec<RangeInclusive<u64>>, Vec<u64>) {
     let (ranges, nums) = input.split_once("\n\n").unwrap();
 
     let ranges = (ranges.lines())
@@ -26,54 +35,9 @@ fn parse(input: &str) -> (Ranges, Vec<u64>) {
             first.parse().unwrap()..=last.parse().unwrap()
         })
         .collect();
-
     let nums = nums.lines().map(|x| x.parse().unwrap()).collect();
 
     (ranges, nums)
-}
-
-#[derive(Default, Debug)]
-struct Ranges {
-    inner: Vec<Range>,
-}
-
-impl Ranges {
-    fn add(&mut self, mut new: RangeInclusive<u64>) {
-        fn range_combine(a: &Range, b: &Range) -> Option<Range> {
-            (a.start() <= b.start() && a.end() >= b.start()
-                || b.start() <= a.start() && b.end() >= a.start())
-            .then(|| (*a.start().min(b.start()))..=(*a.end().max(b.end())))
-        }
-
-        let mut i = 0;
-        while i < self.inner.len() {
-            if let Some(combination) = range_combine(&self.inner[i], &new) {
-                self.inner.remove(mem::take(&mut i));
-                new = combination;
-                continue;
-            }
-
-            i += 1;
-        }
-
-        self.inner.push(new);
-    }
-
-    fn contains(&self, val: &u64) -> bool {
-        self.inner.iter().any(|x| x.contains(val))
-    }
-
-    fn count(&self) -> u64 {
-        self.inner.iter().map(|x| x.end() - x.start() + 1).sum()
-    }
-}
-
-impl FromIterator<Range> for Ranges {
-    fn from_iter<T: IntoIterator<Item = Range>>(iter: T) -> Self {
-        let mut out = Ranges::default();
-        iter.into_iter().for_each(|item| out.add(item));
-        out
-    }
 }
 
 #[cfg(test)]
