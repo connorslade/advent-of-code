@@ -1,79 +1,79 @@
-use std::ops::RangeInclusive;
+use std::{mem, ops::RangeInclusive};
 
 use common::{Answer, solution};
 
 solution!("Cafeteria", 5);
 
+type Range = RangeInclusive<u64>;
+
 fn part_a(input: &str) -> Answer {
-    let (ranges_raw, nums_raw) = input.split_once("\n\n").unwrap();
-    let mut ranges = Vec::new();
-    for range in ranges_raw.lines() {
-        let (first, last) = range.split_once('-').unwrap();
-        ranges.push(first.parse::<u64>().unwrap()..=last.parse::<u64>().unwrap());
-    }
+    let (ranges, nums) = parse(input);
+    let count = nums.iter().filter(|x| ranges.contains(x)).count();
+    count.into()
+}
 
-    let mut out = 0;
-    for num in nums_raw.lines() {
-        let num = num.parse::<u64>().unwrap();
-        if ranges.iter().any(|x| x.contains(&num)) {
-            out += 1;
-            continue;
-        }
-    }
+fn part_b(input: &str) -> Answer {
+    let (ranges, _) = parse(input);
+    ranges.count().into()
+}
 
-    out.into()
+fn parse(input: &str) -> (Ranges, Vec<u64>) {
+    let (ranges, nums) = input.split_once("\n\n").unwrap();
+
+    let ranges = (ranges.lines())
+        .map(|x| {
+            let (first, last) = x.split_once('-').unwrap();
+            first.parse().unwrap()..=last.parse().unwrap()
+        })
+        .collect();
+
+    let nums = nums.lines().map(|x| x.parse().unwrap()).collect();
+
+    (ranges, nums)
 }
 
 #[derive(Default, Debug)]
 struct Ranges {
-    inner: Vec<RangeInclusive<u64>>,
-}
-
-fn range_intersects(a: &RangeInclusive<u64>, b: &RangeInclusive<u64>) -> bool {
-    a.start() <= b.start() && a.end() >= b.start() || b.start() <= a.start() && b.end() >= a.start()
+    inner: Vec<Range>,
 }
 
 impl Ranges {
-    fn add(&mut self, new: RangeInclusive<u64>) {
-        for i in 0..self.inner.len() {
-            let range = &self.inner[i];
-            if range_intersects(&range, &new) {
-                let start = *range.start().min(new.start());
-                let end = *range.end().max(new.end());
-                let new = start..=end;
+    fn add(&mut self, mut new: RangeInclusive<u64>) {
+        fn range_combine(a: &Range, b: &Range) -> Option<Range> {
+            (a.start() <= b.start() && a.end() >= b.start()
+                || b.start() <= a.start() && b.end() >= a.start())
+            .then(|| (*a.start().min(b.start()))..=(*a.end().max(b.end())))
+        }
 
-                self.inner.remove(i);
-                self.add(new);
-                return;
+        let mut i = 0;
+        while i < self.inner.len() {
+            if let Some(combination) = range_combine(&self.inner[i], &new) {
+                self.inner.remove(mem::take(&mut i));
+                new = combination;
+                continue;
             }
+
+            i += 1;
         }
 
         self.inner.push(new);
     }
 
-    fn count(&self) -> u64 {
-        let mut out = 0;
-        for range in &self.inner {
-            out += range.end() - range.start() + 1;
-        }
+    fn contains(&self, val: &u64) -> bool {
+        self.inner.iter().any(|x| x.contains(val))
+    }
 
-        out
+    fn count(&self) -> u64 {
+        self.inner.iter().map(|x| x.end() - x.start() + 1).sum()
     }
 }
 
-fn part_b(input: &str) -> Answer {
-    let (ranges_raw, _s) = input.split_once("\n\n").unwrap();
-    let mut ranges = Ranges::default();
-
-    for range in ranges_raw.lines() {
-        let (first, last) = range.split_once('-').unwrap();
-        let range = first.parse::<u64>().unwrap()..=last.parse::<u64>().unwrap();
-        ranges.add(range);
+impl FromIterator<Range> for Ranges {
+    fn from_iter<T: IntoIterator<Item = Range>>(iter: T) -> Self {
+        let mut out = Ranges::default();
+        iter.into_iter().for_each(|item| out.add(item));
+        out
     }
-
-    dbg!(&ranges);
-
-    ranges.count().into()
 }
 
 #[cfg(test)]
@@ -94,14 +94,6 @@ mod test {
         32
     "};
 
-    // const CASE: &str = indoc! {"
-    //     3-5
-    //     2-7
-    //     8-10
-    //     2-9
-
-    // "};
-
     #[test]
     fn part_a() {
         assert_eq!(super::part_a(CASE), 3.into());
@@ -112,6 +104,3 @@ mod test {
         assert_eq!(super::part_b(CASE), 14.into());
     }
 }
-
-// not: 381374757320727
-// not: 346809913640090
