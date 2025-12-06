@@ -29,7 +29,7 @@ pub fn run(cmd: &RunArgs) -> Result<()> {
         }
     };
 
-    let input = fs::read_to_string(&*path)?.trim().replace('\r', "");
+    let input = fs::read_to_string(&*path)?.replace('\r', "");
 
     let start = Instant::now();
     let out = match cmd.part {
