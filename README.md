@@ -11,6 +11,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 04: Printing Department](aoc_2025/src/day_04.rs)
 - [Day 05: Cafeteria](aoc_2025/src/day_05.rs)
 - [Day 06: Trash Compactor](aoc_2025/src/day_06.rs)
+- [Day 07: Laboratories](aoc_2025/src/day_07.rs)
 <!-- MARKER -->
 
 ## [2024](https://adventofcode.com/2024) [![aoc_2024](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml)
