@@ -1,58 +1,27 @@
-use std::{
-    collections::{HashMap, HashSet},
-    convert::identity,
-};
+use std::{collections::HashMap, convert::identity};
 
 use aoc_lib::{direction::cardinal::Direction, matrix::Grid};
 use common::{Answer, solution};
-use nd_vec::vector;
+use nd_vec::{Vec2, vector};
 
 solution!("Laboratories", 7);
 
 fn part_a(input: &str) -> Answer {
-    let grid = Grid::parse(input, identity);
-    let start = grid.find('S').unwrap();
-
-    let mut beams = HashSet::new();
-    beams.insert(start);
-
-    let mut out = 0;
-
-    loop {
-        let mut next_beams = HashSet::new();
-        for beam in beams.iter() {
-            let next = Direction::Down.advance(*beam);
-            let Some(tile) = grid.get(next) else {
-                continue;
-            };
-
-            if *tile == '^' {
-                out += 1;
-                next_beams.insert(next - vector!(1, 0));
-                next_beams.insert(next + vector!(1, 0));
-            } else {
-                next_beams.insert(next);
-            }
-        }
-
-        if next_beams.is_empty() {
-            break;
-        }
-
-        beams = next_beams;
-    }
-
-    out.into()
+    solve(input).1.into()
 }
 
 fn part_b(input: &str) -> Answer {
+    let (beams, _) = solve(input);
+    beams.iter().map(|x| x.1).sum::<u64>().into()
+}
+
+fn solve(input: &str) -> (HashMap<Vec2<usize>, u64>, u64) {
     let grid = Grid::parse(input, identity);
     let start = grid.find('S').unwrap();
 
+    let mut out = 0;
     let mut beams = HashMap::new();
-    beams.insert(start, 1_u64);
-
-    // let mut out = 0;
+    beams.insert(start, 1);
 
     loop {
         let mut next_beams = HashMap::new();
@@ -63,6 +32,7 @@ fn part_b(input: &str) -> Answer {
             };
 
             if *tile == '^' {
+                out += 1;
                 *next_beams.entry(next - vector!(1, 0)).or_default() += *count;
                 *next_beams.entry(next + vector!(1, 0)).or_default() += *count;
             } else {
@@ -70,7 +40,6 @@ fn part_b(input: &str) -> Answer {
             }
         }
 
-        println!("count : {}", next_beams.len());
         if next_beams.is_empty() {
             break;
         }
@@ -78,7 +47,7 @@ fn part_b(input: &str) -> Answer {
         beams = next_beams;
     }
 
-    beams.iter().map(|x| x.1).sum::<u64>().into()
+    (beams, out)
 }
 
 #[cfg(test)]
