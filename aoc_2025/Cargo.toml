@@ -7,7 +7,11 @@ edition = "2024"
 aoc_lib = { path = "../aoc_lib" }
 common = { path = "../common" }
 
+good_lp = { version = "1.14.2", optional = true }
 indoc = "2.0.4"
 itertools = "0.13.0"
 nd_vec = { git = "https://github.com/connorslade/nd-vec.git" }
 rayon = "1.10.0"
+
+[features]
+clp = ["good_lp"]

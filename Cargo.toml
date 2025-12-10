@@ -1,7 +1,8 @@
 [package]
-edition = "2021"
+edition = "2024"
 name = "advent_of_code"
 version = "0.1.0"
+resolver = "2"
 
 [workspace]
 members = [

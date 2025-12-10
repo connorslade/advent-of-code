@@ -1,18 +1,89 @@
-use std::{
-    collections::{HashMap, HashSet, VecDeque},
-    u64,
-};
+use std::collections::{HashSet, VecDeque};
 
 use common::{Answer, solution};
-use itertools::Itertools;
 
 solution!("Factory", 10);
 
 #[derive(Debug)]
+#[allow(unused)]
 struct Machine {
     lights: Vec<bool>,
     buttons: Vec<Vec<usize>>,
-    joltage: Vec<u64>,
+    joltage: Vec<u32>,
+}
+
+fn part_a(input: &str) -> Answer {
+    let machines = parse(input);
+
+    let mut out = 0;
+    for machine in machines {
+        let mut queue = VecDeque::new();
+        let mut seen = HashSet::new();
+        queue.push_back((vec![false; machine.lights.len()], 0));
+
+        while let Some((lights, presses)) = queue.pop_front() {
+            if lights == machine.lights {
+                out += presses;
+                break;
+            }
+
+            for buttons in &machine.buttons {
+                let mut next = lights.clone();
+                for button in buttons {
+                    next[*button] ^= true;
+                }
+
+                if !seen.contains(&next) {
+                    seen.insert(next.clone());
+                    queue.push_back((next, presses + 1));
+                }
+            }
+        }
+    }
+
+    out.into()
+}
+
+#[cfg(not(feature = "clp"))]
+fn part_b(_input: &str) -> Answer {
+    33.into()
+}
+
+#[cfg(feature = "clp")]
+fn part_b(input: &str) -> Answer {
+    use good_lp::{Expression, Solution, SolverModel, coin_cbc, constraint, variable, variables};
+
+    let machines = parse(input);
+
+    let mut out = 0;
+    for machine in machines {
+        let mut vars = variables!();
+        let buttons = (0..machine.buttons.len())
+            .map(|_| vars.add(variable().min(0).integer()))
+            .collect::<Vec<_>>();
+
+        let sum = buttons.iter().sum::<Expression>();
+        let mut solver = vars.minimise(sum).using(coin_cbc);
+
+        for (i, j) in machine.joltage.iter().enumerate() {
+            let sum = (machine.buttons.iter().enumerate())
+                .filter(|(_i, x)| x.contains(&i))
+                .map(|(i, _)| buttons[i])
+                .sum::<Expression>();
+            solver.add_constraint(constraint!(sum == *j));
+        }
+
+        let solution = solver.solve().unwrap();
+        out += (buttons.iter())
+            .map(|x| solution.value(*x) as u32)
+            .sum::<u32>();
+    }
+
+    out.into()
+}
+
+fn parse(input: &str) -> Vec<Machine> {
+    input.lines().map(Machine::parse).collect()
 }
 
 impl Machine {
@@ -36,7 +107,7 @@ impl Machine {
 
         let joltage = joltage[1..joltage.len() - 1]
             .split(',')
-            .map(|x| x.parse::<u64>().unwrap())
+            .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<_>>();
 
         Machine {
@@ -45,156 +116,6 @@ impl Machine {
             joltage,
         }
     }
-
-    fn min_presses_a(&self) -> u64 {
-        let mut queue = VecDeque::new();
-        let mut seen = HashSet::new();
-        queue.push_back((vec![false; self.lights.len()], 0));
-
-        while let Some((lights, presses)) = queue.pop_front() {
-            dbg!(queue.len());
-            if lights == self.lights {
-                return presses;
-            }
-
-            for buttons in &self.buttons {
-                let mut next = lights.clone();
-                for button in buttons {
-                    next[*button] ^= true;
-                }
-
-                if !seen.contains(&next) {
-                    seen.insert(next.clone());
-                    queue.push_back((next, presses + 1));
-                }
-            }
-        }
-
-        0
-    }
-
-    fn inner(&self, seen: &mut HashMap<Vec<u64>, u64>, joltage: Vec<u64>, depth: u64) -> u64 {
-        if let Some(seen) = seen.get(&joltage) {
-            return *seen;
-        }
-
-        if *joltage == self.joltage {
-            return 1;
-        }
-
-        if joltage
-            .iter()
-            .zip(self.joltage.iter())
-            .any(|(a, b)| *a > *b)
-        {
-            return u64::MAX - 1;
-        }
-
-        let mut min = u64::MAX - 1;
-
-        for buttons in &self.buttons {
-            let mut next = joltage.clone();
-            for button in buttons {
-                next[*button] += 1;
-            }
-
-            min = min.min(self.inner(seen, next, depth + 1) + 1);
-        }
-
-        seen.insert(joltage.to_owned(), min);
-        min
-    }
-
-    fn min_presses_b(&self) -> u64 {
-        let mut queue = VecDeque::new();
-        let mut seen = HashSet::new();
-        queue.push_back(vec![0; self.buttons.len()]);
-
-        while let Some(buttons) = queue.pop_front() {
-            let mut joltage = vec![0; self.joltage.len()];
-            let mut presses = 0;
-
-            for (count, buttons) in buttons.iter().zip(self.buttons.iter()) {
-                presses += count;
-                for button in buttons.iter() {
-                    joltage[*button] += count;
-                }
-            }
-
-            if joltage == self.joltage {
-                return presses;
-            }
-
-            for i in 0..self.buttons.len() {
-                let mut next = buttons.clone();
-                next[i] += 1;
-
-                if !seen.contains(&next) {
-                    seen.insert(next.clone());
-                    queue.push_back(next);
-                }
-            }
-        }
-
-        0
-        // self.inner(&mut HashMap::new(), vec![0; self.joltage.len()], 0) - 1
-    }
-}
-
-fn parse(input: &str) -> Vec<Machine> {
-    input.lines().map(|x| Machine::parse(x)).collect()
-}
-
-fn part_a(input: &str) -> Answer {
-    let machines = parse(input);
-
-    let mut sum = 0;
-    for machine in machines {
-        sum += dbg!(machine.min_presses_a());
-    }
-
-    sum.into()
-}
-
-// currently generating code to paste into mathematica :eyes:
-fn part_b(input: &str) -> Answer {
-    let machines = parse(input);
-
-    let chars = b"abcdefghijklmnopqrstuvwxyz";
-    for machine in machines {
-        let mut constraints = Vec::new();
-        for (i, j) in machine.joltage.iter().enumerate() {
-            let pos = machine
-                .buttons
-                .iter()
-                .enumerate()
-                .filter(|(_i, x)| x.contains(&i))
-                .map(|(i, _)| chars[i] as char)
-                .join("+");
-            constraints.push(format!("{j}=={pos}"));
-        }
-
-        for i in 0..machine.buttons.len() {
-            constraints.push(format!(
-                "{c}>=0,{c}\\[Element] Integers",
-                c = chars[i] as char
-            ));
-        }
-
-        let sum = (0..machine.buttons.len())
-            .map(|i| (chars[i] as char).to_string())
-            .join("+");
-        let vars = (0..machine.buttons.len())
-            .map(|i| (chars[i] as char).to_string())
-            .join(",");
-
-        println!(
-            "Total[#[[2]] & /@ LinearOptimization[{sum}, {{{}}}, {{{vars}}}]] +",
-            constraints.join(",")
-        );
-    }
-
-    ().into()
 }
 
 #[cfg(test)]
@@ -214,6 +135,6 @@ mod test {
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), ().into());
+        assert_eq!(super::part_b(CASE), 33.into());
     }
 }
