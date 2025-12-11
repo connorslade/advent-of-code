@@ -5,84 +5,66 @@ use common::{Answer, solution};
 solution!("Reactor", 11);
 
 fn part_a(input: &str) -> Answer {
-    let mut map = HashMap::new();
-
-    for line in input.lines() {
-        let (from, to) = line.split_once(": ").unwrap();
-        let to = to.split_whitespace().collect::<Vec<_>>();
-        map.insert(from, to);
-    }
-
-    fn count_paths(map: &HashMap<&str, Vec<&str>>, current: &str) -> u64 {
-        if current == "out" {
-            return 1;
-        }
-
-        let mut out = 0;
-
-        for child in &map[current] {
-            out += count_paths(map, child);
-        }
-
-        out
-    }
-
-    count_paths(&map, "you").into()
+    count_paths(&mut HashMap::new(), &parse(input), "you", [true; _]).into()
 }
 
 fn part_b(input: &str) -> Answer {
-    let mut map = HashMap::new();
+    count_paths(&mut HashMap::new(), &parse(input), "svr", [false; _]).into()
+}
 
+fn count_paths<'a>(
+    memo: &mut HashMap<(&'a str, [bool; 2]), u64>,
+    map: &HashMap<&'a str, Vec<&'a str>>,
+    current: &'a str,
+    seen @ [fft, dac]: [bool; 2],
+) -> u64 {
+    let entry = (current, seen);
+    if let Some(memo) = memo.get(&entry) {
+        return *memo;
+    }
+
+    if current == "out" {
+        return (fft && dac) as u64;
+    }
+
+    let seen = [fft || current == "fft", dac || current == "dac"];
+    let out = (map[current].iter())
+        .map(|child| count_paths(memo, map, child, seen))
+        .sum();
+
+    memo.insert(entry, out);
+    out
+}
+
+fn parse(input: &str) -> HashMap<&str, Vec<&str>> {
+    let mut map = HashMap::new();
     for line in input.lines() {
         let (from, to) = line.split_once(": ").unwrap();
         let to = to.split_whitespace().collect::<Vec<_>>();
         map.insert(from, to);
     }
 
-    fn count_paths<'a>(
-        memo: &mut HashMap<(&'a str, bool, bool), u64>,
-        map: &HashMap<&str, Vec<&'a str>>,
-        current: &'a str,
-        mut fft: bool,
-        mut dac: bool,
-    ) -> u64 {
-        let key = (current, fft, dac);
-        if let Some(memo) = memo.get(&key) {
-            return *memo;
-        }
-
-        if current == "out" {
-            if fft && dac {
-                return 1;
-            }
-            return 0;
-        }
-
-        if current == "fft" {
-            fft = true;
-        }
-
-        if current == "dac" {
-            dac = true;
-        }
-
-        let mut out = 0;
-        for child in &map[current] {
-            out += count_paths(memo, map, child, fft, dac);
-        }
-
-        memo.insert(key, out);
-        out
-    }
-
-    count_paths(&mut HashMap::new(), &map, "svr", false, false).into()
+    map
 }
 
 #[cfg(test)]
 mod test {
     use indoc::indoc;
 
-    const CASE: &str = indoc! {"
+    const CASE_A: &str = indoc! {"
+        aaa: you hhh
+        you: bbb ccc
+        bbb: ddd eee
+        ccc: ddd eee fff
+        ddd: ggg
+        eee: out
+        fff: out
+        ggg: out
+        hhh: ccc fff iii
+        iii: out
+    "};
+
+    const CASE_B: &str = indoc! {"
         svr: aaa bbb
         aaa: fft
         fft: ccc
@@ -100,11 +82,11 @@ mod test {
 
     #[test]
     fn part_a() {
-        assert_eq!(super::part_a(CASE), 5.into());
+        assert_eq!(super::part_a(CASE_A), 5.into());
     }
 
     #[test]
     fn part_b() {
-        assert_eq!(super::part_b(CASE), 2.into());
+        assert_eq!(super::part_b(CASE_B), 2.into());
     }
 }
