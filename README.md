@@ -16,6 +16,7 @@ Thank you to [Eric Wastl](http://was.tl) for running this incredible yearly even
 - [Day 09: Movie Theater](aoc_2025/src/day_09.rs)
 - [Day 10: Factory](aoc_2025/src/day_10.rs)
 - [Day 11: Reactor](aoc_2025/src/day_11.rs)
+- [Day 12: Christmas Tree Farm](aoc_2025/src/day_12.rs)
 <!-- MARKER -->
 
 ## [2024](https://adventofcode.com/2024) [![aoc_2024](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/connorslade/advent-of-code/actions/workflows/aoc_2024.yml)
